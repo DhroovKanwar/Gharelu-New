@@ -1,9 +1,20 @@
 /**
- * Central dummy content for Gharelu.Bake.
- * Everything here mirrors the shape a real API would return, so the
- * `services/api.js` layer can be swapped to live endpoints with zero
- * component changes.
+ * Central content for Gharelu.Bake.
+ *
+ * Collections (products, categories, testimonials, faqs, events, gallery,
+ * corporate gifts, reviews, policies) live in JSON files and are re-exported
+ * here so components import from a single, stable module. Brand config and a
+ * few homepage-specific blocks remain inline.
  */
+import productsData from "./products.json";
+import categoriesData from "./categories.json";
+import testimonialsData from "./testimonials.json";
+import faqsData from "./faqs.json";
+import eventsData from "./events.json";
+import galleryData from "./gallery.json";
+import corporateGiftsData from "./corporateGifts.json";
+import reviewsData from "./reviews.json";
+import policiesData from "./policies.json";
 
 const px = (id, w = 1200) =>
   `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${w}`;
@@ -59,58 +70,17 @@ export const announcements = [
 ];
 
 export const navLinks = [
-  { label: "Cakes", href: "#featured" },
-  { label: "Categories", href: "#categories" },
-  { label: "Corporate", href: "#corporate" },
-  { label: "Gallery", href: "#gallery" },
-  { label: "Contact", href: "#location" },
+  { label: "Cakes", href: "/catalogue" },
+  { label: "About", href: "/about" },
+  { label: "Corporate", href: "/corporate" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Contact", href: "/contact" },
 ];
 
-export const featuredCakes = [
-  {
-    id: "belgian-truffle",
-    name: "Belgian Dark Truffle",
-    category: "Signature",
-    price: 1499,
-    image: IMG.cakeSlice,
-    tag: "Bestseller",
-    description: "Silken 70% Belgian ganache layered over cloud-soft sponge.",
-  },
-  {
-    id: "rose-pistachio",
-    name: "Rose & Pistachio",
-    category: "Celebration",
-    price: 1699,
-    image: IMG.layerCake,
-    tag: "New",
-    description: "Persian rose cream, slow-roasted pistachio, gold leaf finish.",
-  },
-  {
-    id: "strawberry-cloud",
-    name: "Strawberry Cloud",
-    category: "Fresh Fruit",
-    price: 1299,
-    image: IMG.strawberryCake,
-    tag: "Seasonal",
-    description: "Whipped vanilla chantilly folded with hand-picked berries.",
-  },
-  {
-    id: "salted-caramel",
-    name: "Salted Caramel Gateau",
-    category: "Signature",
-    price: 1599,
-    image: IMG.pastry1,
-    tag: "Loved",
-    description: "Burnt-butter caramel, sea salt flakes, honeycomb shards.",
-  },
-];
+export const products = productsData;
+export const featuredCakes = productsData.filter((p) => p.featured);
 
-export const categories = [
-  { id: "signature-cakes", name: "Signature Cakes", count: 24, image: IMG.weddingCakes, span: "lg:col-span-2 lg:row-span-2" },
-  { id: "cupcakes", name: "Cupcakes", count: 18, image: IMG.cupcakesPink, span: "" },
-  { id: "macarons", name: "Macarons", count: 12, image: IMG.macaronsPink, span: "" },
-  { id: "artisan-breads", name: "Artisan Breads", count: 9, image: IMG.cinnamon, span: "lg:col-span-2" },
-];
+export const categories = categoriesData;
 
 export const whyChooseUs = [
   {
@@ -147,21 +117,9 @@ export const corporate = {
   ],
 };
 
-export const events = [
-  { id: 1, date: "24 Dec", title: "Christmas Yule Log Workshop", tag: "Workshop", desc: "Hands-on masterclass with our head pâtissier." },
-  { id: 2, date: "31 Dec", title: "New Year Dessert Grazing Table", tag: "Catering", desc: "Bespoke grazing tables for private soirées." },
-  { id: 3, date: "14 Feb", title: "Valentine’s Patisserie Box", tag: "Seasonal", desc: "Limited edition rose & raspberry collection." },
-  { id: 4, date: "08 Mar", title: "High-Tea Pairing Evening", tag: "Event", desc: "An intimate evening of pastry & artisan tea." },
-];
+export const events = eventsData;
 
-export const gallery = [
-  { id: 1, image: IMG.chefIcing, w: "tall" },
-  { id: 2, image: IMG.macarons, w: "wide" },
-  { id: 3, image: IMG.cupcakeTray, w: "" },
-  { id: 4, image: IMG.donuts, w: "" },
-  { id: 5, image: IMG.cakeStudio, w: "wide" },
-  { id: 6, image: IMG.cheesecake, w: "tall" },
-];
+export const gallery = galleryData;
 
 export const instagram = [
   { id: 1, image: IMG.cupcakesFrost, likes: 482 },
@@ -172,82 +130,40 @@ export const instagram = [
   { id: 6, image: IMG.strawberryCake, likes: 1204 },
 ];
 
-export const testimonials = [
-  {
-    id: 1,
-    name: "Ananya Mehta",
-    role: "Bride, Mumbai",
-    quote:
-      "The most exquisite eggless wedding cake we could have dreamed of. Guests could not believe it was eggless — pure magic.",
-    rating: 5,
-  },
-  {
-    id: 2,
-    name: "Rohan Kapoor",
-    role: "Head of People, Fintech Co.",
-    quote:
-      "Our clients still talk about the festive hampers. Impeccable packaging and flavour that feels genuinely premium.",
-    rating: 5,
-  },
-  {
-    id: 3,
-    name: "Sara D’Souza",
-    role: "Home Celebrations",
-    quote:
-      "Every birthday now comes from Gharelu.Bake. It truly tastes home-made in the best possible way. Warm and beautiful.",
-    rating: 5,
-  },
-];
+export const testimonials = testimonialsData;
 
-export const faqs = [
-  {
-    q: "Is everything really 100% eggless?",
-    a: "Yes — every single item we bake is completely eggless. Our recipes are developed from the ground up so texture and taste are never compromised.",
-  },
-  {
-    q: "How far in advance should I order a custom cake?",
-    a: "We recommend 48–72 hours for custom celebration cakes. Signature cakes and boxes are often available for same-day dispatch before 12 PM.",
-  },
-  {
-    q: "Do you use preservatives?",
-    a: "Never. We bake in small batches daily using premium, natural ingredients. This is why we recommend enjoying our bakes fresh within 2–3 days.",
-  },
-  {
-    q: "Which areas do you deliver to?",
-    a: "We currently deliver across Mumbai with pan-city dispatch for corporate and bulk gifting orders. Reach out for custom locations.",
-  },
-  {
-    q: "Can you accommodate allergies?",
-    a: "Absolutely. We offer nut-free, gluten-conscious and vegan options on request. Do mention your requirements while ordering.",
-  },
-];
+export const faqs = faqsData;
+
+export const reviews = reviewsData;
+export const corporateGifts = corporateGiftsData;
+export const policies = policiesData;
 
 export const footerLinks = [
   {
     heading: "Explore",
     links: [
-      { label: "Signature Cakes", href: "#featured" },
-      { label: "Categories", href: "#categories" },
-      { label: "Corporate Gifting", href: "#corporate" },
-      { label: "Events", href: "#events" },
+      { label: "Cake Catalogue", href: "/catalogue" },
+      { label: "Corporate Gifting", href: "/corporate" },
+      { label: "Events", href: "/events" },
+      { label: "Wishlist", href: "/wishlist" },
     ],
   },
   {
     heading: "Company",
     links: [
-      { label: "Our Story", href: "#why" },
-      { label: "Gallery", href: "#gallery" },
-      { label: "Testimonials", href: "#testimonials" },
-      { label: "FAQ", href: "#faq" },
+      { label: "About Us", href: "/about" },
+      { label: "Gallery", href: "/gallery" },
+      { label: "Reviews", href: "/reviews" },
+      { label: "FAQ", href: "/faq" },
     ],
   },
   {
     heading: "Support",
     links: [
-      { label: "Contact", href: "#location" },
-      { label: "Delivery Info", href: "#faq" },
-      { label: "Order Tracking", href: "#" },
-      { label: "Careers", href: "#" },
+      { label: "Contact", href: "/contact" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms & Conditions", href: "/terms" },
+      { label: "Refund Policy", href: "/refund" },
     ],
   },
 ];

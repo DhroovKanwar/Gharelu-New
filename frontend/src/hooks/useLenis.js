@@ -21,6 +21,7 @@ export default function useLenis() {
       rafId = requestAnimationFrame(raf);
     }
     rafId = requestAnimationFrame(raf);
+    window.__lenis = lenis;
 
     const handleAnchorClick = (e) => {
       const anchor = e.target.closest('a[href^="#"]');
@@ -39,6 +40,7 @@ export default function useLenis() {
     return () => {
       document.removeEventListener("click", handleAnchorClick);
       cancelAnimationFrame(rafId);
+      delete window.__lenis;
       lenis.destroy();
     };
   }, []);

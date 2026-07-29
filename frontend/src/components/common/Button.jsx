@@ -1,5 +1,8 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { cn } from "../../utils/cn";
+
+const MotionLink = motion(Link);
 
 /**
  * Reusable pill button with premium micro-interactions.
@@ -28,6 +31,7 @@ const SIZES = {
 
 export const Button = ({
   as = "button",
+  to,
   variant = "primary",
   size = "md",
   className,
@@ -35,7 +39,8 @@ export const Button = ({
   icon,
   ...props
 }) => {
-  const Comp = motion[as] || motion.button;
+  const Comp = to ? MotionLink : motion[as] || motion.button;
+  const linkProps = to ? { to } : {};
   return (
     <Comp
       whileHover={{ y: -2 }}
@@ -48,6 +53,7 @@ export const Button = ({
         SIZES[size],
         className,
       )}
+      {...linkProps}
       {...props}
     >
       {children}

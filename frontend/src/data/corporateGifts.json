@@ -1,0 +1,38 @@
+[
+  {
+    "id": "festive-hamper",
+    "name": "The Festive Hamper",
+    "price": 2499,
+    "image": "https://images.pexels.com/photos/31266998/pexels-photo-31266998.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    "items": "12 assorted treats, artisan chocolates, greeting card",
+    "tag": "Most Popular",
+    "description": "A generous curated hamper of our finest bakes, dressed in signature packaging with a personalised note."
+  },
+  {
+    "id": "executive-box",
+    "name": "The Executive Box",
+    "price": 1499,
+    "image": "https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=1200&q=80",
+    "items": "6 signature pastries, branded sleeve",
+    "tag": "Best for Teams",
+    "description": "Refined and right-sized for client and team gifting, finished with your company branding on request."
+  },
+  {
+    "id": "celebration-tower",
+    "name": "The Celebration Tower",
+    "price": 3999,
+    "image": "https://images.pexels.com/photos/29051739/pexels-photo-29051739.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "items": "Tiered cake, macarons, cupcakes, ribbons",
+    "tag": "Premium",
+    "description": "Our showstopper — a tiered centrepiece paired with macarons and cupcakes for milestone celebrations."
+  },
+  {
+    "id": "sweet-thanks",
+    "name": "Sweet Thanks Mini",
+    "price": 899,
+    "image": "https://images.pexels.com/photos/587741/pexels-photo-587741.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "items": "Box of 12 macarons, thank-you card",
+    "tag": "Great Value",
+    "description": "A thoughtful little gesture of appreciation — a jewel-box of assorted macarons with a handwritten card."
+  }
+]

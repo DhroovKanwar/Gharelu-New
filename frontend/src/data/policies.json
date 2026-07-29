@@ -1,0 +1,40 @@
+{
+  "privacy": {
+    "title": "Privacy Policy",
+    "updated": "December 2025",
+    "intro": "Your trust matters to us. This policy explains what information we collect, why we collect it, and how we keep it safe.",
+    "sections": [
+      { "heading": "Information We Collect", "body": "We collect details you provide when placing an order or subscribing — such as your name, contact number, delivery address and email. We also collect limited technical data (like device and browsing information) to improve your experience." },
+      { "heading": "How We Use Your Information", "body": "Your information is used to process and deliver orders, respond to enquiries, send order updates, and — only with your consent — share occasional offers and new collection announcements." },
+      { "heading": "Sharing & Disclosure", "body": "We never sell your personal data. We share information only with trusted delivery and payment partners strictly to fulfil your order, and where required by law." },
+      { "heading": "Cookies", "body": "We use cookies to remember your cart, preferences and improve site performance. You may disable cookies in your browser, though some features may not work as intended." },
+      { "heading": "Data Security", "body": "We apply industry-standard safeguards to protect your data. Payments are processed through secure, encrypted gateways and we never store full card details." },
+      { "heading": "Your Rights", "body": "You may request access to, correction of, or deletion of your personal data at any time by writing to hello@gharelu.bake." }
+    ]
+  },
+  "terms": {
+    "title": "Terms & Conditions",
+    "updated": "December 2025",
+    "intro": "By placing an order with Gharelu.Bake, you agree to the following terms. Please read them carefully.",
+    "sections": [
+      { "heading": "Orders & Availability", "body": "All orders are subject to availability. We reserve the right to decline or cancel an order in rare cases such as ingredient shortages or delivery constraints, with a full refund where applicable." },
+      { "heading": "Pricing", "body": "Prices are listed in INR and are inclusive of applicable taxes unless stated otherwise. We may update prices from time to time without prior notice." },
+      { "heading": "Custom Orders", "body": "Custom and celebration cakes require advance notice of 48–72 hours. Final designs are crafted at our artisans' discretion while honouring your brief as closely as possible." },
+      { "heading": "Delivery", "body": "Delivery timelines are estimates and may vary due to traffic, weather or unforeseen circumstances. Please ensure someone is available to receive perishable items." },
+      { "heading": "Product Nature", "body": "As every item is handmade in small batches, slight variations in colour, finish and decoration are natural and part of the artisan charm." },
+      { "heading": "Intellectual Property", "body": "All content, imagery, recipes and branding on this website belong to Gharelu.Bake and may not be reproduced without written permission." }
+    ]
+  },
+  "refund": {
+    "title": "Refund & Cancellation Policy",
+    "updated": "December 2025",
+    "intro": "As a fresh, made-to-order bakery, our refund policy balances fairness with the perishable nature of our products.",
+    "sections": [
+      { "heading": "Cancellations", "body": "Orders may be cancelled free of charge up to 24 hours before the scheduled delivery or pickup time. Cancellations within 24 hours are non-refundable as preparation will have begun." },
+      { "heading": "Refunds", "body": "Eligible refunds are processed to the original payment method within 5–7 business days. Custom and celebration cakes are non-refundable once production has started." },
+      { "heading": "Damaged or Incorrect Orders", "body": "If your order arrives damaged or incorrect, please contact us within 4 hours of delivery with photographs. We will arrange a replacement or refund at our discretion." },
+      { "heading": "Quality Concerns", "body": "Your satisfaction is our priority. If something isn't right, reach out to hello@gharelu.bake and our team will make it right." },
+      { "heading": "Non-Refundable Items", "body": "Perishable items that have been accepted in good condition, and personalised or bespoke orders, are not eligible for refund." }
+    ]
+  }
+}

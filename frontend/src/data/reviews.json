@@ -1,0 +1,11 @@
+[
+  { "id": 1, "name": "Ananya Mehta", "role": "Bride, Mumbai", "quote": "The most exquisite eggless wedding cake we could have dreamed of. Guests could not believe it was eggless — pure magic.", "rating": 5, "product": "Rose & Pistachio", "date": "Dec 2025" },
+  { "id": 2, "name": "Rohan Kapoor", "role": "Head of People, Fintech Co.", "quote": "Our clients still talk about the festive hampers. Impeccable packaging and flavour that feels genuinely premium.", "rating": 5, "product": "Corporate Hamper", "date": "Nov 2025" },
+  { "id": 3, "name": "Sara D’Souza", "role": "Home Celebrations", "quote": "Every birthday now comes from Gharelu.Bake. It truly tastes home-made in the best possible way. Warm and beautiful.", "rating": 5, "product": "Belgian Dark Truffle", "date": "Nov 2025" },
+  { "id": 4, "name": "Imran Shaikh", "role": "Foodie, Bandra", "quote": "The Belgian truffle is the best chocolate cake I've had in the city — eggless or otherwise. Ridiculously good.", "rating": 5, "product": "Belgian Dark Truffle", "date": "Oct 2025" },
+  { "id": 5, "name": "Priya Nair", "role": "New Mum", "quote": "Ordered the macaron box for a baby shower and they were flawless. Delicate, fresh and beautifully presented.", "rating": 5, "product": "French Macaron Box", "date": "Oct 2025" },
+  { "id": 6, "name": "Vikram Sethi", "role": "Anniversary", "quote": "Salted caramel gateau stole the show. That honeycomb crunch is unreal. Will absolutely order again.", "rating": 5, "product": "Salted Caramel Gateau", "date": "Sep 2025" },
+  { "id": 7, "name": "Meher Irani", "role": "Weekend Regular", "quote": "Their sourdough has become a Sunday ritual for us. Crackling crust, tangy crumb — proper artisan bread.", "rating": 4, "product": "Sourdough Artisan Loaf", "date": "Sep 2025" },
+  { "id": 8, "name": "Aditya Rao", "role": "Office Manager", "quote": "Seamless bulk ordering and dispatch was right on time. The team loved every box. Highly recommend for gifting.", "rating": 5, "product": "Corporate Hamper", "date": "Aug 2025" },
+  { "id": 9, "name": "Kavya Menon", "role": "Cupcake Fan", "quote": "The red velvet cupcakes are dangerously good. Moist, tangy cream cheese, and they arrived beautifully boxed.", "rating": 5, "product": "Red Velvet Cupcakes", "date": "Aug 2025" }
+]

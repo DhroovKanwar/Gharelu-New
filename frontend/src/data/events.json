@@ -1,0 +1,6 @@
+[
+  { "id": 1, "date": "24 Dec", "title": "Christmas Yule Log Workshop", "tag": "Workshop", "desc": "Hands-on masterclass with our head pâtissier." },
+  { "id": 2, "date": "31 Dec", "title": "New Year Dessert Grazing Table", "tag": "Catering", "desc": "Bespoke grazing tables for private soirées." },
+  { "id": 3, "date": "14 Feb", "title": "Valentine’s Patisserie Box", "tag": "Seasonal", "desc": "Limited edition rose & raspberry collection." },
+  { "id": 4, "date": "08 Mar", "title": "High-Tea Pairing Evening", "tag": "Event", "desc": "An intimate evening of pastry & artisan tea." }
+]

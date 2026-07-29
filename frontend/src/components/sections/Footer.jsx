@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Instagram, Facebook, Send, MessageCircle } from "lucide-react";
 import { brand, footerLinks } from "../../data/content";
 
@@ -13,9 +14,9 @@ export const Footer = () => (
     <div className="mx-auto max-w-[1440px] px-6 md:px-12 lg:px-20">
       <div className="grid grid-cols-2 gap-10 border-b border-white/10 pb-16 md:grid-cols-4 lg:grid-cols-6">
         <div className="col-span-2 lg:col-span-3">
-          <a href="#top" className="font-heading text-2xl font-extrabold tracking-tight">
+          <Link to="/" className="font-heading text-2xl font-extrabold tracking-tight">
             Gharelu<span className="text-brand-primary">.Bake</span>
-          </a>
+          </Link>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/60">
             {brand.tagline}. Small-batch eggless patisserie, baked with the warmth of home.
           </p>
@@ -45,9 +46,9 @@ export const Footer = () => (
             <ul className="mt-5 space-y-3">
               {col.links.map((l) => (
                 <li key={l.label}>
-                  <a href={l.href} className="text-sm text-white/65 transition-colors hover:text-white">
+                  <Link to={l.href} className="text-sm text-white/65 transition-colors hover:text-white">
                     {l.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

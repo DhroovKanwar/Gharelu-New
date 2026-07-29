@@ -52,7 +52,7 @@ export const FAQ = () => {
           </div>
         </div>
         <div className="lg:col-span-8">
-          {faqs.map((item, i) => (
+          {faqs.slice(0, 5).map((item, i) => (
             <FaqItem
               key={i}
               index={i}

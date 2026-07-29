@@ -21,7 +21,7 @@ export const GalleryPreview = () => (
     </div>
 
     <div className="mt-14 grid auto-rows-[13rem] grid-cols-2 gap-4 sm:grid-cols-3 md:auto-rows-[15rem]">
-      {gallery.map((g, i) => (
+      {gallery.slice(0, 6).map((g, i) => (
         <motion.figure
           key={g.id}
           initial={{ opacity: 0, scale: 0.94 }}

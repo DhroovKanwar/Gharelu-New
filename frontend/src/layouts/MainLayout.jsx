@@ -2,9 +2,10 @@ import useLenis from "../hooks/useLenis";
 import AnnouncementBar from "../components/sections/AnnouncementBar";
 import Navbar from "../components/sections/Navbar";
 import Footer from "../components/sections/Footer";
+import CartDrawer from "../components/sections/CartDrawer";
 
 /**
- * Global chrome: smooth scroll + announcement + navbar + footer.
+ * Global chrome: smooth scroll + announcement + navbar + cart drawer + footer.
  */
 export const MainLayout = ({ children }) => {
   useLenis();
@@ -14,6 +15,7 @@ export const MainLayout = ({ children }) => {
       <Navbar />
       <main>{children}</main>
       <Footer />
+      <CartDrawer />
     </div>
   );
 };

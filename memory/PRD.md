@@ -45,3 +45,34 @@ data (content.js — all dummy data), animations (variants), utils (cn).
 - P1: Product detail / catalog pages + cart (currently CTA-only cards).
 - P2: Real product photography swap, CMS for events/gallery, Instagram Graph API.
 - P2: Replace placeholder Google Map embed with pinned business location.
+
+## Phase 2 — Multi-page + E-commerce (2026-07-29)
+Homepage & design system left untouched (verified identical). Added:
+
+### JSON data layer (src/data/*.json — nothing hardcoded)
+products, categories, testimonials, reviews, faqs, events, gallery,
+corporateGifts, policies. `content.js` now imports + re-exports these
+(homepage collections kept byte-identical via slice()).
+
+### Pages (react-router)
+/about, /catalogue, /product/:id, /corporate, /events, /gallery, /reviews,
+/contact, /faq, /privacy, /terms, /refund, /wishlist, /checkout,
+/order-success, and a 404 catch-all.
+
+### E-commerce features
+- CartContext + WishlistContext (localStorage persisted).
+- Cart Drawer (slide-in, qty steppers, free-ship progress).
+- Catalogue: search + category filters + sort + result count.
+- Quick View modal, Product Detail (gallery, size/qty, related), wishlist.
+- Checkout UI (contact/delivery/payment mock) + Order Success (order #).
+
+### Reusable components
+Button (now supports router `to`), ProductCard (opt-in wishlist/quickview),
+SectionHeading, Reveal/MaskedLines, PageHeader, Breadcrumb, Rating,
+QuickViewModal, CartDrawer, LegalPage, Container, Section.
+
+### Verified (screenshots + curl)
+Catalogue, cart drawer, product detail, full checkout→order-success flow,
+privacy page, homepage regression — all pass, zero console errors.
+NOTE: all data is dummy/MOCKED; checkout does NOT process real payment
+(service layer in services/api.js is API-ready for a future backend).
