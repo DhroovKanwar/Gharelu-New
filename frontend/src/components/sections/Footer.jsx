@@ -52,7 +52,7 @@ export const Footer = () => {
         <div className="grid grid-cols-1 gap-12 border-b border-white/10 pb-14 lg:grid-cols-2 lg:gap-16">
           <div>
             <Link to="/" className="inline-block font-heading text-2xl font-extrabold tracking-tight transition-colors hover:text-brand-primary">
-              Gharelu<span className="text-brand-primary">.Bake</span>
+              GHARELU<span className="text-brand-primary">.BAKE</span>
             </Link>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/60">
               {brand.tagline}. Small-batch eggless patisserie, baked with the warmth of home.
