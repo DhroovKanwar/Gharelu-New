@@ -21,20 +21,20 @@ export default function StartOrder() {
         breadcrumb={[{ label: "Home", to: "/" }, { label: "Start Your Order" }]}
       />
 
-      <Section className="pt-10 md:pt-14">
+      <Section className="pt-6 md:pt-10">
         <Container className="px-0">
           <motion.button
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
             onClick={() => navigate(-1)}
-            className="mb-10 inline-flex items-center gap-2 text-sm font-semibold text-brand-dark transition-colors hover:text-brand-accent"
+            className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-brand-dark transition-colors hover:text-brand-accent md:mb-8"
             data-testid="start-order-back"
           >
             <ArrowLeft size={16} /> Back
           </motion.button>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:gap-8">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6">
             <OrderOptionCard
               index={0}
               variant="soft"
