@@ -37,21 +37,11 @@ export const Footer = () => {
 
   return (
     <footer className="relative overflow-hidden bg-brand-secondary text-brand-text" data-testid="footer">
-      {/* Decorative outlined wordmark — responsive, fully visible, centered, behind content */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center md:bottom-5" aria-hidden="true">
-        <span
-          className="select-none whitespace-nowrap font-heading font-extrabold leading-none tracking-tight"
-          style={{ fontSize: "clamp(2.25rem, 12.5vw, 13rem)", WebkitTextStroke: "1.5px rgba(0,0,0,0.08)", color: "transparent" }}
-        >
-          GHARELU.BAKE
-        </span>
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-[1440px] px-6 pt-24 md:px-12 lg:px-20">
+      <div className="relative z-10 mx-auto max-w-[1440px] px-6 pt-20 pb-4 md:px-12 lg:px-20">
         {/* Top: brand + newsletter */}
         <div className="grid grid-cols-1 gap-14 border-b border-brand-line pb-16 lg:grid-cols-2 lg:gap-20">
           <div>
-            <Link to="/" className="inline-block font-heading text-2xl font-extrabold tracking-tight transition-opacity hover:opacity-80" style={{ color: '#000000' }}>
+            <Link to="/" className="inline-block font-heading text-3xl font-extrabold tracking-tight transition-opacity hover:opacity-80" style={{ color: '#000000' }}>
               GHARELU<span style={{ color: '#000000' }}>.BAKE</span>
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-brand-text/80">
@@ -157,13 +147,10 @@ export const Footer = () => {
         </div>
 
         {/* Bottom bar */}
-        <div className="flex flex-col items-center justify-between gap-3 py-9 text-center md:flex-row md:text-left">
+        <div className="flex flex-col items-center justify-between gap-3 py-8 text-center md:flex-row md:text-left">
           <p className="text-xs text-brand-text/60">© {new Date().getFullYear()} GHARELU.BAKE. All rights reserved.</p>
           <p className="text-xs text-brand-text/60">Crafted with warmth · 100% Eggless</p>
         </div>
-
-        {/* Spacer so decorative wordmark sits gracefully behind, never overlapping text */}
-        <div aria-hidden="true" style={{ height: "clamp(2.5rem, 12vw, 12rem)" }} />
       </div>
     </footer>
   );
