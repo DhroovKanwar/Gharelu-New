@@ -19,7 +19,7 @@ export default function ReviewsPage() {
       <PageHeader
         eyebrow="Kind Words"
         title="Customer Reviews"
-        subtitle="Real words from real celebrations. Here's what our community has to say about their Gharelu.Bake moments."
+        subtitle="Real words from real celebrations. Here's what our community has to say about their GHARELU.BAKE moments."
         breadcrumb={[{ label: "Home", to: "/" }, { label: "Reviews" }]}
       />
 

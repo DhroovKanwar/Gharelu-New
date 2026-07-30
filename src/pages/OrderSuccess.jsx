@@ -38,7 +38,7 @@ export default function OrderSuccess() {
             Order confirmed!
           </motion.h1>
           <p className="mt-4 text-base text-brand-text sm:text-lg">
-            Thank you for choosing Gharelu.Bake. Your treats are being lovingly prepared.
+            Thank you for choosing GHARELU.BAKE. Your treats are being lovingly prepared.
           </p>
 
           {order && (

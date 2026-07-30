@@ -25,7 +25,7 @@ export default function Hampers() {
       <PageHeader
         eyebrow="Curated Collections"
         title={["Gift Hampers", "for every celebration"]}
-        subtitle="Beautiful festive hampers and curated gift collections — thoughtfully assembled and dressed in signature Gharelu.Bake packaging."
+        subtitle="Beautiful festive hampers and curated gift collections — thoughtfully assembled and dressed in signature GHARELU.BAKE packaging."
         breadcrumb={[{ label: "Home", to: "/" }, { label: "Start Your Order", to: "/order" }, { label: "Gift Hampers" }]}
       />
 

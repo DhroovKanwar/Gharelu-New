@@ -114,7 +114,7 @@ export default function ContactPage() {
             </div>
             <div className="mt-4 overflow-hidden rounded-[2rem] border border-brand-line">
               <iframe
-                title="Gharelu.Bake location"
+                title="GHARELU.BAKE location"
                 src="https://www.google.com/maps?q=Bandra%20West%20Mumbai&output=embed"
                 className="h-72 w-full"
                 loading="lazy"

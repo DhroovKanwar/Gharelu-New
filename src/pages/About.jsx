@@ -21,7 +21,7 @@ export default function About() {
       <PageHeader
         eyebrow="Our Story"
         title={["Baked with the", "warmth of home"]}
-        subtitle="Gharelu.Bake began in a small home kitchen with one belief — that eggless could be extraordinary. Today we're a premium patisserie, but that home-baked soul has never left us."
+        subtitle="GHARELU.BAKE began in a small home kitchen with one belief — that eggless could be extraordinary. Today we're a premium patisserie, but that home-baked soul has never left us."
         breadcrumb={[{ label: "Home", to: "/" }, { label: "About Us" }]}
       />
 

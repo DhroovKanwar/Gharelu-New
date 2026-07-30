@@ -1,5 +1,5 @@
 /**
- * Central content for Gharelu.Bake.
+ * Central content for GHARELU.BAKE.
  *
  * Collections (products, categories, testimonials, faqs, events, gallery,
  * corporate gifts, reviews, policies) live in JSON files and are re-exported
@@ -47,7 +47,7 @@ export const IMG = {
 };
 
 export const brand = {
-  name: "Gharelu.Bake",
+  name: "GHARELU.BAKE",
   tagline: "Pure • Premium • Eggless",
   phone: "+91 98765 43210",
   email: "hello@gharelu.bake",

@@ -16,7 +16,7 @@ export default function GalleryPage() {
       <PageHeader
         eyebrow="From Our Kitchen"
         title="The Gallery"
-        subtitle="A closer look at the craft — our bakes, our people, and the little moments that make Gharelu.Bake."
+        subtitle="A closer look at the craft — our bakes, our people, and the little moments that make GHARELU.BAKE."
         breadcrumb={[{ label: "Home", to: "/" }, { label: "Gallery" }]}
       />
 
@@ -33,7 +33,7 @@ export default function GalleryPage() {
               className={cn("group relative overflow-hidden rounded-3xl", spanFor(g.w))}
               data-testid={`gallery-${g.id}`}
             >
-              <img src={g.image} alt="Gharelu.Bake" loading="lazy" className="h-full w-full object-cover transition-transform [transition-duration:900ms] ease-out group-hover:scale-110" />
+              <img src={g.image} alt="GHARELU.BAKE" loading="lazy" className="h-full w-full object-cover transition-transform [transition-duration:900ms] ease-out group-hover:scale-110" />
               <div className="absolute inset-0 bg-brand-accent/0 transition-colors duration-500 group-hover:bg-brand-accent/20" />
             </motion.button>
           ))}

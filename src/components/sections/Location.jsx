@@ -37,7 +37,7 @@ export const Location = () => (
         className="overflow-hidden rounded-[2rem] border border-brand-line shadow-lg"
       >
         <iframe
-          title="Gharelu.Bake location"
+          title="GHARELU.BAKE location"
           src="https://www.google.com/maps?q=Bandra%20West%20Mumbai&output=embed"
           className="h-full min-h-[26rem] w-full"
           loading="lazy"

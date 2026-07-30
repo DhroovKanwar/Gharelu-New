@@ -17,7 +17,7 @@ export default function StartOrder() {
       <PageHeader
         eyebrow="Let's Begin"
         title="Start Your Order"
-        subtitle="Choose how you'd like to order from Gharelu.Bake."
+        subtitle="Choose how you'd like to order from GHARELU.BAKE."
         breadcrumb={[{ label: "Home", to: "/" }, { label: "Start Your Order" }]}
       />
 
@@ -51,7 +51,7 @@ export default function StartOrder() {
               variant="soft"
               icon={Store}
               title="Pickup"
-              description="Collect your order fresh from our Gharelu.Bake flagship outlet at your convenience."
+              description="Collect your order fresh from our GHARELU.BAKE flagship outlet at your convenience."
               buttonLabel="Order for Pickup"
               to="/catalogue"
               onClick={() => setMode("pickup")}

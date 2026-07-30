@@ -43,7 +43,7 @@ export const Footer = () => {
           className="text-stroke-dark select-none whitespace-nowrap font-heading font-extrabold leading-none tracking-tight opacity-70"
           style={{ fontSize: "clamp(2.25rem, 12.5vw, 13rem)" }}
         >
-          Gharelu.Bake
+          GHARELU.BAKE
         </span>
       </div>
 
@@ -158,7 +158,7 @@ export const Footer = () => {
 
         {/* Bottom bar */}
         <div className="flex flex-col items-center justify-between gap-3 py-8 text-center md:flex-row md:text-left">
-          <p className="text-xs text-white/40">© {new Date().getFullYear()} Gharelu.Bake. All rights reserved.</p>
+          <p className="text-xs text-white/40">© {new Date().getFullYear()} GHARELU.BAKE. All rights reserved.</p>
           <p className="text-xs text-white/40">Crafted with warmth · 100% Eggless</p>
         </div>
 
