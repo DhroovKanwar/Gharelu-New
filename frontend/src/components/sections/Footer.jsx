@@ -41,7 +41,7 @@ export const Footer = () => {
       <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center md:bottom-5" aria-hidden="true">
         <span
           className="text-stroke-dark select-none whitespace-nowrap font-heading font-extrabold leading-none tracking-tight opacity-70"
-          style={{ fontSize: "clamp(2.25rem, 12.5vw, 13rem)" }}
+          style={{ fontSize: "clamp(2.25rem, 12.5vw, 13rem)", WebkitTextStrokeColor: "#000000", color: "#000000" }}
         >
           GHARELU.BAKE
         </span>
@@ -51,8 +51,8 @@ export const Footer = () => {
         {/* Top: brand + newsletter */}
         <div className="grid grid-cols-1 gap-12 border-b border-white/10 pb-14 lg:grid-cols-2 lg:gap-16">
           <div>
-            <Link to="/" className="inline-block font-heading text-2xl font-extrabold tracking-tight transition-colors hover:text-brand-primary">
-              GHARELU<span className="text-brand-primary">.BAKE</span>
+            <Link to="/" className="inline-block font-heading text-2xl font-extrabold tracking-tight transition-colors hover:text-brand-primary" style={{ color: '#000000' }}>
+              GHARELU<span style={{ color: '#000000' }}>.BAKE</span>
             </Link>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/60">
               {brand.tagline}. Small-batch eggless patisserie, baked with the warmth of home.

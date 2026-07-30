@@ -10,8 +10,8 @@ import { cn } from "../../utils/cn";
 
 const Wordmark = ({ className }) => (
   <Link to="/" className={cn("font-heading font-extrabold tracking-tight", className)} data-testid="logo">
-    <span className="text-brand-dark">GHARELU</span>
-    <span className="text-brand-accent">.BAKE</span>
+    <span style={{ color: '#000000' }}>GHARELU</span>
+    <span style={{ color: '#000000' }}>.BAKE</span>
   </Link>
 );
 
