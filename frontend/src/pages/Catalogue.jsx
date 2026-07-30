@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { Search, SlidersHorizontal, X, Truck, Store } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
 import PageHeader from "../components/common/PageHeader";
 import Section from "../components/common/Section";
 import ProductCard from "../components/common/ProductCard";
 import QuickViewModal from "../components/common/QuickViewModal";
 import { products } from "../data/content";
+import { useOrder } from "../context/OrderContext";
 import { cn } from "../utils/cn";
 
 const SORTS = [
@@ -21,6 +22,7 @@ export default function Catalogue() {
   const [collection, setCollection] = useState("All");
   const [sort, setSort] = useState("featured");
   const [quick, setQuick] = useState(null);
+  const { mode, setMode } = useOrder();
 
   const collections = useMemo(
     () => ["All", ...Array.from(new Set(products.map((p) => p.collection)))],
@@ -60,6 +62,28 @@ export default function Catalogue() {
       />
 
       <Section className="pt-14 md:pt-16">
+        {/* Order mode indicator */}
+        {mode && (
+          <div className="mb-8 flex flex-wrap items-center gap-3 rounded-2xl border border-brand-line bg-brand-secondary px-5 py-4" data-testid="order-mode-banner">
+            <span className="grid h-10 w-10 place-items-center rounded-full bg-brand-bg text-brand-accent">
+              {mode === "delivery" ? <Truck size={18} /> : <Store size={18} />}
+            </span>
+            <div className="mr-auto">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-accent">Ordering for</p>
+              <p className="font-heading text-base font-bold text-brand-dark" data-testid="order-mode-value">
+                {mode === "delivery" ? "Delivery" : "Pickup"}
+              </p>
+            </div>
+            <button
+              onClick={() => setMode(mode === "delivery" ? "pickup" : "delivery")}
+              className="rounded-full border border-brand-line bg-brand-bg px-4 py-2 text-sm font-medium text-brand-dark transition-colors hover:border-brand-accent hover:text-brand-accent"
+              data-testid="order-mode-switch"
+            >
+              Switch to {mode === "delivery" ? "Pickup" : "Delivery"}
+            </button>
+          </div>
+        )}
+
         {/* Toolbar */}
         <div className="flex flex-col gap-5 border-b border-brand-line pb-8 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative w-full max-w-sm">

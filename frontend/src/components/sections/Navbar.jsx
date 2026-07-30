@@ -83,7 +83,7 @@ export const Navbar = () => {
           <IconButton onClick={openCart} label="Cart" count={count} testid="nav-cart">
             <ShoppingBag size={18} />
           </IconButton>
-          <Button as="a" to="/catalogue" size="sm" className="hidden sm:inline-flex" data-testid="order-now-btn">
+          <Button as="a" to="/order" size="sm" className="hidden sm:inline-flex" data-testid="order-now-btn">
             Order Now
           </Button>
           <button
@@ -118,7 +118,7 @@ export const Navbar = () => {
                   {l.label}
                 </Link>
               ))}
-              <Button as="a" to="/catalogue" className="mt-3 w-full" onClick={() => setOpen(false)}>
+              <Button as="a" to="/order" className="mt-3 w-full" onClick={() => setOpen(false)}>
                 Order Now
               </Button>
               <p className="mt-4 px-4 text-sm text-brand-text">{brand.phone}</p>

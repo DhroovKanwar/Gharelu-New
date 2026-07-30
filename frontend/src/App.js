@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Toaster } from "sonner";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
+import { OrderProvider } from "@/context/OrderContext";
 
 import Home from "@/pages/Home";
 import About from "@/pages/About";
@@ -21,6 +22,8 @@ import Refund from "@/pages/Refund";
 import Wishlist from "@/pages/Wishlist";
 import Checkout from "@/pages/Checkout";
 import OrderSuccess from "@/pages/OrderSuccess";
+import StartOrder from "@/pages/StartOrder";
+import Hampers from "@/pages/Hampers";
 import NotFound from "@/pages/NotFound";
 
 function ScrollToTop() {
@@ -40,28 +43,32 @@ function App() {
     <div className="App">
       <CartProvider>
         <WishlistProvider>
-          <BrowserRouter>
-            <ScrollToTop />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/catalogue" element={<Catalogue />} />
-              <Route path="/product/:id" element={<ProductDetail />} />
-              <Route path="/corporate" element={<CorporateGiftingPage />} />
-              <Route path="/events" element={<EventsPage />} />
-              <Route path="/gallery" element={<GalleryPage />} />
-              <Route path="/reviews" element={<ReviewsPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/faq" element={<FaqPage />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/refund" element={<Refund />} />
-              <Route path="/wishlist" element={<Wishlist />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/order-success" element={<OrderSuccess />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
+          <OrderProvider>
+            <BrowserRouter>
+              <ScrollToTop />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/order" element={<StartOrder />} />
+                <Route path="/catalogue" element={<Catalogue />} />
+                <Route path="/product/:id" element={<ProductDetail />} />
+                <Route path="/corporate" element={<CorporateGiftingPage />} />
+                <Route path="/hampers" element={<Hampers />} />
+                <Route path="/events" element={<EventsPage />} />
+                <Route path="/gallery" element={<GalleryPage />} />
+                <Route path="/reviews" element={<ReviewsPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/faq" element={<FaqPage />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/refund" element={<Refund />} />
+                <Route path="/wishlist" element={<Wishlist />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/order-success" element={<OrderSuccess />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </OrderProvider>
           <Toaster position="bottom-right" richColors closeButton />
         </WishlistProvider>
       </CartProvider>
