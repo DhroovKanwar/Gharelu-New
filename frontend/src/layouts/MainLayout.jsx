@@ -3,6 +3,7 @@ import AnnouncementBar from "../components/sections/AnnouncementBar";
 import Navbar from "../components/sections/Navbar";
 import Footer from "../components/sections/Footer";
 import CartDrawer from "../components/sections/CartDrawer";
+import FloatingOrderCTA from "../components/FloatingOrderCTA";
 
 /**
  * Global chrome: smooth scroll + announcement + navbar + cart drawer + footer.
@@ -16,6 +17,7 @@ export const MainLayout = ({ children }) => {
       <main>{children}</main>
       <Footer />
       <CartDrawer />
+      <FloatingOrderCTA />
     </div>
   );
 };

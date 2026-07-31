@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { X, LayoutList, ChevronDown } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
 import PageHeader from "../components/common/PageHeader";
 import Section from "../components/common/Section";
@@ -35,10 +35,17 @@ export default function GalleryPage() {
   const [active, setActive] = useState(null);
   const [activeSlug, setActiveSlug] = useState(null);
   const [navBottom, setNavBottom] = useState(80);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const sectionRefs = useRef({});
   const rafRef = useRef(null);
 
   const groups = useMemo(() => groupByCategory(gallery), []);
+
+  const jumpTo = (slug) => {
+    const el = sectionRefs.current[slug];
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    setMobileNavOpen(false);
+  };
 
   // Track navbar bottom so the sticky heading always sits just under it,
   // consistent with the FloatingOrderCTA and StickyCategoryTitle helpers.
@@ -129,18 +136,9 @@ export default function GalleryPage() {
             ref={(el) => {
               if (el) sectionRefs.current[g.slug] = el;
             }}
-            className="scroll-mt-40 pt-10 first:pt-0 md:pt-14"
+            className="scroll-mt-40 pt-6 first:pt-0 md:pt-10"
             data-testid={`gallery-section-${g.slug}`}
           >
-            <div className="mb-6 border-b border-brand-line pb-4 md:mb-8 md:pb-5">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-accent">
-                {g.items.length} {g.items.length === 1 ? "moment" : "moments"}
-              </p>
-              <h2 className="mt-2 font-heading text-2xl font-extrabold uppercase tracking-tight text-brand-dark md:text-4xl">
-                {g.name}
-              </h2>
-            </div>
-
             <div className="grid auto-rows-[13rem] grid-cols-2 gap-4 sm:grid-cols-3 md:auto-rows-[16rem]">
               {g.items.map((it, i) => (
                 <motion.button
@@ -167,7 +165,7 @@ export default function GalleryPage() {
         ))}
       </Section>
 
-      {/* Sticky right-side category navigator — jump to any section */}
+      {/* Sticky right-side category navigator — desktop (lg+) */}
       {groups.length > 1 && (
         <nav
           style={{ top: `${navBottom + 24}px` }}
@@ -184,10 +182,7 @@ export default function GalleryPage() {
               <button
                 key={g.slug}
                 type="button"
-                onClick={() => {
-                  const el = sectionRefs.current[g.slug];
-                  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-                }}
+                onClick={() => jumpTo(g.slug)}
                 className={cn(
                   "group flex items-center justify-between rounded-xl px-3 py-2 text-left text-sm font-semibold transition-colors",
                   isActive
@@ -217,6 +212,81 @@ export default function GalleryPage() {
             );
           })}
         </nav>
+      )}
+
+      {/* Mobile / tablet — floating "Jump to" toggle + popover */}
+      {groups.length > 1 && (
+        <div className="fixed right-4 z-[860] lg:hidden" style={{ bottom: "5.5rem" }}>
+          <button
+            type="button"
+            onClick={() => setMobileNavOpen((v) => !v)}
+            aria-expanded={mobileNavOpen}
+            aria-label="Jump to category"
+            className="flex items-center gap-2 rounded-full border border-brand-line bg-brand-bg/95 px-4 py-2.5 font-heading text-xs font-extrabold uppercase tracking-[0.18em] text-brand-dark shadow-[0_18px_45px_-16px_rgba(215,134,159,0.5)] backdrop-blur-xl transition-colors hover:border-brand-accent"
+            data-testid="gallery-mobile-nav-toggle"
+          >
+            <LayoutList size={14} className="text-brand-accent" />
+            <span className="max-w-[9rem] truncate">
+              {(groups.find((g) => g.slug === activeSlug) || groups[0]).name}
+            </span>
+            <ChevronDown
+              size={14}
+              className={cn("text-brand-accent transition-transform duration-300", mobileNavOpen && "rotate-180")}
+            />
+          </button>
+          <AnimatePresence>
+            {mobileNavOpen && (
+              <motion.nav
+                initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                aria-label="Gallery sections"
+                data-testid="gallery-mobile-nav"
+                className="absolute bottom-full right-0 mb-2 max-h-[60vh] w-60 overflow-y-auto rounded-2xl border border-brand-line bg-white p-2 shadow-[0_18px_50px_-16px_rgba(215,134,159,0.55)]"
+              >
+                <p className="px-3 pb-1.5 pt-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-accent">
+                  Jump to
+                </p>
+                {groups.map((g) => {
+                  const isActive = g.slug === activeSlug;
+                  return (
+                    <button
+                      key={g.slug}
+                      type="button"
+                      onClick={() => jumpTo(g.slug)}
+                      className={cn(
+                        "flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm font-semibold transition-colors",
+                        isActive
+                          ? "bg-brand-dark text-white"
+                          : "text-brand-dark hover:bg-brand-secondary hover:text-brand-accent",
+                      )}
+                      data-testid={`gallery-mobile-nav-${g.slug}`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span
+                          className={cn(
+                            "h-1.5 w-1.5 rounded-full",
+                            isActive ? "bg-brand-primary" : "bg-brand-accent/70",
+                          )}
+                        />
+                        <span>{g.name}</span>
+                      </span>
+                      <span
+                        className={cn(
+                          "rounded-full px-1.5 py-0.5 text-[10px] font-bold",
+                          isActive ? "bg-white/20 text-white" : "bg-brand-secondary text-brand-accent",
+                        )}
+                      >
+                        {g.items.length}
+                      </span>
+                    </button>
+                  );
+                })}
+              </motion.nav>
+            )}
+          </AnimatePresence>
+        </div>
       )}
 
       {/* Sticky category heading — fades between categories as user scrolls */}
