@@ -32,7 +32,6 @@ const FloatingOrderCTA = () => {
       const nav = document.querySelector('[data-testid="navbar"]');
       if (!nav) return;
       const rect = nav.getBoundingClientRect();
-      // rect.bottom is where the navbar's visible bottom is in the viewport
       const bottom = Math.max(0, Math.round(rect.bottom));
       setNavBottom(bottom);
     };
@@ -45,21 +44,50 @@ const FloatingOrderCTA = () => {
       });
     };
 
+    // Initial + staggered updates to catch late layout shifts
+    // (announcement bar, image/font loads, async content above the navbar)
     update();
+    const timers = [
+      setTimeout(schedule, 50),
+      setTimeout(schedule, 200),
+      setTimeout(schedule, 600),
+      setTimeout(schedule, 1200),
+    ];
+
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
+    window.addEventListener("load", schedule);
 
     const nav = document.querySelector('[data-testid="navbar"]');
-    let ro;
-    if (nav && "ResizeObserver" in window) {
-      ro = new ResizeObserver(schedule);
-      ro.observe(nav);
+    const observers = [];
+    if ("ResizeObserver" in window) {
+      // Observe navbar itself (its own size)
+      if (nav) {
+        const roNav = new ResizeObserver(schedule);
+        roNav.observe(nav);
+        observers.push(roNav);
+      }
+      // Observe document.body so any layout change ABOVE the navbar
+      // (announcement bar collapse/appear, banners, images) recalculates
+      const roBody = new ResizeObserver(schedule);
+      roBody.observe(document.body);
+      observers.push(roBody);
+    }
+
+    // MutationObserver on body to catch DOM changes affecting layout
+    let mo;
+    if ("MutationObserver" in window) {
+      mo = new MutationObserver(schedule);
+      mo.observe(document.body, { childList: true, subtree: false });
     }
 
     return () => {
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
-      if (ro) ro.disconnect();
+      window.removeEventListener("load", schedule);
+      observers.forEach((o) => o.disconnect());
+      if (mo) mo.disconnect();
+      timers.forEach((t) => clearTimeout(t));
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, [isMobile]);
