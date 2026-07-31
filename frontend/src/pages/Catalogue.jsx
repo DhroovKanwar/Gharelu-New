@@ -1,10 +1,10 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Search, SlidersHorizontal, X, Truck, Store } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
 import PageHeader from "../components/common/PageHeader";
 import Section from "../components/common/Section";
-import ProductCard from "../components/common/ProductCard";
-import QuickViewModal from "../components/common/QuickViewModal";
+import CategorySection from "../components/common/CategorySection";
+import StickyCategoryTitle from "../components/common/StickyCategoryTitle";
 import { products } from "../data/content";
 import { useOrder } from "../context/OrderContext";
 import { cn } from "../utils/cn";
@@ -17,21 +17,24 @@ const SORTS = [
   { value: "name", label: "Name: A–Z" },
 ];
 
+const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
 export default function Catalogue() {
   const [query, setQuery] = useState("");
-  const [collection, setCollection] = useState("All");
   const [sort, setSort] = useState("featured");
-  const [quick, setQuick] = useState(null);
+  const [activeSlug, setActiveSlug] = useState(null);
+  const sectionRefs = useRef({});
   const { mode, setMode } = useOrder();
 
-  const collections = useMemo(
-    () => ["All", ...Array.from(new Set(products.map((p) => p.collection)))],
+  // All collections in a stable order
+  const collectionOrder = useMemo(
+    () => Array.from(new Set(products.map((p) => p.collection))),
     [],
   );
 
-  const results = useMemo(() => {
+  // Filter + sort products (search filters across sections)
+  const filteredProducts = useMemo(() => {
     let list = [...products];
-    if (collection !== "All") list = list.filter((p) => p.collection === collection);
     if (query.trim()) {
       const q = query.toLowerCase();
       list = list.filter(
@@ -50,7 +53,75 @@ export default function Catalogue() {
       default: list.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
     }
     return list;
-  }, [query, collection, sort]);
+  }, [query, sort]);
+
+  // Group filtered products by collection, keep original order
+  const grouped = useMemo(() => {
+    const map = new Map();
+    collectionOrder.forEach((c) => map.set(c, []));
+    filteredProducts.forEach((p) => {
+      if (!map.has(p.collection)) map.set(p.collection, []);
+      map.get(p.collection).push(p);
+    });
+    return Array.from(map.entries())
+      .map(([name, items]) => ({ name, slug: slugify(name), items }))
+      .filter((g) => g.items.length > 0);
+  }, [filteredProducts, collectionOrder]);
+
+  // IntersectionObserver — tracks which section is currently active
+  useEffect(() => {
+    if (!grouped.length) {
+      setActiveSlug(null);
+      return;
+    }
+
+    // rootMargin makes a section "active" when its top crosses ~160px below the top
+    // of the viewport (accounts for navbar + sticky title area) and it hasn't yet
+    // fully scrolled past ~55% of the viewport.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Pick the entry with the highest intersectionRatio that's currently intersecting
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (visible[0]) {
+          const slug = visible[0].target.dataset.slug;
+          if (slug) setActiveSlug(slug);
+        }
+      },
+      {
+        rootMargin: "-160px 0px -55% 0px",
+        threshold: [0, 0.1, 0.25, 0.5, 0.75, 1],
+      },
+    );
+
+    grouped.forEach((g) => {
+      const el = sectionRefs.current[g.slug];
+      if (el) {
+        el.dataset.slug = g.slug;
+        observer.observe(el);
+      }
+    });
+
+    // Default active — first group on mount
+    setActiveSlug((prev) => prev || grouped[0].slug);
+
+    return () => observer.disconnect();
+  }, [grouped]);
+
+  const scrollToCollection = (slug) => {
+    if (slug === "all") {
+      const first = grouped[0];
+      if (!first) return;
+      const el = sectionRefs.current[first.slug];
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    const el = sectionRefs.current[slug];
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const activeGroup = grouped.find((g) => g.slug === activeSlug);
 
   return (
     <MainLayout>
@@ -119,43 +190,73 @@ export default function Catalogue() {
           </div>
         </div>
 
-        {/* Category chips */}
+        {/* Category chips — scroll to sections + active highlight */}
         <div className="mt-6 flex flex-wrap gap-2.5">
-          {collections.map((c) => (
-            <button
-              key={c}
-              onClick={() => setCollection(c)}
-              className={cn(
-                "rounded-full border px-5 py-2.5 text-sm font-medium transition-colors",
-                collection === c ? "border-brand-dark bg-brand-dark text-white" : "border-brand-line text-brand-dark hover:border-brand-accent hover:text-brand-accent",
-              )}
-              data-testid={`filter-${c.toLowerCase().replace(/\s+/g, "-")}`}
-            >
-              {c}
-            </button>
-          ))}
+          <button
+            onClick={() => scrollToCollection("all")}
+            className={cn(
+              "rounded-full border px-5 py-2.5 text-sm font-medium transition-colors",
+              !activeSlug || activeSlug === (grouped[0] && grouped[0].slug)
+                ? "border-brand-dark bg-brand-dark text-white"
+                : "border-brand-line text-brand-dark hover:border-brand-accent hover:text-brand-accent",
+            )}
+            data-testid="filter-all"
+          >
+            All
+          </button>
+          {collectionOrder.map((c) => {
+            const slug = slugify(c);
+            const isActive = activeSlug === slug;
+            return (
+              <button
+                key={c}
+                onClick={() => scrollToCollection(slug)}
+                className={cn(
+                  "rounded-full border px-5 py-2.5 text-sm font-medium transition-colors",
+                  isActive
+                    ? "border-brand-dark bg-brand-dark text-white"
+                    : "border-brand-line text-brand-dark hover:border-brand-accent hover:text-brand-accent",
+                )}
+                data-testid={`filter-${slug}`}
+              >
+                {c}
+              </button>
+            );
+          })}
         </div>
 
         <p className="mt-6 text-sm text-brand-text" data-testid="results-count">
-          Showing <span className="font-semibold text-brand-dark">{results.length}</span> {results.length === 1 ? "creation" : "creations"}
+          Showing <span className="font-semibold text-brand-dark">{filteredProducts.length}</span> {filteredProducts.length === 1 ? "creation" : "creations"}
+          {grouped.length > 0 && (
+            <span> across <span className="font-semibold text-brand-dark">{grouped.length}</span> {grouped.length === 1 ? "collection" : "collections"}</span>
+          )}
         </p>
 
-        {/* Grid */}
-        {results.length === 0 ? (
-          <div className="py-20 text-center">
-            <p className="font-heading text-xl font-bold text-brand-dark">No matches found</p>
+        {/* Category-grouped product sections */}
+        {grouped.length === 0 ? (
+          <div className="py-24 text-center" data-testid="no-results">
+            <p className="font-heading text-2xl font-bold text-brand-dark">No matches found</p>
             <p className="mt-2 text-brand-text">Try a different search or clear the filters.</p>
           </div>
         ) : (
-          <div className="mt-8 grid grid-cols-1 gap-x-7 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-            {results.map((p, i) => (
-              <ProductCard key={p.id} product={p} index={i} showWishlist onQuickView={setQuick} />
+          <div>
+            {grouped.map((g) => (
+              <CategorySection
+                key={g.slug}
+                id={g.slug}
+                title={g.name}
+                products={g.items}
+                sectionRef={(el) => {
+                  if (el) sectionRefs.current[g.slug] = el;
+                }}
+              />
             ))}
           </div>
         )}
       </Section>
 
-      <QuickViewModal product={quick} onClose={() => setQuick(null)} />
+      {/* Sticky category title (fixed below navbar) */}
+      <StickyCategoryTitle active={activeGroup?.name} count={activeGroup?.items.length || 0} />
     </MainLayout>
   );
 }
