@@ -167,6 +167,58 @@ export default function GalleryPage() {
         ))}
       </Section>
 
+      {/* Sticky right-side category navigator — jump to any section */}
+      {groups.length > 1 && (
+        <nav
+          style={{ top: `${navBottom + 24}px` }}
+          className="fixed right-6 z-[840] hidden max-h-[70vh] w-56 flex-col gap-1 overflow-y-auto rounded-2xl border border-brand-line bg-brand-bg/95 p-3 shadow-[0_18px_50px_-24px_rgba(215,134,159,0.45)] backdrop-blur-xl lg:flex xl:right-10"
+          aria-label="Gallery sections"
+          data-testid="gallery-side-nav"
+        >
+          <p className="px-3 pb-2 pt-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-accent">
+            Jump to
+          </p>
+          {groups.map((g) => {
+            const isActive = g.slug === activeSlug;
+            return (
+              <button
+                key={g.slug}
+                type="button"
+                onClick={() => {
+                  const el = sectionRefs.current[g.slug];
+                  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
+                className={cn(
+                  "group flex items-center justify-between rounded-xl px-3 py-2 text-left text-sm font-semibold transition-colors",
+                  isActive
+                    ? "bg-brand-dark text-white"
+                    : "text-brand-dark hover:bg-brand-secondary hover:text-brand-accent",
+                )}
+                data-testid={`gallery-side-nav-${g.slug}`}
+              >
+                <span className="flex items-center gap-2">
+                  <span
+                    className={cn(
+                      "h-1.5 w-1.5 rounded-full transition-colors",
+                      isActive ? "bg-brand-primary" : "bg-brand-accent/70 group-hover:bg-brand-accent",
+                    )}
+                  />
+                  <span>{g.name}</span>
+                </span>
+                <span
+                  className={cn(
+                    "rounded-full px-1.5 py-0.5 text-[10px] font-bold",
+                    isActive ? "bg-white/20 text-white" : "bg-brand-secondary text-brand-accent",
+                  )}
+                >
+                  {g.items.length}
+                </span>
+              </button>
+            );
+          })}
+        </nav>
+      )}
+
       {/* Sticky category heading — fades between categories as user scrolls */}
       <AnimatePresence>
         {activeGroup && (
