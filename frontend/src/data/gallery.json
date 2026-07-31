@@ -1,14 +1,44 @@
 [
-  { "id": 1, "image": "https://images.unsplash.com/photo-1519733870-f96bef9bc85f?auto=format&fit=crop&w=1200&q=80", "w": "tall" },
-  { "id": 2, "image": "https://images.pexels.com/photos/29647512/pexels-photo-29647512.png?auto=compress&cs=tinysrgb&w=1200", "w": "wide" },
-  { "id": 3, "image": "https://images.unsplash.com/photo-1535141192574-5d4897c12636?auto=format&fit=crop&w=1200&q=80", "w": "" },
-  { "id": 4, "image": "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=1200&q=80", "w": "" },
-  { "id": 5, "image": "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1200&q=80", "w": "wide" },
-  { "id": 6, "image": "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&w=1200&q=80", "w": "tall" },
-  { "id": 7, "image": "https://images.pexels.com/photos/587741/pexels-photo-587741.jpeg?auto=compress&cs=tinysrgb&w=1200", "w": "" },
-  { "id": 8, "image": "https://images.unsplash.com/photo-1486427944299-d1955d23e34d?auto=format&fit=crop&w=1200&q=80", "w": "wide" },
-  { "id": 9, "image": "https://images.pexels.com/photos/37798966/pexels-photo-37798966.jpeg?auto=compress&cs=tinysrgb&w=1200", "w": "tall" },
-  { "id": 10, "image": "https://images.pexels.com/photos/2144112/pexels-photo-2144112.jpeg?auto=compress&cs=tinysrgb&w=1200", "w": "" },
-  { "id": 11, "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1200&q=80", "w": "" },
-  { "id": 12, "image": "https://images.pexels.com/photos/1721932/pexels-photo-1721932.jpeg?auto=compress&cs=tinysrgb&w=1200", "w": "wide" }
+  { "id": 1, "category": "Birthday Cakes", "image": "https://images.unsplash.com/photo-1519733870-f96bef9bc85f?auto=format&fit=crop&w=1200&q=80", "w": "tall" },
+  { "id": 2, "category": "Birthday Cakes", "image": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=80", "w": "" },
+  { "id": 3, "category": "Birthday Cakes", "image": "https://images.unsplash.com/photo-1557925923-cd4648e211a0?auto=format&fit=crop&w=1200&q=80", "w": "wide" },
+  { "id": 4, "category": "Birthday Cakes", "image": "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=1200&q=80", "w": "" },
+  { "id": 5, "category": "Birthday Cakes", "image": "https://images.unsplash.com/photo-1587668178277-295251f900ce?auto=format&fit=crop&w=1200&q=80", "w": "" },
+
+  { "id": 10, "category": "Anniversary Cakes", "image": "https://images.unsplash.com/photo-1535254973040-607b474cb50d?auto=format&fit=crop&w=1200&q=80", "w": "wide" },
+  { "id": 11, "category": "Anniversary Cakes", "image": "https://images.unsplash.com/photo-1562440499-64c9a111f713?auto=format&fit=crop&w=1200&q=80", "w": "" },
+  { "id": 12, "category": "Anniversary Cakes", "image": "https://images.unsplash.com/photo-1541599540903-216a46ca1dc0?auto=format&fit=crop&w=1200&q=80", "w": "tall" },
+  { "id": 13, "category": "Anniversary Cakes", "image": "https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=1200&q=80", "w": "" },
+
+  { "id": 20, "category": "Wedding Cakes", "image": "https://images.unsplash.com/photo-1535920527002-b35e96722eb9?auto=format&fit=crop&w=1200&q=80", "w": "tall" },
+  { "id": 21, "category": "Wedding Cakes", "image": "https://images.unsplash.com/photo-1622896784083-cc051313dbab?auto=format&fit=crop&w=1200&q=80", "w": "" },
+  { "id": 22, "category": "Wedding Cakes", "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1200&q=80", "w": "" },
+  { "id": 23, "category": "Wedding Cakes", "image": "https://images.unsplash.com/photo-1519669417670-68775a50919c?auto=format&fit=crop&w=1200&q=80", "w": "wide" },
+  { "id": 24, "category": "Wedding Cakes", "image": "https://images.unsplash.com/photo-1622021142947-da7dedc7c39a?auto=format&fit=crop&w=1200&q=80", "w": "" },
+
+  { "id": 30, "category": "Baby Shower Cakes", "image": "https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?auto=format&fit=crop&w=1200&q=80", "w": "" },
+  { "id": 31, "category": "Baby Shower Cakes", "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1200&q=80", "w": "tall" },
+  { "id": 32, "category": "Baby Shower Cakes", "image": "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?auto=format&fit=crop&w=1200&q=80", "w": "" },
+  { "id": 33, "category": "Baby Shower Cakes", "image": "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?auto=format&fit=crop&w=1200&q=80", "w": "wide" },
+
+  { "id": 40, "category": "Corporate Cakes", "image": "https://images.unsplash.com/photo-1607478900766-efe13248b125?auto=format&fit=crop&w=1200&q=80", "w": "wide" },
+  { "id": 41, "category": "Corporate Cakes", "image": "https://images.unsplash.com/photo-1621293954908-907159247fc8?auto=format&fit=crop&w=1200&q=80", "w": "" },
+  { "id": 42, "category": "Corporate Cakes", "image": "https://images.unsplash.com/photo-1602351447937-745cb720612f?auto=format&fit=crop&w=1200&q=80", "w": "" },
+  { "id": 43, "category": "Corporate Cakes", "image": "https://images.unsplash.com/photo-1486427944299-d1955d23e34d?auto=format&fit=crop&w=1200&q=80", "w": "tall" },
+
+  { "id": 50, "category": "Cupcakes", "image": "https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&w=1200&q=80", "w": "" },
+  { "id": 51, "category": "Cupcakes", "image": "https://images.unsplash.com/photo-1587668178277-295251f900ce?auto=format&fit=crop&w=1200&q=80", "w": "tall" },
+  { "id": 52, "category": "Cupcakes", "image": "https://images.unsplash.com/photo-1607478900766-efe13248b125?auto=format&fit=crop&w=1200&q=80", "w": "" },
+  { "id": 53, "category": "Cupcakes", "image": "https://images.unsplash.com/photo-1518013431117-eb1465fa5752?auto=format&fit=crop&w=1200&q=80", "w": "wide" },
+  { "id": 54, "category": "Cupcakes", "image": "https://images.unsplash.com/photo-1626803775151-61d756612f97?auto=format&fit=crop&w=1200&q=80", "w": "" },
+
+  { "id": 60, "category": "Pastries", "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1200&q=80", "w": "" },
+  { "id": 61, "category": "Pastries", "image": "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1200&q=80", "w": "tall" },
+  { "id": 62, "category": "Pastries", "image": "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=1200&q=80", "w": "wide" },
+  { "id": 63, "category": "Pastries", "image": "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?auto=format&fit=crop&w=1200&q=80", "w": "" },
+
+  { "id": 70, "category": "Events", "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1200&q=80", "w": "wide" },
+  { "id": 71, "category": "Events", "image": "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80", "w": "" },
+  { "id": 72, "category": "Events", "image": "https://images.unsplash.com/photo-1478146059778-26028b07395a?auto=format&fit=crop&w=1200&q=80", "w": "tall" },
+  { "id": 73, "category": "Events", "image": "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=1200&q=80", "w": "" }
 ]
