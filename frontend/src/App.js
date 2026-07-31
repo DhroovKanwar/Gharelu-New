@@ -24,6 +24,7 @@ import Checkout from "@/pages/Checkout";
 import OrderSuccess from "@/pages/OrderSuccess";
 import StartOrder from "@/pages/StartOrder";
 import Hampers from "@/pages/Hampers";
+import CustomizeCake from "@/pages/CustomizeCake";
 import NotFound from "@/pages/NotFound";
 
 function ScrollToTop() {
@@ -50,6 +51,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/order" element={<StartOrder />} />
+                <Route path="/customize-cake" element={<CustomizeCake />} />
                 <Route path="/catalogue" element={<Catalogue />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/corporate" element={<CorporateGiftingPage />} />

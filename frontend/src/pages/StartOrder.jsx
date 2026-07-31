@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Truck, Store, Gift, ShoppingBasket, ArrowRight } from "lucide-react";
+import { ArrowLeft, Truck, Store, Gift, ShoppingBasket, ArrowRight, Cake } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
 import Container from "../components/common/Container";
 import Breadcrumb from "../components/common/Breadcrumb";
@@ -142,6 +142,33 @@ export default function StartOrder() {
               testid="option-hampers"
             />
           </div>
+
+          {/* Customize Your Cake — full-width tertiary card */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
+            className="mx-auto mt-3 max-w-5xl sm:mt-5 md:mt-6"
+          >
+            <Link
+              to="/customize-cake"
+              className="group flex items-center gap-4 rounded-2xl border border-brand-line bg-brand-bg px-4 py-4 shadow-[0_10px_30px_-20px_rgba(215,134,159,0.35)] transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-accent hover:shadow-[0_18px_45px_-20px_rgba(215,134,159,0.55)] sm:gap-5 sm:px-6 sm:py-5"
+              data-testid="option-customize-cake"
+            >
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-secondary text-brand-accent transition-colors duration-300 group-hover:bg-brand-accent group-hover:text-white sm:h-12 sm:w-12">
+                <Cake className="h-5 w-5 sm:h-6 sm:w-6" strokeWidth={1.75} />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="font-heading text-base font-extrabold tracking-tight text-brand-dark sm:text-lg">
+                  Customize Your Cake
+                </p>
+                <p className="mt-0.5 text-xs leading-relaxed text-brand-text sm:text-sm">
+                  Tell us about your celebration and we'll recommend the perfect cake.
+                </p>
+              </div>
+              <ArrowRight className="h-5 w-5 shrink-0 text-brand-accent opacity-0 transition-all duration-300 -translate-x-1 group-hover:translate-x-0 group-hover:opacity-100" />
+            </Link>
+          </motion.div>
         </Container>
       </section>
     </MainLayout>
