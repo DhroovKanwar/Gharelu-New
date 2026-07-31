@@ -83,9 +83,6 @@ export const Navbar = () => {
           <IconButton onClick={openCart} label="Cart" count={count} testid="nav-cart">
             <ShoppingBag size={18} />
           </IconButton>
-          <Button as="a" to="/order" size="sm" className="hidden sm:inline-flex" data-testid="order-now-btn">
-            Order Now
-          </Button>
           <button
             className="grid h-11 w-11 place-items-center rounded-full border border-brand-line text-brand-dark lg:hidden"
             onClick={() => setOpen((v) => !v)}
@@ -118,9 +115,6 @@ export const Navbar = () => {
                   {l.label}
                 </Link>
               ))}
-              <Button as="a" to="/order" className="mt-3 w-full" onClick={() => setOpen(false)}>
-                Order Now
-              </Button>
               <p className="mt-4 px-4 text-sm text-brand-text">{brand.phone}</p>
             </div>
           </motion.div>
