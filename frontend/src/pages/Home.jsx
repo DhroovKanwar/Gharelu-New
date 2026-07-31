@@ -12,6 +12,7 @@ import Testimonials from "../components/sections/Testimonials";
 import FAQ from "../components/sections/FAQ";
 import Newsletter from "../components/sections/Newsletter";
 import Location from "../components/sections/Location";
+import FloatingOrderCTA from "../components/FloatingOrderCTA";
 
 export default function Home() {
   return (
@@ -29,6 +30,7 @@ export default function Home() {
       <FAQ />
       <Newsletter />
       <Location />
+      <FloatingOrderCTA />
     </MainLayout>
   );
 }
