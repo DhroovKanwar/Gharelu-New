@@ -1,11 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
+const GAP_BELOW_NAV = 16;
+
 const FloatingOrderCTA = () => {
   const [visible, setVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [navBottom, setNavBottom] = useState(92);
+  const rafRef = useRef(null);
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
@@ -20,6 +24,46 @@ const FloatingOrderCTA = () => {
     return () => clearTimeout(t);
   }, []);
 
+  // Dynamically track the navbar's bottom edge (handles sticky, scroll, resize, mobile menu open)
+  useEffect(() => {
+    if (isMobile) return; // desktop-only positioning; mobile is bottom-fixed
+
+    const update = () => {
+      const nav = document.querySelector('[data-testid="navbar"]');
+      if (!nav) return;
+      const rect = nav.getBoundingClientRect();
+      // rect.bottom is where the navbar's visible bottom is in the viewport
+      const bottom = Math.max(0, Math.round(rect.bottom));
+      setNavBottom(bottom);
+    };
+
+    const schedule = () => {
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = null;
+        update();
+      });
+    };
+
+    update();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+
+    const nav = document.querySelector('[data-testid="navbar"]');
+    let ro;
+    if (nav && "ResizeObserver" in window) {
+      ro = new ResizeObserver(schedule);
+      ro.observe(nav);
+    }
+
+    return () => {
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      if (ro) ro.disconnect();
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [isMobile]);
+
   return (
     <AnimatePresence>
       {visible && (
@@ -33,7 +77,7 @@ const FloatingOrderCTA = () => {
               opacity: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
               y: { duration: 3.2, repeat: Infinity, repeatType: "loop", ease: "easeInOut", delay: 0.5 },
             }}
-            className="fixed inset-x-0 bottom-4 z-40 flex justify-center px-4 md:hidden"
+            className="fixed inset-x-0 bottom-4 z-[900] flex justify-center px-4 md:hidden"
             data-testid="floating-order-cta-mobile"
           >
             <Link
@@ -54,7 +98,8 @@ const FloatingOrderCTA = () => {
               opacity: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
               y: { duration: 4, repeat: Infinity, repeatType: "loop", ease: "easeInOut", delay: 0.5 },
             }}
-            className="pointer-events-none fixed inset-x-0 top-[92px] z-40 hidden justify-center px-4 md:flex"
+            style={{ top: `${navBottom + GAP_BELOW_NAV}px`, transition: "top 300ms ease" }}
+            className="pointer-events-none fixed inset-x-0 z-[900] hidden justify-center px-4 md:flex"
             data-testid="floating-order-cta-desktop"
           >
             <Link

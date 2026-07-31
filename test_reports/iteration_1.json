@@ -1,0 +1,37 @@
+{
+  "summary": "Focused frontend verification of the FloatingOrderCTA bug fix on Home page ('/'). Tested overlap/positioning across desktop (1440x900) and mobile (390x844) at multiple scroll positions, verified z-index hierarchy, mobile bottom-fixed behavior, and CTA route navigation. Most requirements pass, but the CORE BUG the fix targets is STILL REPRODUCIBLE at the initial (scrollY=0) state when the announcement bar is present above the navbar.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "FloatingOrderCTA (desktop)",
+        "issue": "At scrollY=0 with the announcement bar visible above the navbar, the floating CTA OVERLAPS the navbar. Measured: navbar.bottom=121px, cta-btn.top=93px => -28px gap (overlap). Requirement (1) 'CTA should NEVER overlap the navbar' fails. After the user scrolls once (announcement bar collapses), CTA behavior is correct (12-16px gap at all subsequent scroll positions).",
+        "selector": "[data-testid='floating-order-cta-desktop']",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Fix initial-render race in /app/frontend/src/components/FloatingOrderCTA.jsx: When an announcement bar sits ABOVE the navbar, the navbar's own size does NOT change (its top/position shifts), so the ResizeObserver on the navbar never fires and no scroll/resize event occurs. The initial update() call may also read the navbar.bottom before the announcement bar has been fully laid out. Recommended fixes (any one):",
+    "  (a) Also observe document.body (or the navbar's parent/announcement bar) with a ResizeObserver so height changes above the navbar trigger recalculation.",
+    "  (b) Use an IntersectionObserver on a 0-height sentinel placed at the navbar's bottom edge.",
+    "  (c) Trigger update() a few extra times after mount via requestAnimationFrame + setTimeout (e.g. 0ms, 100ms, 500ms, 1000ms) to catch late layout shifts from async content (images/fonts/announcement bar).",
+    "  (d) Add a MutationObserver on document.body to reschedule update() on DOM/child list changes.",
+    "Note: Options (a) and (c) combined are the most robust and cheap."
+  ],
+  "critical_code_review_comments": [
+    "FloatingOrderCTA.jsx line 11: initial state navBottom=92 is a magic default matching a bare sticky navbar; when announcement bar exists this defaults to overlap until an update fires.",
+    "FloatingOrderCTA.jsx lines 52-57: ResizeObserver is attached to the navbar element ONLY. If elements ABOVE the navbar (announcement bar, banners) change size and push the navbar down, the navbar itself does not resize, so no callback fires. This is the direct cause of the initial-load overlap.",
+    "FloatingOrderCTA.jsx line 48: single initial update() call is not resilient to late layout (image loads, font swaps, async announcement content). Chain a couple of rAF or setTimeout ticks."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "83% (5/6 core assertions pass; initial-state overlap fails)"},
+  "seed_data_creation": "None",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "After fix, re-verify scrollY=0 on desktop 1440x900 with announcement bar visible: navbar.bottom vs floating-order-cta-btn.top gap must be 16-20px (positive). Wait ~2s after navigate before asserting (500ms visibility delay + async layout). Also re-check scrollY=400/800/1600/2500 (already pass). Mobile side is fully passing. Test data:\n- Desktop @ scrollY=0: nav.bottom=121, btn.top=93, gap=-28 (OVERLAP)\n- Desktop @ scrollY=400+: gap 12.4-16px (PASS)\n- Mobile: dsk hidden, mobile CTA gap_from_bottom=~18px, 16px side margins, no navbar overlap (PASS)\n- Route: both CTA buttons navigate to /order (PASS)\n- Z-index: navbar=1000, cta=900 (PASS)\n- Centering: 0px delta from viewport center (PASS)",
+  "rca of the issue": "Root cause: The FloatingOrderCTA measures the navbar's bottom edge via getBoundingClientRect() and repositions itself using a ResizeObserver on the navbar plus window scroll/resize listeners. When an announcement bar exists ABOVE the sticky navbar, the announcement bar's presence pushes the navbar down (navbar.top and navbar.bottom both increase), but the navbar element itself does not change size. Therefore: (1) ResizeObserver observing the navbar never fires; (2) no scroll or window-resize event fires just from page load; (3) the single initial update() call in useEffect may run before the announcement bar has fully mounted/laid out (e.g., before images/fonts settle) and reads a stale rect. Result: navBottom state stays at the default 92, top style resolves to 108px, but the actual navbar.bottom is 121px, producing a 28px overlap until the user's first scroll (which both fires the listener AND collapses the announcement bar to a normal 77px sticky). Reproduction: load '/' on desktop 1440x900, wait 1.5s, do NOT scroll, measure bounding rects of [data-testid='navbar'] and [data-testid='floating-order-cta-btn'] — btn.top < nav.bottom. Mitigation: observe layout changes above the navbar (body ResizeObserver, MutationObserver, or IntersectionObserver sentinel) and/or schedule extra update() ticks after mount."
+}
