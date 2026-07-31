@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Search, SlidersHorizontal, X, Truck, Store } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, SlidersHorizontal, X, Truck, Store, LayoutList, ChevronDown } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
 import PageHeader from "../components/common/PageHeader";
 import Section from "../components/common/Section";
@@ -23,7 +24,10 @@ export default function Catalogue() {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("featured");
   const [activeSlug, setActiveSlug] = useState(null);
+  const [navBottom, setNavBottom] = useState(80);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const sectionRefs = useRef({});
+  const rafRef = useRef(null);
   const { mode, setMode } = useOrder();
 
   // All collections in a stable order
@@ -119,7 +123,45 @@ export default function Catalogue() {
     }
     const el = sectionRefs.current[slug];
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    setMobileNavOpen(false);
   };
+
+  // Track navbar bottom so the sticky right-side filter aligns just below it
+  useEffect(() => {
+    const nav = document.querySelector('[data-testid="navbar"]');
+    if (!nav) return;
+    const update = () => {
+      const rect = nav.getBoundingClientRect();
+      setNavBottom(Math.max(0, Math.round(rect.bottom)));
+    };
+    const schedule = () => {
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = null;
+        update();
+      });
+    };
+    update();
+    const timers = [setTimeout(schedule, 80), setTimeout(schedule, 400), setTimeout(schedule, 1000)];
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    const observers = [];
+    if ("ResizeObserver" in window) {
+      const roNav = new ResizeObserver(schedule);
+      roNav.observe(nav);
+      observers.push(roNav);
+      const roBody = new ResizeObserver(schedule);
+      roBody.observe(document.body);
+      observers.push(roBody);
+    }
+    return () => {
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      observers.forEach((o) => o.disconnect());
+      timers.forEach((t) => clearTimeout(t));
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
 
   const activeGroup = grouped.find((g) => g.slug === activeSlug);
 
@@ -254,6 +296,130 @@ export default function Catalogue() {
           </div>
         )}
       </Section>
+
+      {/* Sticky right-side category filter — desktop (lg+) */}
+      {grouped.length > 1 && (
+        <nav
+          style={{ top: `${navBottom + 24}px` }}
+          className="fixed right-6 z-[840] hidden max-h-[70vh] w-56 flex-col gap-1 overflow-y-auto rounded-2xl border border-brand-line bg-brand-bg/95 p-3 shadow-[0_18px_50px_-24px_rgba(215,134,159,0.45)] backdrop-blur-xl lg:flex xl:right-10"
+          aria-label="Cake categories"
+          data-testid="catalogue-side-nav"
+        >
+          <p className="px-3 pb-2 pt-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-accent">
+            Jump to
+          </p>
+          {grouped.map((g) => {
+            const isActive = g.slug === activeSlug;
+            return (
+              <button
+                key={g.slug}
+                type="button"
+                onClick={() => scrollToCollection(g.slug)}
+                className={cn(
+                  "group flex items-center justify-between rounded-xl px-3 py-2 text-left text-sm font-semibold transition-colors",
+                  isActive
+                    ? "bg-brand-dark text-white"
+                    : "text-brand-dark hover:bg-brand-secondary hover:text-brand-accent",
+                )}
+                data-testid={`catalogue-side-nav-${g.slug}`}
+              >
+                <span className="flex items-center gap-2">
+                  <span
+                    className={cn(
+                      "h-1.5 w-1.5 rounded-full transition-colors",
+                      isActive ? "bg-brand-primary" : "bg-brand-accent/70 group-hover:bg-brand-accent",
+                    )}
+                  />
+                  <span>{g.name}</span>
+                </span>
+                <span
+                  className={cn(
+                    "rounded-full px-1.5 py-0.5 text-[10px] font-bold",
+                    isActive ? "bg-white/20 text-white" : "bg-brand-secondary text-brand-accent",
+                  )}
+                >
+                  {g.items.length}
+                </span>
+              </button>
+            );
+          })}
+        </nav>
+      )}
+
+      {/* Mobile / tablet — floating "Jump to" toggle + popover */}
+      {grouped.length > 1 && (
+        <div className="fixed right-4 z-[860] lg:hidden" style={{ bottom: "5.5rem" }}>
+          <button
+            type="button"
+            onClick={() => setMobileNavOpen((v) => !v)}
+            aria-expanded={mobileNavOpen}
+            aria-label="Jump to category"
+            className="flex items-center gap-2 rounded-full border border-brand-line bg-brand-bg/95 px-4 py-2.5 font-heading text-xs font-extrabold uppercase tracking-[0.18em] text-brand-dark shadow-[0_18px_45px_-16px_rgba(215,134,159,0.5)] backdrop-blur-xl transition-colors hover:border-brand-accent"
+            data-testid="catalogue-mobile-nav-toggle"
+          >
+            <LayoutList size={14} className="text-brand-accent" />
+            <span className="max-w-[9rem] truncate">
+              {(activeGroup || grouped[0]).name}
+            </span>
+            <ChevronDown
+              size={14}
+              className={cn("text-brand-accent transition-transform duration-300", mobileNavOpen && "rotate-180")}
+            />
+          </button>
+          <AnimatePresence>
+            {mobileNavOpen && (
+              <motion.nav
+                initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                aria-label="Cake categories"
+                data-testid="catalogue-mobile-nav"
+                className="absolute bottom-full right-0 mb-2 max-h-[60vh] w-60 overflow-y-auto rounded-2xl border border-brand-line bg-white p-2 shadow-[0_18px_50px_-16px_rgba(215,134,159,0.55)]"
+              >
+                <p className="px-3 pb-1.5 pt-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-accent">
+                  Jump to
+                </p>
+                {grouped.map((g) => {
+                  const isActive = g.slug === activeSlug;
+                  return (
+                    <button
+                      key={g.slug}
+                      type="button"
+                      onClick={() => scrollToCollection(g.slug)}
+                      className={cn(
+                        "flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm font-semibold transition-colors",
+                        isActive
+                          ? "bg-brand-dark text-white"
+                          : "text-brand-dark hover:bg-brand-secondary hover:text-brand-accent",
+                      )}
+                      data-testid={`catalogue-mobile-nav-${g.slug}`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span
+                          className={cn(
+                            "h-1.5 w-1.5 rounded-full",
+                            isActive ? "bg-brand-primary" : "bg-brand-accent/70",
+                          )}
+                        />
+                        <span>{g.name}</span>
+                      </span>
+                      <span
+                        className={cn(
+                          "rounded-full px-1.5 py-0.5 text-[10px] font-bold",
+                          isActive ? "bg-white/20 text-white" : "bg-brand-secondary text-brand-accent",
+                        )}
+                      >
+                        {g.items.length}
+                      </span>
+                    </button>
+                  );
+                })}
+              </motion.nav>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
 
       {/* Sticky category title (fixed below navbar) */}
       <StickyCategoryTitle active={activeGroup?.name} count={activeGroup?.items.length || 0} />
