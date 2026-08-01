@@ -290,7 +290,7 @@ export default function GalleryPage() {
       )}
 
       {/* Sticky category heading — fades between categories as user scrolls */}
-      <AnimatePresence>
+      {/* <AnimatePresence>
         {activeGroup && (
           <motion.div
             key="gallery-sticky-title"
@@ -323,7 +323,7 @@ export default function GalleryPage() {
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence> */}
 
       {/* Lightbox — unchanged */}
       <AnimatePresence>

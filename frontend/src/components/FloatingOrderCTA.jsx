@@ -1,11 +1,21 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
 const GAP_BELOW_NAV = 16;
 
 const FloatingOrderCTA = () => {
+  const location = useLocation();
+
+const showOnPages = [
+  "/",
+  "/menu",
+  "/customize-cake",
+];
+
+  const shouldShow = showOnPages.includes(location.pathname);
+
   const [visible, setVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [navBottom, setNavBottom] = useState(92);
@@ -94,7 +104,7 @@ const FloatingOrderCTA = () => {
 
   return (
     <AnimatePresence>
-      {visible && (
+      {shouldShow && visible && (
         isMobile ? (
           <motion.div
             key="cta-mobile"

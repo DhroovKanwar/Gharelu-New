@@ -1,6 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, SlidersHorizontal, X, Truck, Store, LayoutList, ChevronDown } from "lucide-react";
+import {
+  Search,
+  SlidersHorizontal,
+  X,
+  Truck,
+  Store,
+  LayoutList,
+  ChevronDown,
+} from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
 import PageHeader from "../components/common/PageHeader";
 import Section from "../components/common/Section";
@@ -18,9 +26,14 @@ const SORTS = [
   { value: "name", label: "Name: A–Z" },
 ];
 
-const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const slugify = (s) =>
+  s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 
 export default function Catalogue() {
+  const [isManualScroll, setIsManualScroll] = useState(false);
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("featured");
   const [activeSlug, setActiveSlug] = useState(null);
@@ -29,6 +42,7 @@ export default function Catalogue() {
   const sectionRefs = useRef({});
   const rafRef = useRef(null);
   const { mode, setMode } = useOrder();
+  
 
   // All collections in a stable order
   const collectionOrder = useMemo(
@@ -50,11 +64,20 @@ export default function Catalogue() {
       );
     }
     switch (sort) {
-      case "price-asc": list.sort((a, b) => a.price - b.price); break;
-      case "price-desc": list.sort((a, b) => b.price - a.price); break;
-      case "rating": list.sort((a, b) => b.rating - a.rating); break;
-      case "name": list.sort((a, b) => a.name.localeCompare(b.name)); break;
-      default: list.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+      case "price-asc":
+        list.sort((a, b) => a.price - b.price);
+        break;
+      case "price-desc":
+        list.sort((a, b) => b.price - a.price);
+        break;
+      case "rating":
+        list.sort((a, b) => b.rating - a.rating);
+        break;
+      case "name":
+        list.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      default:
+        list.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
     }
     return list;
   }, [query, sort]);
@@ -88,7 +111,7 @@ export default function Catalogue() {
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visible[0]) {
+        if (!isManualScroll && visible[0]) {
           const slug = visible[0].target.dataset.slug;
           if (slug) setActiveSlug(slug);
         }
@@ -111,18 +134,35 @@ export default function Catalogue() {
     setActiveSlug((prev) => prev || grouped[0].slug);
 
     return () => observer.disconnect();
-  }, [grouped]);
+  }, [grouped, isManualScroll]);
 
   const scrollToCollection = (slug) => {
-    if (slug === "all") {
-      const first = grouped[0];
-      if (!first) return;
-      const el = sectionRefs.current[first.slug];
-      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-      return;
-    }
-    const el = sectionRefs.current[slug];
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    const targetSlug = slug === "all" ? grouped[0]?.slug : slug;
+
+    if (!targetSlug) return;
+
+    // Click hote hi active highlight
+    setActiveSlug(targetSlug);
+    setIsManualScroll(true);
+
+    const el = sectionRefs.current[targetSlug];
+    if (!el) return;
+
+    const navbar = document.querySelector('[data-testid="navbar"]');
+    const navbarHeight = navbar ? navbar.offsetHeight : 80;
+    const offset = navbarHeight + 30;
+
+    const top = el.getBoundingClientRect().top + window.pageYOffset - offset;
+
+    window.scrollTo({
+      top,
+      behavior: "smooth",
+    });
+
+    setTimeout(() => {
+      setIsManualScroll(false);
+    }, 700);
+
     setMobileNavOpen(false);
   };
 
@@ -142,7 +182,11 @@ export default function Catalogue() {
       });
     };
     update();
-    const timers = [setTimeout(schedule, 80), setTimeout(schedule, 400), setTimeout(schedule, 1000)];
+    const timers = [
+      setTimeout(schedule, 80),
+      setTimeout(schedule, 400),
+      setTimeout(schedule, 1000),
+    ];
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
     const observers = [];
@@ -168,27 +212,37 @@ export default function Catalogue() {
   return (
     <MainLayout>
       <PageHeader
-        eyebrow="The Collection"
-        title="Cake Catalogue"
+        // eyebrow="The Collection"
+        title="Menu"
         subtitle="Every bake, 100% eggless and made fresh in small batches. Filter, search and find your next favourite."
-        breadcrumb={[{ label: "Home", to: "/" }, { label: "Catalogue" }]}
+        // breadcrumb={[{ label: "Home", to: "/" }, { label: "Catalogue" }]}
       />
 
       <Section className="pt-14 md:pt-16">
         {/* Order mode indicator */}
         {mode && (
-          <div className="mb-8 flex flex-wrap items-center gap-3 rounded-2xl border border-brand-line bg-brand-secondary px-5 py-4" data-testid="order-mode-banner">
+          <div
+            className="mb-8 flex flex-wrap items-center gap-3 rounded-2xl border border-brand-line bg-brand-secondary px-5 py-4"
+            data-testid="order-mode-banner"
+          >
             <span className="grid h-10 w-10 place-items-center rounded-full bg-brand-bg text-brand-accent">
               {mode === "delivery" ? <Truck size={18} /> : <Store size={18} />}
             </span>
             <div className="mr-auto">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-accent">Ordering for</p>
-              <p className="font-heading text-base font-bold text-brand-dark" data-testid="order-mode-value">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-accent">
+                Ordering for
+              </p>
+              <p
+                className="font-heading text-base font-bold text-brand-dark"
+                data-testid="order-mode-value"
+              >
                 {mode === "delivery" ? "Delivery" : "Pickup"}
               </p>
             </div>
             <button
-              onClick={() => setMode(mode === "delivery" ? "pickup" : "delivery")}
+              onClick={() =>
+                setMode(mode === "delivery" ? "pickup" : "delivery")
+              }
               className="rounded-full border border-brand-line bg-brand-bg px-4 py-2 text-sm font-medium text-brand-dark transition-colors hover:border-brand-accent hover:text-brand-accent"
               data-testid="order-mode-switch"
             >
@@ -200,7 +254,10 @@ export default function Catalogue() {
         {/* Toolbar */}
         <div className="flex flex-col gap-5 border-b border-brand-line pb-8 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative w-full max-w-sm">
-            <Search size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brand-accent" />
+            <Search
+              size={18}
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brand-accent"
+            />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -209,7 +266,11 @@ export default function Catalogue() {
               data-testid="catalogue-search"
             />
             {query && (
-              <button onClick={() => setQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-text hover:text-brand-accent" aria-label="Clear">
+              <button
+                onClick={() => setQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-text hover:text-brand-accent"
+                aria-label="Clear"
+              >
                 <X size={16} />
               </button>
             )}
@@ -217,7 +278,9 @@ export default function Catalogue() {
 
           <div className="flex items-center gap-3">
             <SlidersHorizontal size={16} className="text-brand-accent" />
-            <label className="sr-only" htmlFor="sort">Sort</label>
+            <label className="sr-only" htmlFor="sort">
+              Sort
+            </label>
             <select
               id="sort"
               value={sort}
@@ -226,7 +289,9 @@ export default function Catalogue() {
               data-testid="catalogue-sort"
             >
               {SORTS.map((s) => (
-                <option key={s.value} value={s.value}>{s.label}</option>
+                <option key={s.value} value={s.value}>
+                  {s.label}
+                </option>
               ))}
             </select>
           </div>
@@ -268,17 +333,32 @@ export default function Catalogue() {
         </div>
 
         <p className="mt-6 text-sm text-brand-text" data-testid="results-count">
-          Showing <span className="font-semibold text-brand-dark">{filteredProducts.length}</span> {filteredProducts.length === 1 ? "creation" : "creations"}
+          Showing{" "}
+          <span className="font-semibold text-brand-dark">
+            {filteredProducts.length}
+          </span>{" "}
+          {filteredProducts.length === 1 ? "creation" : "creations"}
           {grouped.length > 0 && (
-            <span> across <span className="font-semibold text-brand-dark">{grouped.length}</span> {grouped.length === 1 ? "collection" : "collections"}</span>
+            <span>
+              {" "}
+              across{" "}
+              <span className="font-semibold text-brand-dark">
+                {grouped.length}
+              </span>{" "}
+              {grouped.length === 1 ? "collection" : "collections"}
+            </span>
           )}
         </p>
 
         {/* Category-grouped product sections */}
         {grouped.length === 0 ? (
           <div className="py-24 text-center" data-testid="no-results">
-            <p className="font-heading text-2xl font-bold text-brand-dark">No matches found</p>
-            <p className="mt-2 text-brand-text">Try a different search or clear the filters.</p>
+            <p className="font-heading text-2xl font-bold text-brand-dark">
+              No matches found
+            </p>
+            <p className="mt-2 text-brand-text">
+              Try a different search or clear the filters.
+            </p>
           </div>
         ) : (
           <div>
@@ -327,7 +407,9 @@ export default function Catalogue() {
                   <span
                     className={cn(
                       "h-1.5 w-1.5 rounded-full transition-colors",
-                      isActive ? "bg-brand-primary" : "bg-brand-accent/70 group-hover:bg-brand-accent",
+                      isActive
+                        ? "bg-brand-primary"
+                        : "bg-brand-accent/70 group-hover:bg-brand-accent",
                     )}
                   />
                   <span>{g.name}</span>
@@ -335,7 +417,9 @@ export default function Catalogue() {
                 <span
                   className={cn(
                     "rounded-full px-1.5 py-0.5 text-[10px] font-bold",
-                    isActive ? "bg-white/20 text-white" : "bg-brand-secondary text-brand-accent",
+                    isActive
+                      ? "bg-white/20 text-white"
+                      : "bg-brand-secondary text-brand-accent",
                   )}
                 >
                   {g.items.length}
@@ -348,7 +432,10 @@ export default function Catalogue() {
 
       {/* Mobile / tablet — floating "Jump to" toggle + popover */}
       {grouped.length > 1 && (
-        <div className="fixed right-4 z-[860] lg:hidden" style={{ bottom: "5.5rem" }}>
+        <div
+          className="fixed right-4 z-[860] lg:hidden"
+          style={{ bottom: "5.5rem" }}
+        >
           <button
             type="button"
             onClick={() => setMobileNavOpen((v) => !v)}
@@ -363,7 +450,10 @@ export default function Catalogue() {
             </span>
             <ChevronDown
               size={14}
-              className={cn("text-brand-accent transition-transform duration-300", mobileNavOpen && "rotate-180")}
+              className={cn(
+                "text-brand-accent transition-transform duration-300",
+                mobileNavOpen && "rotate-180",
+              )}
             />
           </button>
           <AnimatePresence>
@@ -399,7 +489,9 @@ export default function Catalogue() {
                         <span
                           className={cn(
                             "h-1.5 w-1.5 rounded-full",
-                            isActive ? "bg-brand-primary" : "bg-brand-accent/70",
+                            isActive
+                              ? "bg-brand-primary"
+                              : "bg-brand-accent/70",
                           )}
                         />
                         <span>{g.name}</span>
@@ -407,7 +499,9 @@ export default function Catalogue() {
                       <span
                         className={cn(
                           "rounded-full px-1.5 py-0.5 text-[10px] font-bold",
-                          isActive ? "bg-white/20 text-white" : "bg-brand-secondary text-brand-accent",
+                          isActive
+                            ? "bg-white/20 text-white"
+                            : "bg-brand-secondary text-brand-accent",
                         )}
                       >
                         {g.items.length}
@@ -422,7 +516,7 @@ export default function Catalogue() {
       )}
 
       {/* Sticky category title (fixed below navbar) */}
-      <StickyCategoryTitle active={activeGroup?.name} count={activeGroup?.items.length || 0} />
+      {/* <StickyCategoryTitle active={activeGroup?.name} count={activeGroup?.items.length || 0} /> */}
     </MainLayout>
   );
 }
