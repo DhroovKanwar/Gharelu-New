@@ -324,7 +324,7 @@ export default function GalleryPage() {
           </motion.div>
         )}
       </AnimatePresence> */}
-
+ 
       {/* Lightbox — unchanged */}
       <AnimatePresence>
         {active && (
