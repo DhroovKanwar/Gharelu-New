@@ -4,6 +4,7 @@ import Navbar from "../components/sections/Navbar";
 import Footer from "../components/sections/Footer";
 import CartDrawer from "../components/sections/CartDrawer";
 import FloatingOrderCTA from "../components/FloatingOrderCTA";
+import ChatWidget from '../components/chat/ChatWidget'
 
 /**
  * Global chrome: smooth scroll + announcement + navbar + cart drawer + footer.
@@ -18,6 +19,7 @@ export const MainLayout = ({ children }) => {
       <Footer />
       <CartDrawer />
       <FloatingOrderCTA />
+      <ChatWidget />
     </div>
   );
 };
