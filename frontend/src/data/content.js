@@ -70,7 +70,7 @@ export const announcements = [
 ];
 
 export const navLinks = [
-  { label: "Cakes", href: "/catalogue" },
+  { label: "Menu", href: "/catalogue" },
   { label: "About", href: "/about" },
   { label: "Corporate", href: "/corporate" },
   { label: "Gallery", href: "/gallery" },

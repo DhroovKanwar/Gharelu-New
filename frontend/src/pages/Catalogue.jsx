@@ -215,7 +215,9 @@ export default function Catalogue() {
         // eyebrow="The Collection"
         title="Menu"
         subtitle="Every bake, 100% eggless and made fresh in small batches. Filter, search and find your next favourite."
-        // breadcrumb={[{ label: "Home", to: "/" }, { label: "Catalogue" }]}
+      
+                // breadcrumb={[{ label: "Home", to: "/" }, { label: "Catalogue" }]}
+
       />
 
       <Section className="pt-14 md:pt-16">
