@@ -1,0 +1,48 @@
+{
+  "_docs": {
+    "how_to_change_hero_image": "Set `active` to the id of any variant below to switch the hero. Add new variants for festivals or offers (Diwali, New Year, Valentine's Day, etc.) and toggle by changing `active`. When Laravel is wired up, this file's shape will be replaced by GET /api/hero-config returning the exact same structure.",
+    "campaign_field": "If a variant has a non-null `campaign`, a small ribbon badge appears on the hero image with the given label + line and (optionally) a CTA link. Leave `campaign` as null for a clean hero."
+  },
+  "active": "default",
+  "variants": [
+    {
+      "id": "default",
+      "image": "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?auto=format&fit=crop&w=1200&q=80",
+      "alt": "Signature eggless cake",
+      "campaign": null
+    },
+    {
+      "id": "diwali",
+      "image": "https://images.unsplash.com/photo-1607478900766-efe13248b125?auto=format&fit=crop&w=1200&q=80",
+      "alt": "Diwali festive cake",
+      "campaign": {
+        "label": "Diwali Special",
+        "line": "Festive hampers · 20% off",
+        "cta_href": "/hampers",
+        "cta_label": "Shop hampers"
+      }
+    },
+    {
+      "id": "valentines",
+      "image": "https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=1200&q=80",
+      "alt": "Valentine's Day berry cake",
+      "campaign": {
+        "label": "Valentine's Day",
+        "line": "Berry drip cakes · pre-order now",
+        "cta_href": "/catalogue",
+        "cta_label": "Order today"
+      }
+    },
+    {
+      "id": "new-year",
+      "image": "https://images.unsplash.com/photo-1622021142947-da7dedc7c39a?auto=format&fit=crop&w=1200&q=80",
+      "alt": "New Year celebration cake",
+      "campaign": {
+        "label": "New Year Offer",
+        "line": "Bring in 2026 with our celebration cakes",
+        "cta_href": "/catalogue",
+        "cta_label": "Explore"
+      }
+    }
+  ]
+}
