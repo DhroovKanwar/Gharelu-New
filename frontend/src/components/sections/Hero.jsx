@@ -152,7 +152,7 @@ export const Hero = () => {
                   <path id="circlePath" d="M50,50 m-37,0 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0" />
                 </defs>
                 <circle cx="50" cy="50" r="49" fill="#262626" />
-                <text fill="#EFC7D3" fontSize="9.5" letterSpacing="2.5" fontFamily="Poppins" fontWeight="600">
+                <text fill="#EFC7D3" fontSize="10" letterSpacing="3.4" fontFamily="Poppins" fontWeight="600">
                   <textPath href="#circlePath" startOffset="0%">
                     PURE • PREMIUM • EGGLESS •
                   </textPath>
