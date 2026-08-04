@@ -154,7 +154,7 @@ export const Hero = () => {
                 <circle cx="50" cy="50" r="49" fill="#262626" />
                 <text fill="#EFC7D3" fontSize="9.5" letterSpacing="2.5" fontFamily="Poppins" fontWeight="600">
                   <textPath href="#circlePath" startOffset="0%">
-                    PURE • PREMIUM • EGGLESS • FRESH •
+                    PURE • PREMIUM • EGGLESS •
                   </textPath>
                 </text>
               </svg>
