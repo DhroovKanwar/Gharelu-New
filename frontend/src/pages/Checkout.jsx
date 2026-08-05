@@ -9,6 +9,7 @@ import Section from "../components/common/Section";
 import Button from "../components/common/Button";
 import { useCart } from "../context/CartContext";
 import { cn } from "../utils/cn";
+import { createPaymentOrder, openRazorpayCheckout } from "../services/paymentService";
 
 const Field = ({ label, className, ...props }) => (
   <label className={cn("block", className)}>
@@ -50,8 +51,9 @@ export default function Checkout() {
       return;
     }
     setLoading(true);
+    const orderId = "GB" + Math.floor(100000 + Math.random() * 900000);
     const order = {
-      id: "GB" + Math.floor(100000 + Math.random() * 900000),
+      id: orderId,
       items,
       subtotal,
       delivery,
@@ -60,13 +62,56 @@ export default function Checkout() {
       customer: form,
       date: new Date().toISOString(),
     };
-    // API-ready: leadService / orderService.create(order)
-    setTimeout(() => {
-      localStorage.setItem("gb_last_order", JSON.stringify(order));
-      clearCart();
+
+    // Cash on Delivery — unchanged from the original flow, no gateway involved.
+    if (payment === "cod") {
+      // API-ready: leadService / orderService.create(order)
+      setTimeout(() => {
+        localStorage.setItem("gb_last_order", JSON.stringify(order));
+        clearCart();
+        setLoading(false);
+        navigate("/order-success");
+      }, 700);
+      return;
+    }
+
+    // Card / UPI — routed through Razorpay Test Mode via paymentService.
+    // paymentService owns all gateway-specific logic; this page only reacts
+    // to success/failure so the UI never needs to know how payment happens.
+    try {
+      const localOrder = await createPaymentOrder({
+        amount: total,
+        currency: "INR",
+        receipt: orderId,
+      });
+
+      await openRazorpayCheckout({
+        amount: total,
+        name: "Gharelu Bake",
+        description: `Order ${orderId} · ${count} item${count > 1 ? "s" : ""}`,
+        customer: { name: form.name, email: form.email, contact: form.phone },
+        localOrder,
+        onSuccess: (paymentResult) => {
+          // API-ready: orderService.create({ ...order, payment_result: paymentResult })
+          const finalOrder = {
+            ...order,
+            razorpay_payment_id: paymentResult.razorpay_payment_id,
+            payment_status: "paid",
+          };
+          localStorage.setItem("gb_last_order", JSON.stringify(finalOrder));
+          clearCart();
+          setLoading(false);
+          navigate("/order-success");
+        },
+        onFailure: (reason) => {
+          toast.error(reason || "Payment could not be completed. Please try again.");
+          setLoading(false);
+        },
+      });
+    } catch (err) {
+      toast.error("Something went wrong starting the payment. Please try again.");
       setLoading(false);
-      navigate("/order-success");
-    }, 700);
+    }
   };
 
   if (count === 0) {

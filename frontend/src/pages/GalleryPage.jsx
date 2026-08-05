@@ -153,11 +153,27 @@ export default function GalleryPage() {
                 >
                   <img
                     src={it.image}
-                    alt={g.name}
+                    alt={it.caption || g.name}
                     loading="lazy"
                     className="h-full w-full object-cover transition-transform [transition-duration:900ms] ease-out group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-brand-accent/0 transition-colors duration-500 group-hover:bg-brand-accent/20" />
+                  <div className="pointer-events-none absolute inset-0 bg-brand-accent/0 transition-colors duration-500 group-hover:bg-brand-accent/20" />
+
+                  {/* Readable caption — always visible on tile */}
+                  {it.caption && (
+                    <>
+                      <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/70 via-black/35 to-transparent"
+                      />
+                      <p
+                        className="pointer-events-none absolute inset-x-3 bottom-3 text-left font-heading text-[13px] font-semibold leading-snug text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.55)] sm:inset-x-4 sm:bottom-4 sm:text-sm"
+                        data-testid={`gallery-caption-${it.id}`}
+                      >
+                        {it.caption}
+                      </p>
+                    </>
+                  )}
                 </motion.button>
               ))}
             </div>

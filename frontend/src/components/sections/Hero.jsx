@@ -1,12 +1,18 @@
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowDownRight, Star } from "lucide-react";
+import { ArrowDownRight, Sparkles, Star } from "lucide-react";
 import { MaskedLines } from "../common/Reveal";
 import Button from "../common/Button";
 import { IMG } from "../../data/content";
+import { getActiveHero } from "../../services/heroService";
 
 export const Hero = () => {
   const ref = useRef(null);
+  const hero = getActiveHero();
+  const heroImage = hero.image || IMG.layerCake;
+  const heroAlt = hero.alt || "Signature eggless cake";
+  const campaign = hero.campaign;
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
@@ -127,10 +133,44 @@ export const Hero = () => {
             >
               <motion.img
                 style={{ scale: scaleImg }}
-                src={IMG.layerCake}
-                alt="Signature eggless cake"
+                src={heroImage}
+                alt={heroAlt}
                 className="aspect-[4/5] w-full object-cover"
               />
+
+              {/* Campaign ribbon — festival / offer badge (data-driven) */}
+              {campaign && (
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.7, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute inset-x-4 bottom-4 rounded-2xl border border-brand-line bg-brand-bg/95 p-4 shadow-[0_18px_45px_-16px_rgba(215,134,159,0.55)] backdrop-blur-xl sm:inset-x-6 sm:bottom-6 sm:p-5"
+                  data-testid="hero-campaign-badge"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-accent text-white">
+                      <Sparkles size={16} />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-accent">
+                        {campaign.label}
+                      </p>
+                      <p className="mt-0.5 truncate font-heading text-sm font-extrabold text-brand-dark sm:text-base">
+                        {campaign.line}
+                      </p>
+                    </div>
+                    {campaign.cta_href && campaign.cta_label && (
+                      <Link
+                        to={campaign.cta_href}
+                        className="shrink-0 rounded-full bg-brand-dark px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-brand-accent"
+                        data-testid="hero-campaign-cta"
+                      >
+                        {campaign.cta_label}
+                      </Link>
+                    )}
+                  </div>
+                </motion.div>
+              )}
             </motion.div>
 
             {/* floating macaron badge */}
@@ -152,9 +192,9 @@ export const Hero = () => {
                   <path id="circlePath" d="M50,50 m-37,0 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0" />
                 </defs>
                 <circle cx="50" cy="50" r="49" fill="#262626" />
-                <text fill="#EFC7D3" fontSize="9.5" letterSpacing="2.5" fontFamily="Poppins" fontWeight="600">
+                <text fill="#EFC7D3" fontSize="10" letterSpacing="3.4" fontFamily="Poppins" fontWeight="600">
                   <textPath href="#circlePath" startOffset="0%">
-                    PURE • PREMIUM • EGGLESS • FRESH •
+                    PURE • PREMIUM • EGGLESS •
                   </textPath>
                 </text>
               </svg>

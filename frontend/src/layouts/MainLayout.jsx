@@ -4,6 +4,7 @@ import Navbar from "../components/sections/Navbar";
 import Footer from "../components/sections/Footer";
 import CartDrawer from "../components/sections/CartDrawer";
 import FloatingOrderCTA from "../components/FloatingOrderCTA";
+import FloatingContactWidget from "../components/FloatingContactWidget";
 import ChatWidget from '../components/chat/ChatWidget'
 
 /**
@@ -19,7 +20,8 @@ export const MainLayout = ({ children }) => {
       <Footer />
       <CartDrawer />
       <FloatingOrderCTA />
-      <ChatWidget />
+      <FloatingContactWidget />
+       <ChatWidget />
     </div>
   );
 };
