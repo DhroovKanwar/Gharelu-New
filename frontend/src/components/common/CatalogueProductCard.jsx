@@ -53,7 +53,7 @@ export const CatalogueProductCard = ({ product, index = 0 }) => {
           onClick={handleWishlist}
           aria-label="Toggle wishlist"
           className={cn(
-            "absolute right-3 top-3 z-10 grid h-9 w-9 place-items-center rounded-full backdrop-blur-sm transition-colors",
+            "absolute right-3 top-3 z-10 grid h-11 w-11 place-items-center rounded-full backdrop-blur-sm transition-colors md:h-9 md:w-9",
             inWishlist ? "bg-brand-accent text-white" : "bg-white/90 text-brand-dark hover:text-brand-accent",
           )}
           data-testid={`catalogue-wishlist-${id}`}

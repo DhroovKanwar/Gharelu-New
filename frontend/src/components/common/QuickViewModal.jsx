@@ -44,10 +44,10 @@ export const QuickViewModal = ({ product, onClose }) => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 10 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="relative z-10 grid w-full max-w-3xl grid-cols-1 overflow-hidden rounded-[2rem] bg-brand-bg md:grid-cols-2"
+            className="relative z-10 grid w-full max-w-3xl max-h-[92vh] grid-cols-1 overflow-y-auto overflow-x-hidden rounded-[2rem] bg-brand-bg md:grid-cols-2"
             data-testid="quick-view-modal"
           >
-            <button onClick={onClose} aria-label="Close" className="absolute right-4 top-4 z-20 grid h-10 w-10 place-items-center rounded-full bg-white/90 text-brand-dark backdrop-blur transition-colors hover:bg-brand-primary" data-testid="quick-view-close">
+            <button onClick={onClose} aria-label="Close" className="absolute right-4 top-4 z-20 grid h-11 w-11 place-items-center rounded-full bg-white/90 text-brand-dark backdrop-blur transition-colors hover:bg-brand-primary md:h-10 md:w-10" data-testid="quick-view-close">
               <X size={18} />
             </button>
             <div className="aspect-[4/5] w-full md:aspect-auto">

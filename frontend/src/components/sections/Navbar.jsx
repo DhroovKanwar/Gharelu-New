@@ -60,7 +60,7 @@ export const Navbar = () => {
       data-testid="navbar"
     >
       <nav className="mx-auto flex max-w-[1440px] items-center justify-between px-6 py-4 md:px-12 lg:px-20">
-        <Wordmark className="text-xl md:text-2xl" />
+        <Wordmark className="text-lg sm:text-xl md:text-2xl" />
 
         <div className="hidden items-center gap-9 lg:flex">
           {navLinks.map((l) => (
@@ -76,7 +76,7 @@ export const Navbar = () => {
           ))}
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
           <IconButton to="/wishlist" label="Wishlist" count={wishlist.count} testid="nav-wishlist">
             <Heart size={18} />
           </IconButton>

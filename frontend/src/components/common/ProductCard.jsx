@@ -50,7 +50,7 @@ export const ProductCard = ({ product, index = 0, showWishlist = false, onQuickV
             onClick={handleWishlist}
             aria-label="Toggle wishlist"
             className={cn(
-              "absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full backdrop-blur-sm transition-colors",
+              "absolute right-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-full backdrop-blur-sm transition-colors md:h-10 md:w-10",
               inWishlist ? "bg-brand-accent text-white" : "bg-white/85 text-brand-dark hover:text-brand-accent",
             )}
             data-testid={`wishlist-toggle-${product.id}`}

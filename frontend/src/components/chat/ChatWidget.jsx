@@ -1,9 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
 // const API_URL = "/api/chat"; // Laravel backend route
-// const API_URL = "http://localhost:8000/api/chat";
-const API_URL = "https://gharelu-backend-production.up.railway.app/api/chat";
-
+const API_URL = "http://localhost:8000/api/chat";
 // Brand colors — matched to the Gharelu.Bake site theme
 const ROSE = "#D68FA3";
 const ROSE_DARK = "#C17A8F";
@@ -67,12 +65,19 @@ export default function ChatWidget() {
   };
 
   return (
-    <div style={{ position: "fixed", bottom: 24, right: 24, zIndex: 50, fontFamily: "inherit" }}>
+    // Mobile: bottom-44 (11rem) clears both the full-width "Order Now" bar
+    // (bottom-4, mobile-only on Home/Menu/Customize Cake) and the
+    // FloatingContactWidget (bottom-6.5rem) — see FloatingContactWidget.jsx
+    // and FloatingOrderCTA.jsx for the matching offsets. Desktop keeps the
+    // original bottom-6/right-6 (24px/24px) position unchanged.
+    <div
+      className="fixed z-50 bottom-44 right-4 md:bottom-6 md:right-6"
+      style={{ fontFamily: "inherit" }}
+    >
       {isOpen ? (
         <div
+          className="w-[calc(100vw-2rem)] max-w-[360px] h-[70vh] max-h-[480px]"
           style={{
-            width: 360,
-            height: 480,
             background: CREAM,
             borderRadius: 20,
             boxShadow: "0 20px 50px rgba(0,0,0,0.18)",

@@ -436,7 +436,7 @@ export default function Catalogue() {
       {grouped.length > 1 && (
         <div
           className="fixed right-4 z-[860] lg:hidden"
-          style={{ bottom: "5.5rem" }}
+          style={{ bottom: "1.5rem" }}
         >
           <button
             type="button"

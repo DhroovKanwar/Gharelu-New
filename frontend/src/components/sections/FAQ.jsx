@@ -18,7 +18,7 @@ const FaqItem = ({ item, isOpen, onToggle, index }) => (
       </span>
       <span
         className={cn(
-          "grid h-10 w-10 shrink-0 place-items-center rounded-full border transition-all duration-300",
+          "grid h-11 w-11 shrink-0 place-items-center rounded-full border transition-all duration-300 md:h-10 md:w-10",
           isOpen ? "rotate-45 border-brand-accent bg-brand-accent text-white" : "border-brand-line text-brand-dark",
         )}
       >

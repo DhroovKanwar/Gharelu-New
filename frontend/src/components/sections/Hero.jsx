@@ -49,7 +49,7 @@ export const Hero = () => {
             Pure • Premium • Eggless
           </motion.p>
 
-          <h1 className="font-heading text-[3.1rem] font-extrabold leading-[0.98] tracking-tight text-brand-dark sm:text-6xl lg:text-[5.4rem]">
+          <h1 className="font-heading text-4xl font-extrabold leading-[0.98] tracking-tight text-brand-dark sm:text-6xl lg:text-[5.4rem]">
             <MaskedLines lines={["Eggless bakes,", "made purely"]} delay={0.15} />
             <span className="mt-1 block overflow-hidden pb-[0.12em]">
               <motion.span
@@ -92,7 +92,7 @@ export const Hero = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.05, duration: 1 }}
-            className="mt-12 flex items-center gap-8"
+            className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-4 sm:gap-x-8"
           >
             <div>
               <p className="font-heading text-3xl font-extrabold text-brand-dark">4.9</p>

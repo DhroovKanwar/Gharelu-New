@@ -34,7 +34,7 @@ export const CartDrawer = () => {
               <h3 className="flex items-center gap-2 font-heading text-xl font-extrabold text-brand-dark">
                 <ShoppingBag size={20} /> Your Box ({count})
               </h3>
-              <button onClick={closeCart} aria-label="Close cart" className="grid h-10 w-10 place-items-center rounded-full border border-brand-line text-brand-dark transition-colors hover:bg-brand-secondary" data-testid="cart-close">
+              <button onClick={closeCart} aria-label="Close cart" className="grid h-11 w-11 place-items-center rounded-full border border-brand-line text-brand-dark transition-colors hover:bg-brand-secondary md:h-10 md:w-10" data-testid="cart-close">
                 <X size={18} />
               </button>
             </div>
