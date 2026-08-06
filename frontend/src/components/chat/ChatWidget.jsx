@@ -71,7 +71,7 @@ export default function ChatWidget() {
     // and FloatingOrderCTA.jsx for the matching offsets. Desktop keeps the
     // original bottom-6/right-6 (24px/24px) position unchanged.
     <div
-      className="fixed z-50 bottom-44 right-4 md:bottom-6 md:right-6"
+      className="fixed z-[1200] bottom-44 right-4 md:bottom-6 md:right-6"
       style={{ fontFamily: "inherit" }}
     >
       {isOpen ? (
@@ -106,12 +106,22 @@ export default function ChatWidget() {
               onClick={() => setIsOpen(false)}
               aria-label="Close chat"
               style={{
+                WebkitAppearance: "none",
+                appearance: "none",
                 background: "transparent",
                 border: "none",
                 color: "rgba(255,255,255,0.85)",
                 fontSize: 18,
+                width: 28,
+                height: 28,
+                padding: 0,
+                margin: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 cursor: "pointer",
                 lineHeight: 1,
+                flexShrink: 0,
               }}
             >
               ✕

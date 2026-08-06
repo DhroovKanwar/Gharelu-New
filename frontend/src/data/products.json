@@ -435,5 +435,32 @@
     ],
     "ingredients": ["Seasonal selection", "Wheat flour", "Butter", "Fresh cream"],
     "allergens": ["Gluten", "Dairy", "Nuts"]
+  },
+  {
+    "id": "choco-chip-cookie",
+    "name": "Choco Chip Cookie",
+    "category": "Cookies",
+    "collection": "Cookies",
+    "price": 249,
+    "oldPrice": 299,
+    "image": "https://images.pexels.com/photos/1626668/pexels-photo-1626668.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "gallery": [
+      "https://images.pexels.com/photos/1626668/pexels-photo-1626668.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "https://images.pexels.com/photos/2372537/pexels-photo-2372537.jpeg?auto=compress&cs=tinysrgb&w=1200"
+    ],
+    "tag": "New",
+    "rating": 4.7,
+    "reviews": 32,
+    "featured": false,
+    "bestseller": false,
+    "description": "Crisp-edged, gooey-centre choco chip cookies, baked fresh daily.",
+    "longDescription": "Loaded with Belgian chocolate chunks and baked to that perfect crisp-outside, chewy-inside finish.",
+    "flavour": "Chocolate Chip",
+    "sizes": [
+      { "label": "Box of 6", "price": 249 },
+      { "label": "Box of 12", "price": 449 }
+    ],
+    "ingredients": ["Wheat flour", "Butter", "Chocolate chunks", "Cane sugar"],
+    "allergens": ["Gluten", "Dairy"]
   }
 ]

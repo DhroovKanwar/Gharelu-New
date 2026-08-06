@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import Section from "../common/Section";
 import SectionHeading from "../common/SectionHeading";
@@ -6,8 +7,7 @@ import { categories } from "../../data/content";
 import { cn } from "../../utils/cn";
 
 const CategoryCard = ({ cat, index }) => (
-  <motion.a
-    href="#featured"
+  <motion.div
     initial={{ opacity: 0, y: 40 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, amount: 0.25 }}
@@ -18,29 +18,31 @@ const CategoryCard = ({ cat, index }) => (
     )}
     data-testid={`category-${cat.id}`}
   >
-    <img
-      src={cat.image}
-      alt={cat.name}
-      loading="lazy"
-      className="absolute inset-0 h-full w-full object-cover transition-transform [transition-duration:900ms] ease-out group-hover:scale-105"
-    />
-    <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/75 via-brand-dark/10 to-transparent" />
-    <div className="absolute inset-0 flex flex-col justify-end p-6">
-      <div className="flex items-end justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-primary">
-            {cat.count} creations
-          </p>
-          <h3 className="mt-1.5 font-heading text-2xl font-extrabold tracking-tight text-white md:text-3xl">
-            {cat.name}
-          </h3>
+    <Link to={`/catalogue#${cat.id}`} className="absolute inset-0 block">
+      <img
+        src={cat.image}
+        alt={cat.name}
+        loading="lazy"
+        className="absolute inset-0 h-full w-full object-cover transition-transform [transition-duration:900ms] ease-out group-hover:scale-105"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/75 via-brand-dark/10 to-transparent" />
+      <div className="absolute inset-0 flex flex-col justify-end p-6">
+        <div className="flex items-end justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-primary">
+              {cat.count} creations
+            </p>
+            <h3 className="mt-1.5 font-heading text-2xl font-extrabold tracking-tight text-white md:text-3xl">
+              {cat.name}
+            </h3>
+          </div>
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white/90 text-brand-dark transition-all duration-300 group-hover:bg-brand-accent group-hover:text-white">
+            <ArrowUpRight size={20} />
+          </span>
         </div>
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white/90 text-brand-dark transition-all duration-300 group-hover:bg-brand-accent group-hover:text-white">
-          <ArrowUpRight size={20} />
-        </span>
       </div>
-    </div>
-  </motion.a>
+    </Link>
+  </motion.div>
 );
 
 export const Categories = () => (

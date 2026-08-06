@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -41,6 +41,7 @@ export default function Catalogue() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const sectionRefs = useRef({});
   const rafRef = useRef(null);
+  const initialHashHandled = useRef(false);
   const { mode, setMode } = useOrder();
   
 
@@ -136,35 +137,50 @@ export default function Catalogue() {
     return () => observer.disconnect();
   }, [grouped, isManualScroll]);
 
-  const scrollToCollection = (slug) => {
-    const targetSlug = slug === "all" ? grouped[0]?.slug : slug;
+  const scrollToCollection = useCallback(
+    (slug) => {
+      const targetSlug = slug === "all" ? grouped[0]?.slug : slug;
 
-    if (!targetSlug) return;
+      if (!targetSlug) return;
 
-    // Click hote hi active highlight
-    setActiveSlug(targetSlug);
-    setIsManualScroll(true);
+      // Click hote hi active highlight
+      setActiveSlug(targetSlug);
+      setIsManualScroll(true);
 
-    const el = sectionRefs.current[targetSlug];
-    if (!el) return;
+      const el = sectionRefs.current[targetSlug];
+      if (!el) return;
 
-    const navbar = document.querySelector('[data-testid="navbar"]');
-    const navbarHeight = navbar ? navbar.offsetHeight : 80;
-    const offset = navbarHeight + 30;
+      const navbar = document.querySelector('[data-testid="navbar"]');
+      const navbarHeight = navbar ? navbar.offsetHeight : 80;
+      const offset = navbarHeight + 30;
 
-    const top = el.getBoundingClientRect().top + window.pageYOffset - offset;
+      const top = el.getBoundingClientRect().top + window.pageYOffset - offset;
 
-    window.scrollTo({
-      top,
-      behavior: "smooth",
-    });
+      window.scrollTo({
+        top,
+        behavior: "smooth",
+      });
 
-    setTimeout(() => {
-      setIsManualScroll(false);
-    }, 700);
+      setTimeout(() => {
+        setIsManualScroll(false);
+      }, 700);
 
-    setMobileNavOpen(false);
-  };
+      setMobileNavOpen(false);
+    },
+    [grouped],
+  );
+
+  // Deep-link support — the homepage category cards link to
+  // /catalogue#<category-id>. On first load, jump straight to that section
+  // instead of always landing on the first group.
+  useEffect(() => {
+    if (initialHashHandled.current || !grouped.length) return;
+    initialHashHandled.current = true;
+    const hash = window.location.hash.replace("#", "");
+    if (hash && grouped.some((g) => g.slug === hash)) {
+      setTimeout(() => scrollToCollection(hash), 50);
+    }
+  }, [grouped, scrollToCollection]);
 
   // Track navbar bottom so the sticky right-side filter aligns just below it
   useEffect(() => {
@@ -432,7 +448,10 @@ export default function Catalogue() {
         </nav>
       )}
 
-      {/* Mobile / tablet — floating "Jump to" toggle + popover */}
+      {/* Mobile / tablet — floating "Jump to" toggle + popover.
+          bottom-6 (1.5rem) keeps this clear of FloatingContactWidget, which
+          sits higher up at bottom-6.5rem on every breakpoint — see
+          FloatingContactWidget.jsx. */}
       {grouped.length > 1 && (
         <div
           className="fixed right-4 z-[860] lg:hidden"
