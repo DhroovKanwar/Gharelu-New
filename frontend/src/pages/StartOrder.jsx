@@ -158,7 +158,7 @@ export default function StartOrder() {
               <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-secondary text-brand-accent transition-colors duration-300 group-hover:bg-brand-accent group-hover:text-white sm:h-12 sm:w-12">
                 <Cake className="h-5 w-5 sm:h-6 sm:w-6" strokeWidth={1.75} />
               </span>
-              <div className="min-w-0 flex-1">
+              <div className="min-w-0 flex-1 text-center">
                 <p className="font-heading text-base font-extrabold tracking-tight text-brand-dark sm:text-lg">
                   Customize Your Cake
                 </p>

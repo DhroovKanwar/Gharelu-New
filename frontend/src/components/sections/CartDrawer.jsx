@@ -2,12 +2,25 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { X, Plus, Minus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { useCart } from "../../context/CartContext";
+import { products } from "../../data/content";
 import Button from "../common/Button";
 
 export const CartDrawer = () => {
-  const { items, isOpen, closeCart, removeItem, updateQty, subtotal, count } = useCart();
+  const { items, isOpen, closeCart, removeItem, updateQty, addItem, subtotal, count } = useCart();
   const freeShipThreshold = 1500;
   const remaining = Math.max(0, freeShipThreshold - subtotal);
+
+  // A few quick "add more" suggestions — items not already in the box,
+  // leaning towards smaller add-on categories like Cookies/Pastries so they
+  // read as a natural top-up rather than another full cake.
+  const inCartIds = new Set(items.map((i) => i.id));
+  const suggestions = [...products]
+    .filter((p) => !inCartIds.has(p.id))
+    .sort((a, b) => {
+      const weight = (p) => (["Cookies", "Pastries", "Cupcakes"].includes(p.collection) ? 0 : 1);
+      return weight(a) - weight(b);
+    })
+    .slice(0, 6);
 
   return (
     <AnimatePresence>
@@ -84,6 +97,31 @@ export const CartDrawer = () => {
                       </li>
                     ))}
                   </ul>
+
+                  {suggestions.length > 0 && (
+                    <div className="mt-8 border-t border-brand-line pt-5">
+                      <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-brand-dark">Add more to your box</p>
+                      <div className="flex gap-3 overflow-x-auto pb-1" data-lenis-prevent>
+                        {suggestions.map((p) => (
+                          <button
+                            key={p.id}
+                            type="button"
+                            onClick={() => addItem(p)}
+                            className="flex w-20 shrink-0 flex-col items-center gap-1.5 rounded-2xl border border-brand-line p-2 text-center transition-colors hover:border-brand-accent"
+                            data-testid={`cart-suggest-${p.id}`}
+                          >
+                            <span className="relative">
+                              <img src={p.image} alt={p.name} className="h-14 w-14 rounded-full object-cover" />
+                              <span className="absolute -bottom-1 -right-1 grid h-5 w-5 place-items-center rounded-full bg-brand-accent text-white">
+                                <Plus size={12} />
+                              </span>
+                            </span>
+                            <span className="line-clamp-2 text-[11px] font-medium leading-tight text-brand-dark">{p.name}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div className="border-t border-brand-line px-6 py-5">
                   <div className="flex items-center justify-between">

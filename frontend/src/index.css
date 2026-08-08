@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 :root {
+    color-scheme: light;
     --bg: #fffdfb;
     --dark: #262626;
     --text: #444444;

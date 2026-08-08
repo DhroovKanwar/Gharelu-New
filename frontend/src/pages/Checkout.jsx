@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Lock, CreditCard, Smartphone, Wallet, ArrowRight, ShoppingBag } from "lucide-react";
+import { Lock, CreditCard, Smartphone, Wallet, ArrowRight, ShoppingBag, Truck, Store, UtensilsCrossed, Package } from "lucide-react";
 import { toast } from "sonner";
 import MainLayout from "../layouts/MainLayout";
 import PageHeader from "../components/common/PageHeader";
 import Section from "../components/common/Section";
 import Button from "../components/common/Button";
 import { useCart } from "../context/CartContext";
+import { useOrder } from "../context/OrderContext";
 import { cn } from "../utils/cn";
 import { createPaymentOrder, openRazorpayCheckout } from "../services/paymentService";
 
@@ -27,12 +28,43 @@ const PAYMENTS = [
   { id: "cod", label: "Cash on Delivery", icon: Wallet },
 ];
 
+const DELIVERY_MODES = [
+  { id: "delivery", label: "Delivery", icon: Truck },
+  { id: "pickup", label: "Pickup", icon: Store },
+];
+
+const PICKUP_TYPES = [
+  { id: "dine-in", label: "Dine-in", icon: UtensilsCrossed },
+  { id: "parcel", label: "Parcel", icon: Package },
+];
+
+const todayISO = () => new Date().toISOString().split("T")[0];
+const currentTimeHHMM = () => new Date().toTimeString().slice(0, 5);
+
 export default function Checkout() {
   const { items, subtotal, count, clearCart } = useCart();
   const navigate = useNavigate();
+  const { mode: startOrderMode } = useOrder();
+  // Carries over the Delivery/Pickup choice made on the "Start an Order" page.
+  // Falls back to "delivery" so something is always selected even if that
+  // page was skipped or the choice didn't come through.
+  const [deliveryMode, setDeliveryMode] = useState(
+    startOrderMode === "pickup" ? "pickup" : "delivery",
+  );
+  const [pickupType, setPickupType] = useState("dine-in");
   const [payment, setPayment] = useState("card");
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", address: "", city: "", pincode: "", date: "" });
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    pincode: "",
+    date: todayISO(),
+    time: currentTimeHHMM(),
+  });
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
@@ -41,7 +73,7 @@ export default function Checkout() {
 
   const placeOrder = async (e) => {
     e.preventDefault();
-    const required = ["name", "email", "phone", "address", "city", "pincode"];
+    const required = ["firstName", "lastName", "email", "phone", "address", "city", "pincode"];
     if (required.some((k) => !form[k].trim())) {
       toast.error("Please complete all delivery details.");
       return;
@@ -52,12 +84,15 @@ export default function Checkout() {
     }
     setLoading(true);
     const orderId = "GB" + Math.floor(100000 + Math.random() * 900000);
+    const fullName = `${form.firstName} ${form.lastName}`.trim();
     const order = {
       id: orderId,
       items,
       subtotal,
       delivery,
       total,
+      deliveryMode,
+      pickupType: deliveryMode === "pickup" ? pickupType : null,
       payment,
       customer: form,
       date: new Date().toISOString(),
@@ -89,7 +124,7 @@ export default function Checkout() {
         amount: total,
         name: "Gharelu Bake",
         description: `Order ${orderId} · ${count} item${count > 1 ? "s" : ""}`,
-        customer: { name: form.name, email: form.email, contact: form.phone },
+        customer: { name: fullName, email: form.email, contact: form.phone },
         localOrder,
         onSuccess: (paymentResult) => {
           // API-ready: orderService.create({ ...order, payment_result: paymentResult })
@@ -140,19 +175,58 @@ export default function Checkout() {
             <div>
               <h2 className="font-heading text-2xl font-extrabold tracking-tight text-brand-dark">Contact</h2>
               <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <Field label="Full Name" placeholder="Your name" value={form.name} onChange={set("name")} data-testid="checkout-name" />
-                <Field label="Phone" placeholder="Mobile number" value={form.phone} onChange={set("phone")} data-testid="checkout-phone" />
+                <Field label="First Name" placeholder="First name" value={form.firstName} onChange={set("firstName")} data-testid="checkout-first-name" />
+                <Field label="Last Name" placeholder="Last name" value={form.lastName} onChange={set("lastName")} data-testid="checkout-last-name" />
+                <Field label="Phone" placeholder="Mobile number" className="sm:col-span-2" value={form.phone} onChange={set("phone")} data-testid="checkout-phone" />
                 <Field label="Email" type="email" placeholder="you@email.com" className="sm:col-span-2" value={form.email} onChange={set("email")} data-testid="checkout-email" />
               </div>
             </div>
 
             <div>
               <h2 className="font-heading text-2xl font-extrabold tracking-tight text-brand-dark">Delivery</h2>
+
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                {DELIVERY_MODES.map((m) => (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => setDeliveryMode(m.id)}
+                    className={cn(
+                      "flex items-center justify-center gap-2 rounded-2xl border px-5 py-3.5 text-sm font-medium transition-colors",
+                      deliveryMode === m.id ? "border-brand-accent bg-brand-secondary text-brand-dark" : "border-brand-line text-brand-dark hover:border-brand-accent",
+                    )}
+                    data-testid={`delivery-mode-${m.id}`}
+                  >
+                    <m.icon size={18} className="text-brand-accent" /> {m.label}
+                  </button>
+                ))}
+              </div>
+
+              {deliveryMode === "pickup" && (
+                <div className="mt-3 grid grid-cols-2 gap-3">
+                  {PICKUP_TYPES.map((t) => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => setPickupType(t.id)}
+                      className={cn(
+                        "flex items-center justify-center gap-2 rounded-2xl border px-5 py-3.5 text-sm font-medium transition-colors",
+                        pickupType === t.id ? "border-brand-accent bg-brand-secondary text-brand-dark" : "border-brand-line text-brand-dark hover:border-brand-accent",
+                      )}
+                      data-testid={`pickup-type-${t.id}`}
+                    >
+                      <t.icon size={18} className="text-brand-accent" /> {t.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <Field label="Address" placeholder="House / street" className="sm:col-span-2" value={form.address} onChange={set("address")} data-testid="checkout-address" />
                 <Field label="City" placeholder="City" value={form.city} onChange={set("city")} data-testid="checkout-city" />
                 <Field label="Pincode" placeholder="Pincode" value={form.pincode} onChange={set("pincode")} data-testid="checkout-pincode" />
-                <Field label="Preferred Date" type="date" className="sm:col-span-2" value={form.date} onChange={set("date")} data-testid="checkout-date" />
+                <Field label="Preferred Date" type="date" value={form.date} onChange={set("date")} data-testid="checkout-date" />
+                <Field label="Preferred Time" type="time" value={form.time} onChange={set("time")} data-testid="checkout-time" />
               </div>
             </div>
 
