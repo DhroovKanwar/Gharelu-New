@@ -14,7 +14,8 @@ import PageHeader from "../components/common/PageHeader";
 import Section from "../components/common/Section";
 import CategorySection from "../components/common/CategorySection";
 import StickyCategoryTitle from "../components/common/StickyCategoryTitle";
-import { products } from "../data/content";
+import { products as mockProducts } from "../data/content";
+import { catalogService } from "../services/api";
 import { useOrder } from "../context/OrderContext";
 import { cn } from "../utils/cn";
 
@@ -34,6 +35,7 @@ const slugify = (s) =>
 
 export default function Catalogue() {
   const [isManualScroll, setIsManualScroll] = useState(false);
+  const [products, setProducts] = useState([]);
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("featured");
   const [activeSlug, setActiveSlug] = useState(null);
@@ -43,13 +45,29 @@ export default function Catalogue() {
   const rafRef = useRef(null);
   const initialHashHandled = useRef(false);
   const { mode, setMode } = useOrder();
-  
+useEffect(() => {
+  catalogService
+    .getProducts()
+    .then((response) => {
+      const apiProducts = response.data || [];
 
+      if (apiProducts.length > 0) {
+        setProducts(apiProducts);
+      } else {
+        console.warn("API returned no products. Using mock products.");
+        setProducts(mockProducts);
+      }
+    })
+    .catch((error) => {
+      console.warn("API unavailable. Using mock products.", error);
+      setProducts(mockProducts);
+    });
+}, []);
   // All collections in a stable order
-  const collectionOrder = useMemo(
-    () => Array.from(new Set(products.map((p) => p.collection))),
-    [],
-  );
+const collectionOrder = useMemo(
+  () => Array.from(new Set(products.map((p) => p.collection))),
+  [products],
+);
 
   // Filter + sort products (search filters across sections)
   const filteredProducts = useMemo(() => {
@@ -81,7 +99,7 @@ export default function Catalogue() {
         list.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
     }
     return list;
-  }, [query, sort]);
+}, [products, query, sort]);
 
   // Group filtered products by collection, keep original order
   const grouped = useMemo(() => {
@@ -231,9 +249,8 @@ export default function Catalogue() {
         // eyebrow="The Collection"
         title="Menu"
         subtitle="Every bake, 100% eggless and made fresh in small batches. Filter, search and find your next favourite."
-      
-                // breadcrumb={[{ label: "Home", to: "/" }, { label: "Catalogue" }]}
 
+        // breadcrumb={[{ label: "Home", to: "/" }, { label: "Catalogue" }]}
       />
 
       <Section className="pt-14 md:pt-16">
@@ -449,9 +466,9 @@ export default function Catalogue() {
       )}
 
       {/* Mobile / tablet — floating "Jump to" toggle + popover.
-          bottom-6 (1.5rem) keeps this clear of FloatingContactWidget, which
-          sits higher up at bottom-6.5rem on every breakpoint — see
-          FloatingContactWidget.jsx. */}
+            bottom-6 (1.5rem) keeps this clear of FloatingContactWidget, which
+            sits higher up at bottom-6.5rem on every breakpoint — see
+            FloatingContactWidget.jsx. */}
       {grouped.length > 1 && (
         <div
           className="fixed right-4 z-[860] lg:hidden"

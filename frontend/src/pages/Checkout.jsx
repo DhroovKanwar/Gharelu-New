@@ -1,7 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Lock, CreditCard, Smartphone, Wallet, ArrowRight, ShoppingBag, Truck, Store, UtensilsCrossed, Package } from "lucide-react";
+import {
+  Lock,
+  CreditCard,
+  Smartphone,
+  Wallet,
+  ArrowRight,
+  ShoppingBag,
+  Truck,
+  Store,
+  UtensilsCrossed,
+  Package,
+} from "lucide-react";
 import { toast } from "sonner";
 import MainLayout from "../layouts/MainLayout";
 import PageHeader from "../components/common/PageHeader";
@@ -10,11 +21,21 @@ import Button from "../components/common/Button";
 import { useCart } from "../context/CartContext";
 import { useOrder } from "../context/OrderContext";
 import { cn } from "../utils/cn";
-import { createPaymentOrder, openRazorpayCheckout } from "../services/paymentService";
+import {
+  isValidEmail,
+  isValidPhone,
+  isValidPincode,
+} from "../utils/validators";
+import {
+  createPaymentOrder,
+  openRazorpayCheckout,
+} from "../services/paymentService";
 
 const Field = ({ label, className, ...props }) => (
   <label className={cn("block", className)}>
-    <span className="mb-2 block text-xs font-semibold uppercase tracking-widest text-brand-dark">{label}</span>
+    <span className="mb-2 block text-xs font-semibold uppercase tracking-widest text-brand-dark">
+      {label}
+    </span>
     <input
       className="w-full rounded-2xl border border-brand-line bg-brand-bg px-5 py-3.5 text-brand-dark outline-none transition-shadow placeholder:text-brand-text/50 focus:ring-2 focus:ring-brand-accent"
       {...props}
@@ -61,6 +82,7 @@ export default function Checkout() {
     phone: "",
     address: "",
     city: "",
+    state: "",
     pincode: "",
     date: todayISO(),
     time: currentTimeHHMM(),
@@ -73,91 +95,202 @@ export default function Checkout() {
 
   const placeOrder = async (e) => {
     e.preventDefault();
-    const required = ["firstName", "lastName", "email", "phone", "address", "city", "pincode"];
+
+    const required = ["firstName", "lastName", "email", "phone"];
+
+    if (deliveryMode === "delivery") {
+      required.push("address", "city", "state", "pincode");
+    }
+
     if (required.some((k) => !form[k].trim())) {
-      toast.error("Please complete all delivery details.");
+      toast.error("Please complete all required details.");
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+
+    if (!isValidEmail(form.email)) {
       toast.error("Please enter a valid email address.");
       return;
     }
-    setLoading(true);
-    const orderId = "GB" + Math.floor(100000 + Math.random() * 900000);
-    const fullName = `${form.firstName} ${form.lastName}`.trim();
-    const order = {
-      id: orderId,
-      items,
-      subtotal,
-      delivery,
-      total,
-      deliveryMode,
-      pickupType: deliveryMode === "pickup" ? pickupType : null,
-      payment,
-      customer: form,
-      date: new Date().toISOString(),
-    };
 
-    // Cash on Delivery — unchanged from the original flow, no gateway involved.
-    if (payment === "cod") {
-      // API-ready: leadService / orderService.create(order)
-      setTimeout(() => {
-        localStorage.setItem("gb_last_order", JSON.stringify(order));
-        clearCart();
-        setLoading(false);
-        navigate("/order-success");
-      }, 700);
+    if (!isValidPhone(form.phone)) {
+      toast.error("Please enter a valid 10-digit mobile number.");
       return;
     }
 
-    // Card / UPI — routed through Razorpay Test Mode via paymentService.
-    // paymentService owns all gateway-specific logic; this page only reacts
-    // to success/failure so the UI never needs to know how payment happens.
+    if (deliveryMode === "delivery" && !isValidPincode(form.pincode)) {
+      toast.error("Please enter a valid 6-digit pincode.");
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      const localOrder = await createPaymentOrder({
-        amount: total,
-        currency: "INR",
-        receipt: orderId,
+      // 1. FIRST create the real order in Laravel.
+      const orderResponse = await fetch("http://localhost:8000/api/v1/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          first_name: form.firstName,
+          last_name: form.lastName,
+          email: form.email,
+          phone: form.phone,
+
+          delivery_mode: deliveryMode,
+
+          pickup_type:
+            deliveryMode === "pickup"
+              ? pickupType === "dine-in"
+                ? "dine_in"
+                : "parcel"
+              : null,
+
+          address_line_1: deliveryMode === "delivery" ? form.address : null,
+
+          address_line_2: null,
+
+          city: deliveryMode === "delivery" ? form.city : null,
+
+          state: deliveryMode === "delivery" ? form.state : null,
+
+          pincode: deliveryMode === "delivery" ? form.pincode : null,
+
+          landmark: null,
+
+          scheduled_date: form.date,
+          scheduled_time: form.time,
+
+          payment_method: payment === "cod" ? "cod" : payment,
+
+          notes: null,
+
+          idempotency_key: crypto.randomUUID(),
+
+          items: items.map((item) => ({
+            product_slug: item.slug || item.productSlug || item.id,
+            size: item.size || null,
+            quantity: item.qty || item.quantity,
+          })),
+        }),
       });
 
+      const createdOrder = await orderResponse.json();
+
+      if (!orderResponse.ok) {
+        throw new Error(
+          createdOrder?.message || "Unable to create your order.",
+        );
+      }
+
+      const orderId = createdOrder.data.orderNumber;
+
+      // 2. COD — order is already created in Laravel.
+      if (payment === "cod") {
+        localStorage.setItem("gb_last_order", JSON.stringify(createdOrder));
+
+        clearCart();
+        setLoading(false);
+        navigate("/order-success");
+        return;
+      }
+
+      // 3. Ask Laravel to create the REAL Razorpay order.
+      const razorpayOrder = await createPaymentOrder({
+        orderId,
+      });
+      console.log("PAYMENT ORDER FROM BACKEND:", razorpayOrder);
+      // 4. Open Razorpay with the REAL order_id.
       await openRazorpayCheckout({
-        amount: total,
         name: "Gharelu Bake",
         description: `Order ${orderId} · ${count} item${count > 1 ? "s" : ""}`,
-        customer: { name: fullName, email: form.email, contact: form.phone },
-        localOrder,
+        customer: {
+          name: `${form.firstName} ${form.lastName}`.trim(),
+          email: form.email,
+          contact: form.phone,
+        },
+
+        razorpayOrder,
+
         onSuccess: (paymentResult) => {
-          // API-ready: orderService.create({ ...order, payment_result: paymentResult })
+          const apiOrder = createdOrder.data;
+
           const finalOrder = {
-            ...order,
+            ...apiOrder,
+
+            // OrderSuccess frontend format
+            id: apiOrder.orderNumber,
+
+            items: (apiOrder.items || []).map((item, index) => ({
+              lineId: `${apiOrder.orderNumber}-${index}`,
+              name: item.productName,
+              image: item.productImage,
+              size: item.sizeLabel,
+              qty: item.quantity,
+              price: item.unitPrice,
+            })),
+
+            subtotal: apiOrder.subtotal,
+            delivery: apiOrder.deliveryFee,
+            total: apiOrder.total,
+
+            deliveryMode: apiOrder.deliveryMode,
+            pickupType: apiOrder.pickupType,
+            payment: apiOrder.paymentMethod,
+
+            customer: apiOrder.customer,
+
+            date: apiOrder.scheduledDate,
+            time: apiOrder.scheduledTime,
+
             razorpay_payment_id: paymentResult.razorpay_payment_id,
+            razorpay_order_id: paymentResult.razorpay_order_id,
             payment_status: "paid",
           };
+
           localStorage.setItem("gb_last_order", JSON.stringify(finalOrder));
+
           clearCart();
           setLoading(false);
           navigate("/order-success");
         },
+
         onFailure: (reason) => {
-          toast.error(reason || "Payment could not be completed. Please try again.");
+          toast.error(
+            reason || "Payment could not be completed. Please try again.",
+          );
+
           setLoading(false);
         },
       });
     } catch (err) {
-      toast.error("Something went wrong starting the payment. Please try again.");
+      console.error("Checkout error:", err);
+
+      toast.error(err?.message || "Something went wrong. Please try again.");
+
       setLoading(false);
     }
   };
-
   if (count === 0) {
     return (
       <MainLayout>
-        <PageHeader eyebrow="Checkout" title="Your box is empty" breadcrumb={[{ label: "Home", to: "/" }, { label: "Checkout" }]} />
+        <PageHeader
+          eyebrow="Checkout"
+          title="Your box is empty"
+          breadcrumb={[{ label: "Home", to: "/" }, { label: "Checkout" }]}
+        />
         <Section>
           <div className="flex flex-col items-center gap-5 py-10 text-center">
-            <div className="grid h-20 w-20 place-items-center rounded-full bg-brand-secondary text-brand-accent"><ShoppingBag size={30} /></div>
-            <p className="text-brand-text">Add a few treats before heading to checkout.</p>
-            <Button as="a" to="/catalogue" icon={<ArrowRight size={18} />}>Browse Cakes</Button>
+            <div className="grid h-20 w-20 place-items-center rounded-full bg-brand-secondary text-brand-accent">
+              <ShoppingBag size={30} />
+            </div>
+            <p className="text-brand-text">
+              Add a few treats before heading to checkout.
+            </p>
+            <Button as="a" to="/catalogue" icon={<ArrowRight size={18} />}>
+              Browse Cakes
+            </Button>
           </div>
         </Section>
       </MainLayout>
@@ -166,24 +299,67 @@ export default function Checkout() {
 
   return (
     <MainLayout>
-      <PageHeader eyebrow="Almost there" title="Checkout" breadcrumb={[{ label: "Home", to: "/" }, { label: "Cart", to: "/catalogue" }, { label: "Checkout" }]} />
+      <PageHeader
+        eyebrow="Almost there"
+        title="Checkout"
+        breadcrumb={[
+          { label: "Home", to: "/" },
+          { label: "Cart", to: "/catalogue" },
+          { label: "Checkout" },
+        ]}
+      />
 
       <Section className="pt-14 md:pt-16">
-        <form onSubmit={placeOrder} className="grid grid-cols-1 gap-10 lg:grid-cols-12" data-testid="checkout-form">
+        <form
+          onSubmit={placeOrder}
+          className="grid grid-cols-1 gap-10 lg:grid-cols-12"
+          data-testid="checkout-form"
+        >
           {/* Details */}
           <div className="space-y-10 lg:col-span-7">
             <div>
-              <h2 className="font-heading text-2xl font-extrabold tracking-tight text-brand-dark">Contact</h2>
+              <h2 className="font-heading text-2xl font-extrabold tracking-tight text-brand-dark">
+                Contact
+              </h2>
               <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <Field label="First Name" placeholder="First name" value={form.firstName} onChange={set("firstName")} data-testid="checkout-first-name" />
-                <Field label="Last Name" placeholder="Last name" value={form.lastName} onChange={set("lastName")} data-testid="checkout-last-name" />
-                <Field label="Phone" placeholder="Mobile number" className="sm:col-span-2" value={form.phone} onChange={set("phone")} data-testid="checkout-phone" />
-                <Field label="Email" type="email" placeholder="you@email.com" className="sm:col-span-2" value={form.email} onChange={set("email")} data-testid="checkout-email" />
+                <Field
+                  label="First Name"
+                  placeholder="First name"
+                  value={form.firstName}
+                  onChange={set("firstName")}
+                  data-testid="checkout-first-name"
+                />
+                <Field
+                  label="Last Name"
+                  placeholder="Last name"
+                  value={form.lastName}
+                  onChange={set("lastName")}
+                  data-testid="checkout-last-name"
+                />
+                <Field
+                  label="Phone"
+                  placeholder="Mobile number"
+                  className="sm:col-span-2"
+                  value={form.phone}
+                  onChange={set("phone")}
+                  data-testid="checkout-phone"
+                />
+                <Field
+                  label="Email"
+                  type="email"
+                  placeholder="you@email.com"
+                  className="sm:col-span-2"
+                  value={form.email}
+                  onChange={set("email")}
+                  data-testid="checkout-email"
+                />
               </div>
             </div>
 
             <div>
-              <h2 className="font-heading text-2xl font-extrabold tracking-tight text-brand-dark">Delivery</h2>
+              <h2 className="font-heading text-2xl font-extrabold tracking-tight text-brand-dark">
+                Delivery
+              </h2>
 
               <div className="mt-5 grid grid-cols-2 gap-3">
                 {DELIVERY_MODES.map((m) => (
@@ -193,7 +369,9 @@ export default function Checkout() {
                     onClick={() => setDeliveryMode(m.id)}
                     className={cn(
                       "flex items-center justify-center gap-2 rounded-2xl border px-5 py-3.5 text-sm font-medium transition-colors",
-                      deliveryMode === m.id ? "border-brand-accent bg-brand-secondary text-brand-dark" : "border-brand-line text-brand-dark hover:border-brand-accent",
+                      deliveryMode === m.id
+                        ? "border-brand-accent bg-brand-secondary text-brand-dark"
+                        : "border-brand-line text-brand-dark hover:border-brand-accent",
                     )}
                     data-testid={`delivery-mode-${m.id}`}
                   >
@@ -211,27 +389,70 @@ export default function Checkout() {
                       onClick={() => setPickupType(t.id)}
                       className={cn(
                         "flex items-center justify-center gap-2 rounded-2xl border px-5 py-3.5 text-sm font-medium transition-colors",
-                        pickupType === t.id ? "border-brand-accent bg-brand-secondary text-brand-dark" : "border-brand-line text-brand-dark hover:border-brand-accent",
+                        pickupType === t.id
+                          ? "border-brand-accent bg-brand-secondary text-brand-dark"
+                          : "border-brand-line text-brand-dark hover:border-brand-accent",
                       )}
                       data-testid={`pickup-type-${t.id}`}
                     >
-                      <t.icon size={18} className="text-brand-accent" /> {t.label}
+                      <t.icon size={18} className="text-brand-accent" />{" "}
+                      {t.label}
                     </button>
                   ))}
                 </div>
               )}
 
               <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <Field label="Address" placeholder="House / street" className="sm:col-span-2" value={form.address} onChange={set("address")} data-testid="checkout-address" />
-                <Field label="City" placeholder="City" value={form.city} onChange={set("city")} data-testid="checkout-city" />
-                <Field label="Pincode" placeholder="Pincode" value={form.pincode} onChange={set("pincode")} data-testid="checkout-pincode" />
-                <Field label="Preferred Date" type="date" value={form.date} onChange={set("date")} data-testid="checkout-date" />
-                <Field label="Preferred Time" type="time" value={form.time} onChange={set("time")} data-testid="checkout-time" />
+                <Field
+                  label="Address"
+                  placeholder="House / street"
+                  className="sm:col-span-2"
+                  value={form.address}
+                  onChange={set("address")}
+                  data-testid="checkout-address"
+                />
+                <Field
+                  label="City"
+                  placeholder="City"
+                  value={form.city}
+                  onChange={set("city")}
+                  data-testid="checkout-city"
+                />
+                <Field
+                  label="State"
+                  placeholder="State"
+                  value={form.state}
+                  onChange={set("state")}
+                  data-testid="checkout-state"
+                />
+                <Field
+                  label="Pincode"
+                  placeholder="Pincode"
+                  value={form.pincode}
+                  onChange={set("pincode")}
+                  data-testid="checkout-pincode"
+                />
+                <Field
+                  label="Preferred Date"
+                  type="date"
+                  value={form.date}
+                  onChange={set("date")}
+                  data-testid="checkout-date"
+                />
+                <Field
+                  label="Preferred Time"
+                  type="time"
+                  value={form.time}
+                  onChange={set("time")}
+                  data-testid="checkout-time"
+                />
               </div>
             </div>
 
             <div>
-              <h2 className="font-heading text-2xl font-extrabold tracking-tight text-brand-dark">Payment</h2>
+              <h2 className="font-heading text-2xl font-extrabold tracking-tight text-brand-dark">
+                Payment
+              </h2>
               <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
                 {PAYMENTS.map((p) => (
                   <button
@@ -240,7 +461,9 @@ export default function Checkout() {
                     onClick={() => setPayment(p.id)}
                     className={cn(
                       "flex items-center gap-3 rounded-2xl border px-5 py-4 text-left text-sm font-medium transition-colors",
-                      payment === p.id ? "border-brand-accent bg-brand-secondary text-brand-dark" : "border-brand-line text-brand-dark hover:border-brand-accent",
+                      payment === p.id
+                        ? "border-brand-accent bg-brand-secondary text-brand-dark"
+                        : "border-brand-line text-brand-dark hover:border-brand-accent",
                     )}
                     data-testid={`payment-${p.id}`}
                   >
@@ -248,7 +471,10 @@ export default function Checkout() {
                   </button>
                 ))}
               </div>
-              <p className="mt-3 flex items-center gap-2 text-xs text-brand-text"><Lock size={13} /> This is a demo checkout — no real payment is processed.</p>
+              <p className="mt-3 flex items-center gap-2 text-xs text-brand-text">
+                <Lock size={13} /> This is a demo checkout — no real payment is
+                processed.
+              </p>
             </div>
           </div>
 
@@ -261,28 +487,60 @@ export default function Checkout() {
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               className="lg:sticky lg:top-28 rounded-[1.75rem] border border-brand-line bg-brand-secondary p-7"
             >
-              <h3 className="font-heading text-xl font-extrabold text-brand-dark">Order Summary</h3>
+              <h3 className="font-heading text-xl font-extrabold text-brand-dark">
+                Order Summary
+              </h3>
               <ul className="mt-5 space-y-4">
                 {items.map((i) => (
                   <li key={i.lineId} className="flex items-center gap-4">
-                    <img src={i.image} alt={i.name} className="h-16 w-14 shrink-0 rounded-xl object-cover" />
+                    <img
+                      src={i.image}
+                      alt={i.name}
+                      className="h-16 w-14 shrink-0 rounded-xl object-cover"
+                    />
                     <div className="flex-1">
-                      <p className="font-heading text-sm font-bold text-brand-dark">{i.name}</p>
-                      <p className="text-xs text-brand-text">{i.size ? `${i.size} · ` : ""}Qty {i.qty}</p>
+                      <p className="font-heading text-sm font-bold text-brand-dark">
+                        {i.name}
+                      </p>
+                      <p className="text-xs text-brand-text">
+                        {i.size ? `${i.size} · ` : ""}Qty {i.qty}
+                      </p>
                     </div>
-                    <span className="font-heading font-bold text-brand-dark">₹{i.price * i.qty}</span>
+                    <span className="font-heading font-bold text-brand-dark">
+                      ₹{i.price * i.qty}
+                    </span>
                   </li>
                 ))}
               </ul>
               <div className="mt-6 space-y-2 border-t border-brand-line pt-5 text-sm">
-                <div className="flex justify-between text-brand-text"><span>Subtotal</span><span className="text-brand-dark">₹{subtotal}</span></div>
-                <div className="flex justify-between text-brand-text"><span>Delivery</span><span className="text-brand-dark">{delivery === 0 ? "Free" : `₹${delivery}`}</span></div>
+                <div className="flex justify-between text-brand-text">
+                  <span>Subtotal</span>
+                  <span className="text-brand-dark">₹{subtotal}</span>
+                </div>
+                <div className="flex justify-between text-brand-text">
+                  <span>Delivery</span>
+                  <span className="text-brand-dark">
+                    {delivery === 0 ? "Free" : `₹${delivery}`}
+                  </span>
+                </div>
                 <div className="flex justify-between pt-3 text-base font-bold">
                   <span className="text-brand-dark">Total</span>
-                  <span className="font-heading text-xl font-extrabold text-brand-dark" data-testid="checkout-total">₹{total}</span>
+                  <span
+                    className="font-heading text-xl font-extrabold text-brand-dark"
+                    data-testid="checkout-total"
+                  >
+                    ₹{total}
+                  </span>
                 </div>
               </div>
-              <Button type="submit" disabled={loading} size="lg" className="mt-6 w-full" icon={<ArrowRight size={18} />} data-testid="place-order">
+              <Button
+                type="submit"
+                disabled={loading}
+                size="lg"
+                className="mt-6 w-full"
+                icon={<ArrowRight size={18} />}
+                data-testid="place-order"
+              >
                 {loading ? "Placing order…" : `Place Order · ₹${total}`}
               </Button>
             </motion.div>

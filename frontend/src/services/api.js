@@ -17,14 +17,41 @@ export const http = axios.create({ baseURL: API });
 const mock = (data, delay = 250) =>
   new Promise((resolve) => setTimeout(() => resolve(data), delay));
 
+// export const catalogService = {
+//   getFeaturedCakes: () => mock(content.featuredCakes),
+//   getCategories: () => mock(content.categories),
+//   getTestimonials: () => mock(content.testimonials),
+//   getEvents: () => mock(content.events),
+//   getGallery: () => mock(content.gallery),
+//   getInstagram: () => mock(content.instagram),
+//   getFaqs: () => mock(content.faqs),
+// };
+
 export const catalogService = {
-  getFeaturedCakes: () => mock(content.featuredCakes),
-  getCategories: () => mock(content.categories),
-  getTestimonials: () => mock(content.testimonials),
-  getEvents: () => mock(content.events),
-  getGallery: () => mock(content.gallery),
-  getInstagram: () => mock(content.instagram),
-  getFaqs: () => mock(content.faqs),
+getProducts: async (params = {}) => {
+  const response = await http.get("/v1/products", { params });
+  return response.data;
+},
+
+getFeaturedCakes: async () => {
+  const response = await http.get("/v1/products/featured");
+  return response.data;
+},
+
+getBestsellers: async () => {
+  const response = await http.get("/v1/products/bestsellers");
+  return response.data;
+},
+
+getProduct: async (slug) => {
+  const response = await http.get(`/v1/products/${slug}`);
+  return response.data;
+},
+
+getCategories: async () => {
+  const response = await http.get("/v1/categories");
+  return response.data;
+},
 };
 
 export const leadService = {

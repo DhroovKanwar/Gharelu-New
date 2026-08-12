@@ -8,6 +8,7 @@ import Section from "../components/common/Section";
 import Button from "../components/common/Button";
 import { brand } from "../data/content";
 import { leadService } from "../services/api";
+import { isValidEmail, isValidPhone } from "../utils/validators";
 
 const Field = ({ label, ...props }) => (
   <label className="block">
@@ -42,14 +43,27 @@ export default function ContactPage() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (!form.firstName || !form.lastName || !form.email || !form.message) {
+    if (
+      !form.firstName.trim() ||
+      !form.lastName.trim() ||
+      !form.email.trim() ||
+      !form.message.trim()
+    ) {
       toast.error(
         "Please fill in your first name, last name, email and message.",
       );
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+    if (!isValidEmail(form.email)) {
       toast.error("Please enter a valid email address.");
+      return;
+    }
+    if (form.phone.trim() && !isValidPhone(form.phone)) {
+      toast.error("Please enter a valid 10-digit mobile number.");
+      return;
+    }
+    if (form.message.trim().length < 10) {
+      toast.error("Please add a few more details to your message.");
       return;
     }
     setLoading(true);

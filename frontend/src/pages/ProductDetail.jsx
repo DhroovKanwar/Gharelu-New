@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Plus, Minus, Heart, ShoppingBag, Check, Leaf, Truck, ShieldCheck } from "lucide-react";
@@ -9,10 +9,12 @@ import Section from "../components/common/Section";
 import Breadcrumb from "../components/common/Breadcrumb";
 import Rating from "../components/common/Rating";
 import Button from "../components/common/Button";
+import CakeLoader from "../components/common/CakeLoader";
 import ProductCard from "../components/common/ProductCard";
 import QuickViewModal from "../components/common/QuickViewModal";
 import NotFound from "./NotFound";
-import { products } from "../data/content";
+import { products as mockProducts } from "../data/content";
+import { catalogService } from "../services/api";
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
 import { cn } from "../utils/cn";
@@ -25,18 +27,58 @@ const perks = [
 
 export default function ProductDetail() {
   const { id } = useParams();
-  const product = useMemo(() => products.find((p) => p.id === id), [id]);
+ const [product, setProduct] = useState(null);
+const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+  setLoading(true);
+
+  catalogService
+    .getProduct(id)
+    .then((response) => {
+      const apiProduct = response.data;
+
+      if (apiProduct) {
+        setProduct(apiProduct);
+      } else {
+        setProduct(mockProducts.find((p) => p.id === id) || null);
+      }
+    })
+    .catch((error) => {
+      console.warn("API unavailable. Using mock product.", error);
+      setProduct(mockProducts.find((p) => p.id === id) || null);
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+}, [id]);
   const { addItem, openCart } = useCart();
   const wishlist = useWishlist();
   const [size, setSize] = useState(product?.sizes?.[0] || null);
   const [qty, setQty] = useState(1);
-  const [activeImg, setActiveImg] = useState(product?.gallery?.[0] || product?.image);
+  const [activeImg, setActiveImg] = useState(null);
   const [quick, setQuick] = useState(null);
 
-  if (!product) return <NotFound />;
+useEffect(() => {
+  if (product) {
+    setActiveImg(product.gallery?.[0] || product.image);
+    setSize(product.sizes?.[0] || null);
+  }
+}, [product]);
+
+if (loading) return <CakeLoader />;
+
+if (!product) return <NotFound />;
 
   const price = size?.price ?? product.price;
-  const related = products.filter((p) => p.collection === product.collection && p.id !== product.id).slice(0, 3);
+  // const related = products.filter((p) => p.collection === product.collection && p.id !== product.id).slice(0, 3);
+  const related = mockProducts
+  .filter(
+    (p) =>
+      p.collection === product.collection &&
+      p.id !== product.id
+  )
+  .slice(0, 3);
   const inWishlist = wishlist.has(product.id);
 
   const handleAdd = () => {

@@ -5,6 +5,8 @@
  * config endpoint) with no drift.
  */
 
+import { isValidPhone, isValidPincode } from "../../utils/validators";
+
 export const OCCASIONS = [
   "Birthday",
   "Anniversary",
@@ -214,8 +216,8 @@ export const validateStep = (step, s) => {
     if (isBlank(s.firstName)) errors.firstName = "First name is required";
     if (isBlank(s.lastName)) errors.lastName = "Last name is required";
     if (isBlank(s.phone)) errors.phone = "Contact number is required";
-    else if (String(s.phone).replace(/\D/g, "").length < 7)
-      errors.phone = "Enter a valid contact number";
+    else if (!isValidPhone(s.phone))
+      errors.phone = "Enter a valid 10-digit mobile number";
     if (s.email && !isEmail(s.email)) errors.email = "Enter a valid email";
   }
   if (step === 2) {
@@ -239,6 +241,7 @@ export const validateStep = (step, s) => {
       if (isBlank(s.city)) errors.city = "City is required";
       if (isBlank(s.state)) errors.state = "State is required";
       if (isBlank(s.pincode)) errors.pincode = "Pincode is required";
+      else if (!isValidPincode(s.pincode)) errors.pincode = "Enter a valid 6-digit pincode";
     }
   }
   // Steps 6 and 7 are optional — no required fields.
