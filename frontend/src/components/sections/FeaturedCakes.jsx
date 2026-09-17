@@ -12,7 +12,8 @@ export const FeaturedCakes = () => (
       <SectionHeading
         eyebrow="Signature Collection"
         title="Cakes worth the occasion"
-        intro="Hand-finished, small-batch and unmistakably premium — our most-loved eggless creations."
+        intro="Exquisitely crafted and made from scratch, our cakes bring together indulgent flavours and beautiful artistry, made especially for your most cherished moments.
+"
       />
       <Reveal delay={0.2}>
         <Button as="a" href="#categories" variant="ghost" icon={<ArrowRight size={18} />} className="shrink-0">

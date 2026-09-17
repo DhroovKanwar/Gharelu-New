@@ -21,3 +21,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# raw image staging (working copies live in public/images)
+/gharelu pics/
+frontend.zip

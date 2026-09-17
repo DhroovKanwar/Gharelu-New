@@ -44,9 +44,16 @@ const Field = ({ label, className, ...props }) => (
 );
 
 const PAYMENTS = [
-  { id: "card", label: "Card", icon: CreditCard },
-  { id: "upi", label: "UPI", icon: Smartphone },
-  { id: "cod", label: "Cash on Delivery", icon: Wallet },
+  {
+    id: "online",
+    label: "Pay Online",
+    icon: CreditCard,
+  },
+  {
+    id: "cod",
+    label: "Cash on Delivery",
+    icon: Wallet,
+  },
 ];
 
 const DELIVERY_MODES = [
@@ -73,7 +80,7 @@ export default function Checkout() {
     startOrderMode === "pickup" ? "pickup" : "delivery",
   );
   const [pickupType, setPickupType] = useState("dine-in");
-  const [payment, setPayment] = useState("card");
+  const [payment, setPayment] = useState("online");
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     firstName: "",
@@ -162,7 +169,7 @@ export default function Checkout() {
           scheduled_date: form.date,
           scheduled_time: form.time,
 
-          payment_method: payment === "cod" ? "cod" : payment,
+          payment_method: payment,
 
           notes: null,
 
@@ -188,7 +195,39 @@ export default function Checkout() {
 
       // 2. COD — order is already created in Laravel.
       if (payment === "cod") {
-        localStorage.setItem("gb_last_order", JSON.stringify(createdOrder));
+        const apiOrder = createdOrder.data;
+
+        const finalOrder = {
+          ...apiOrder,
+
+          id: apiOrder.orderNumber,
+
+          items: (apiOrder.items || []).map((item, index) => ({
+            lineId: `${apiOrder.orderNumber}-${index}`,
+            name: item.productName,
+            image: item.productImage,
+            size: item.sizeLabel,
+            qty: item.quantity,
+            price: item.unitPrice,
+          })),
+
+          subtotal: apiOrder.subtotal,
+          delivery: apiOrder.deliveryFee,
+          total: apiOrder.total,
+
+          deliveryMode: apiOrder.deliveryMode,
+          pickupType: apiOrder.pickupType,
+          payment: apiOrder.paymentMethod,
+
+          customer: apiOrder.customer,
+
+          date: apiOrder.scheduledDate,
+          time: apiOrder.scheduledTime,
+
+          payment_status: apiOrder.paymentStatus,
+        };
+
+        localStorage.setItem("gb_last_order", JSON.stringify(finalOrder));
 
         clearCart();
         setLoading(false);

@@ -49,15 +49,15 @@ export const IMG = {
 export const brand = {
   name: "GHARELU.BAKE",
   tagline: "Pure • Premium • Eggless",
-  phone: "+91 98765 43210",
+  phone: "07973 714215",
   email: "hello@gharelu.bake",
-  address: "14, Blossom Lane, Bandra West, Mumbai 400050",
-  hours: "Tue – Sun · 9:00 AM – 9:00 PM",
+  address: "Unit 38, Ground Floor, Orbit Signature Walk, VIP Road, Zirakpur, Punjab 140603",
+  hours: "Daily · 11:00 AM – 10:00 PM",
   socials: [
-    { label: "Instagram", href: "https://instagram.com", icon: "instagram" },
+    { label: "Instagram", href: "https://instagram.com/gharelu.bake", icon: "instagram" },
     { label: "Facebook", href: "https://facebook.com", icon: "facebook" },
     { label: "Pinterest", href: "https://pinterest.com", icon: "pinterest" },
-    { label: "WhatsApp", href: "https://wa.me/919876543210", icon: "whatsapp" },
+    { label: "WhatsApp", href: "https://wa.me/917973714215", icon: "whatsapp" },
   ],
 };
 
@@ -96,7 +96,7 @@ export const whyChooseUs = [
   {
     no: "03",
     title: "Pure Ingredients",
-    body: "Belgian couverture, single-origin vanilla, real fruit and zero preservatives. If we would not eat it, we would not sell it.",
+    body: "Belgian Chocolate, Fresh Cream, Real Fruit, Zero Preservatives, No Artificial Flavours. If we would not eat it, we would not sell it.",
   },
   {
     no: "04",
@@ -107,8 +107,8 @@ export const whyChooseUs = [
 
 export const corporate = {
   title: "Corporate Gifting, Beautifully Boxed",
-  body: "Curated hampers and bespoke branded confections that make your team and clients feel genuinely valued. Bulk pricing, custom packaging, and pan-city delivery.",
-  image: IMG.dessertTable,
+  body: "Curated hampers and bespoke branded confections that make your team and clients feel genuinely valued. Bulk pricing, custom packaging, and PAN INDIA delivery.",
+  image: "/images/corprate-home.jpg",
   points: [
     "Custom branded packaging & ribbons",
     "Volume pricing for 25+ boxes",

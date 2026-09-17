@@ -50,14 +50,21 @@ export const Hero = () => {
           </motion.p>
 
           <h1 className="font-heading text-4xl font-extrabold leading-[0.98] tracking-tight text-brand-dark sm:text-6xl lg:text-[5.4rem]">
-            <MaskedLines lines={["Eggless bakes,", "made purely"]} delay={0.15} />
+            <MaskedLines
+              lines={["Eggless bakes,", "made fresh &"]}
+              delay={0.15}
+            />
             <span className="mt-1 block overflow-hidden pb-[0.12em]">
               <motion.span
                 className="block italic text-brand-accent"
                 style={{ fontFamily: "Poppins" }}
                 initial={{ y: "115%" }}
                 animate={{ y: "0%" }}
-                transition={{ duration: 1.05, ease: [0.16, 1, 0.3, 1], delay: 0.39 }}
+                transition={{
+                  duration: 1.05,
+                  ease: [0.16, 1, 0.3, 1],
+                  delay: 0.39,
+                }}
               >
                 premium.
               </motion.span>
@@ -70,8 +77,8 @@ export const Hero = () => {
             transition={{ delay: 0.7, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             className="mt-7 max-w-md text-base leading-relaxed text-brand-text sm:text-lg"
           >
-            Small-batch patisserie baked fresh every morning — no eggs, no
-            preservatives, no compromise. Just the warmth of home, elevated.
+            No eggs. No unnecessary preservatives. No shortcuts. Just honest
+            baking, made with care.
           </motion.p>
 
           <motion.div
@@ -80,10 +87,22 @@ export const Hero = () => {
             transition={{ delay: 0.85, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             className="mt-9 flex flex-wrap items-center gap-4"
           >
-            <Button as="a" href="#featured" size="lg" icon={<ArrowDownRight size={18} />} data-testid="hero-cta-shop">
+            <Button
+              as="a"
+              href="#featured"
+              size="lg"
+              icon={<ArrowDownRight size={18} />}
+              data-testid="hero-cta-shop"
+            >
               Explore Cakes
             </Button>
-            <Button as="a" href="#corporate" size="lg" variant="outline" data-testid="hero-cta-corporate">
+            <Button
+              as="a"
+              href="#corporate"
+              size="lg"
+              variant="outline"
+              data-testid="hero-cta-corporate"
+            >
               Corporate Gifting
             </Button>
           </motion.div>
@@ -95,7 +114,9 @@ export const Hero = () => {
             className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-4 sm:gap-x-8"
           >
             <div>
-              <p className="font-heading text-3xl font-extrabold text-brand-dark">4.9</p>
+              <p className="font-heading text-3xl font-extrabold text-brand-dark">
+                4.9
+              </p>
               <div className="mt-1 flex items-center gap-0.5 text-brand-accent">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} size={13} fill="currentColor" />
@@ -104,20 +125,31 @@ export const Hero = () => {
             </div>
             <div className="h-10 w-px bg-brand-line" />
             <div>
-              <p className="font-heading text-3xl font-extrabold text-brand-dark">12k+</p>
-              <p className="mt-1 text-xs uppercase tracking-widest text-brand-text">Boxes gifted</p>
+              <p className="font-heading text-3xl font-extrabold text-brand-dark">
+                12k+
+              </p>
+              <p className="mt-1 text-xs uppercase tracking-widest text-brand-text">
+                Boxes gifted
+              </p>
             </div>
             <div className="h-10 w-px bg-brand-line" />
             <div>
-              <p className="font-heading text-3xl font-extrabold text-brand-dark">100%</p>
-              <p className="mt-1 text-xs uppercase tracking-widest text-brand-text">Eggless</p>
+              <p className="font-heading text-3xl font-extrabold text-brand-dark">
+                100%
+              </p>
+              <p className="mt-1 text-xs uppercase tracking-widest text-brand-text">
+                Eggless
+              </p>
             </div>
           </motion.div>
         </div>
 
         {/* Visual */}
         <div className="relative lg:col-span-6 lg:pl-8">
-          <motion.div style={{ y: yBlob }} className="pointer-events-none absolute -right-6 top-6 -z-10 hidden lg:block">
+          <motion.div
+            style={{ y: yBlob }}
+            className="pointer-events-none absolute -right-6 top-6 -z-10 hidden lg:block"
+          >
             <div className="h-72 w-72 rounded-full bg-brand-primary/50 blur-2xl" />
           </motion.div>
 
@@ -143,7 +175,11 @@ export const Hero = () => {
                 <motion.div
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{
+                    duration: 0.7,
+                    delay: 0.6,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
                   className="absolute inset-x-4 bottom-4 rounded-2xl border border-brand-line bg-brand-bg/95 p-4 shadow-[0_18px_45px_-16px_rgba(215,134,159,0.55)] backdrop-blur-xl sm:inset-x-6 sm:bottom-6 sm:p-5"
                   data-testid="hero-campaign-badge"
                 >
@@ -178,7 +214,11 @@ export const Hero = () => {
               style={{ y: yMacaron }}
               className="absolute -left-6 bottom-16 hidden h-40 w-40 overflow-hidden rounded-3xl border-4 border-brand-bg shadow-xl sm:block"
             >
-              <img src={IMG.macaronsPink} alt="Macarons" className="h-full w-full object-cover" />
+              <img
+                src="/images/owner.jpg"
+                alt="Gharelu Bake owner"
+                className="h-full w-full object-cover"
+              />
             </motion.div>
 
             {/* rotating premium seal */}
@@ -189,16 +229,29 @@ export const Hero = () => {
             >
               <svg viewBox="0 0 100 100" className="h-full w-full">
                 <defs>
-                  <path id="circlePath" d="M50,50 m-37,0 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0" />
+                  <path
+                    id="circlePath"
+                    d="M50,50 m-37,0 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0"
+                  />
                 </defs>
                 <circle cx="50" cy="50" r="49" fill="#262626" />
-                <text fill="#EFC7D3" fontSize="10" letterSpacing="3.4" fontFamily="Poppins" fontWeight="600">
+                <text
+                  fill="#EFC7D3"
+                  fontSize="10"
+                  letterSpacing="3.4"
+                  fontFamily="Poppins"
+                  fontWeight="600"
+                >
                   <textPath href="#circlePath" startOffset="0%">
                     PURE • PREMIUM • EGGLESS •
                   </textPath>
                 </text>
               </svg>
-              <Star size={20} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-brand-primary" fill="currentColor" />
+              <Star
+                size={20}
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-brand-primary"
+                fill="currentColor"
+              />
             </motion.div>
           </motion.div>
         </div>

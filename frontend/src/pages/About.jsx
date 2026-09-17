@@ -6,6 +6,7 @@ import Section from "../components/common/Section";
 import SectionHeading from "../components/common/SectionHeading";
 import Reveal from "../components/common/Reveal";
 import Button from "../components/common/Button";
+import Location from "../components/sections/Location";
 import { whyChooseUs, IMG, brand } from "../data/content";
 
 const stats = [
@@ -29,7 +30,7 @@ export default function About() {
         <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-2 lg:gap-20">
           <Reveal>
             <div className="overflow-hidden rounded-[2rem] rounded-tr-[7rem] border border-brand-line">
-              <img src={IMG.chefIcing} alt="Our kitchen" className="aspect-[5/6] w-full object-cover" />
+              <img src="/images/about-preeti.jpg" alt="Preeti hand-crafting a chocolate treat" className="aspect-[5/6] w-full object-cover" />
             </div>
           </Reveal>
           <div>
@@ -82,6 +83,8 @@ export default function About() {
           <Button as="a" to="/contact" variant="dark" className="mt-5">Get in touch</Button>
         </div>
       </Section>
+
+      <Location />
     </MainLayout>
   );
 }

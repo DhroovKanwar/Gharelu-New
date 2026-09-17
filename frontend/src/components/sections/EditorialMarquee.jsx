@@ -6,9 +6,11 @@ const WORDS = [
   "Belgian Chocolate",
   "Fresh Cream",
   "Real Fruit",
-  "Single-Origin Vanilla",
   "Slow Baked",
   "Zero Preservatives",
+  "No Artificial Flavours",
+  "Small Batch",
+  "Eggless",
 ];
 
 export const EditorialMarquee = () => (

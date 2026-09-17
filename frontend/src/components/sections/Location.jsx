@@ -20,7 +20,7 @@ export const Location = () => (
   <Section id="location" className="bg-brand-secondary" data-testid="location-section">
     <div className="grid grid-cols-1 gap-14 lg:grid-cols-2 lg:gap-20">
       <div>
-        <SectionHeading eyebrow="Visit / Order" title="Come say hello" intro="Walk in for a warm slice, or reach out to place a custom order." />
+        <SectionHeading eyebrow="Visit / Order" title="Come say hello" intro="Walk in for a warm slice, or reach out to place a custom order. Rated 4.9★ from 123 Google reviews." />
         <div className="mt-10">
           <InfoRow icon={MapPin} label="Studio" value={brand.address} />
           <InfoRow icon={Clock} label="Hours" value={brand.hours} />
@@ -38,7 +38,7 @@ export const Location = () => (
       >
         <iframe
           title="GHARELU.BAKE location"
-          src="https://www.google.com/maps?q=Bandra%20West%20Mumbai&output=embed"
+          src="https://www.google.com/maps?q=Gharelu.Bake%2C%20Orbit%20Signature%20Walk%2C%20VIP%20Road%2C%20Zirakpur%2C%20Punjab%20140603&output=embed"
           className="h-full min-h-[26rem] w-full"
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"

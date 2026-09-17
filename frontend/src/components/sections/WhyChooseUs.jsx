@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import Section from "../common/Section";
-import { whyChooseUs, IMG } from "../../data/content";
+import { whyChooseUs } from "../../data/content";
 
 export const WhyChooseUs = () => (
   <Section id="why" className="bg-brand-secondary" data-testid="why-section">
@@ -15,11 +15,10 @@ export const WhyChooseUs = () => (
             Why we&rsquo;re worth the indulgence
           </h2>
           <p className="mt-6 max-w-md text-base leading-relaxed text-brand-text sm:text-lg">
-            Four principles guide everything that leaves our kitchen. No factory
-            lines. No shortcuts. Only craft.
+            Four principles guide everything that leaves our kitchen. Craft, Quality, Freshness and Care. We believe in the power of small-batch, handcrafted baking and we never compromise on quality, freshness or flavour.
           </p>
           <div className="mt-10 overflow-hidden rounded-[1.75rem] rounded-tr-[6rem] border border-brand-line">
-            <img src={IMG.chefIcing} alt="Pastry chef at work" className="aspect-[5/4] w-full object-cover" />
+            <img src="/images/home-cake.jpg" alt="Home-style cake dusted with cocoa" className="aspect-[5/4] w-full object-cover" />
           </div>
         </div>
       </div>
