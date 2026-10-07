@@ -32,7 +32,7 @@ export const CartDrawer = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
             onClick={closeCart}
-            className="fixed inset-0 z-[60] bg-brand-dark/40 backdrop-blur-sm"
+            className="fixed inset-0 z-[1300] bg-brand-dark/40 backdrop-blur-sm"
             data-testid="cart-overlay"
           />
           <motion.aside
@@ -40,7 +40,7 @@ export const CartDrawer = () => {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed right-0 top-0 z-[70] flex h-full w-full max-w-md flex-col bg-brand-bg shadow-2xl"
+            className="fixed right-0 top-0 z-[1310] flex h-full w-full max-w-md flex-col bg-brand-bg shadow-2xl"
             data-testid="cart-drawer"
           >
             <div className="flex items-center justify-between border-b border-brand-line px-6 py-5">

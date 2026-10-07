@@ -55,25 +55,28 @@ export const brand = {
   hours: "Daily · 11:00 AM – 10:00 PM",
   socials: [
     { label: "Instagram", href: "https://instagram.com/gharelu.bake", icon: "instagram" },
-    { label: "Facebook", href: "https://facebook.com", icon: "facebook" },
-    { label: "Pinterest", href: "https://pinterest.com", icon: "pinterest" },
+    // { label: "Facebook", href: "https://facebook.com", icon: "facebook" },
+    // { label: "Pinterest", href: "https://pinterest.com", icon: "pinterest" },
     { label: "WhatsApp", href: "https://wa.me/917973714215", icon: "whatsapp" },
   ],
 };
 
 export const announcements = [
   "100% Eggless · Baked Fresh Daily",
-  "Free Delivery on Orders Over ₹1500",
   "Same-Day Dispatch Before 12 PM",
   "Preservative-Free · Small Batch",
   "Custom Celebration Cakes on Order",
+  "Corprate Gifting · PAN India Delivery",
+  "Festival Gif Hampers · Bulk Orders Welcome",
 ];
 
 export const navLinks = [
   { label: "Menu", href: "/catalogue" },
+  { label: "Hampers", href: "/hampers" },
   { label: "About", href: "/about" },
   { label: "Corporate", href: "/corporate" },
   { label: "Gallery", href: "/gallery" },
+  { label: "Track Order", href: "/track-order" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -121,13 +124,15 @@ export const events = eventsData;
 
 export const gallery = galleryData;
 
+// Real @gharelu.bake posts, shown as a photo grid linking to each post.
+// To add / swap a post: paste its shortcode (the part after /p/ in the URL) and save its photo as public/images/instagram/<shortcode>.jpg.
 export const instagram = [
-  { id: 1, image: IMG.cupcakesFrost, likes: 482 },
-  { id: 2, image: IMG.donutPink, likes: 731 },
-  { id: 3, image: IMG.pastry2, likes: 356 },
-  { id: 4, image: IMG.cupcakeRack, likes: 908 },
-  { id: 5, image: IMG.macaronsPink, likes: 612 },
-  { id: 6, image: IMG.strawberryCake, likes: 1204 },
+  { id: 1, shortcode: "Db7ecbxnZaU" },
+  { id: 2, shortcode: "DTX7fWUEooJ" },
+  { id: 3, shortcode: "DQYb_s3kg8s" },
+  { id: 4, shortcode: "DOsRjtGkR7-" },
+  { id: 5, shortcode: "DVN0AmmEvZi" },
+  { id: 6, shortcode: "DSmN7pzkirM" },
 ];
 
 export const testimonials = testimonialsData;
@@ -146,6 +151,7 @@ export const footerLinks = [
       { label: "Corporate Gifting", href: "/corporate" },
       { label: "Events", href: "/events" },
       { label: "Wishlist", href: "/wishlist" },
+      { label: "Track Order", href: "/track-order" },
     ],
   },
   {

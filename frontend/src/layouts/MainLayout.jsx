@@ -1,3 +1,4 @@
+import { useState } from "react";
 import useLenis from "../hooks/useLenis";
 import AnnouncementBar from "../components/sections/AnnouncementBar";
 import Navbar from "../components/sections/Navbar";
@@ -12,6 +13,10 @@ import ChatWidget from '../components/chat/ChatWidget'
  */
 export const MainLayout = ({ children }) => {
   useLenis();
+  // The contact widget's fan-out and the chat window both live in the same
+  // bottom-right corner on mobile. Keeping them mutually exclusive here
+  // stops the contact buttons from overlapping the chat bubble/window.
+  const [openWidget, setOpenWidget] = useState(null); // "contact" | "chat" | null
   return (
     <div className="min-h-screen bg-brand-bg">
       <AnnouncementBar />
@@ -20,8 +25,14 @@ export const MainLayout = ({ children }) => {
       <Footer />
       <CartDrawer />
       <FloatingOrderCTA />
-      <FloatingContactWidget />
-       <ChatWidget />
+      <FloatingContactWidget
+        forceClose={openWidget === "chat"}
+        onOpenChange={(isOpen) => setOpenWidget(isOpen ? "contact" : null)}
+      />
+      <ChatWidget
+        forceClose={openWidget === "contact"}
+        onOpenChange={(isOpen) => setOpenWidget(isOpen ? "chat" : null)}
+      />
     </div>
   );
 };

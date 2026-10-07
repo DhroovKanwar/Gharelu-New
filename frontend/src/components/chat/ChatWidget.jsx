@@ -1,15 +1,26 @@
 import { useState, useRef, useEffect } from "react";
 
 // const API_URL = "/api/chat"; // Laravel backend route
-const API_URL = "http://localhost:8000/api/chat";
+const API_URL = "http://localhost:8001/api/chat";
 // Brand colors — matched to the Gharelu.Bake site theme
 const ROSE = "#D68FA3";
 const ROSE_DARK = "#C17A8F";
 const ROSE_LIGHT = "#FCEEF2";
 const CREAM = "#FFFBF7";
 
-export default function ChatWidget() {
+export default function ChatWidget({ forceClose = false, onOpenChange } = {}) {
   const [isOpen, setIsOpen] = useState(false);
+
+  const updateOpen = (value) => {
+    setIsOpen(value);
+    onOpenChange?.(value);
+  };
+
+  // Let the parent close this (e.g. the contact widget was opened instead)
+  // so the chat window never overlaps the fanned-out contact buttons.
+  useEffect(() => {
+    if (forceClose) setIsOpen(false);
+  }, [forceClose]);
   const [messages, setMessages] = useState([
     {
       role: "assistant",
@@ -71,7 +82,9 @@ export default function ChatWidget() {
     // and FloatingOrderCTA.jsx for the matching offsets. Desktop keeps the
     // original bottom-6/right-6 (24px/24px) position unchanged.
     <div
-      className="fixed z-[1200] bottom-44 right-4 md:bottom-6 md:right-6"
+      className={`fixed z-[1200] bottom-44 right-4 transition-opacity duration-150 md:bottom-6 md:right-6 md:opacity-100 md:pointer-events-auto ${
+        forceClose ? "pointer-events-none opacity-0" : "opacity-100"
+      }`}
       style={{ fontFamily: "inherit" }}
     >
       {isOpen ? (
@@ -103,7 +116,7 @@ export default function ChatWidget() {
               <span style={{ fontWeight: 600, letterSpacing: "0.02em" }}>Gharelu.Bake</span>
             </div>
             <button
-              onClick={() => setIsOpen(false)}
+              onClick={() => updateOpen(false)}
               aria-label="Close chat"
               style={{
                 WebkitAppearance: "none",
@@ -243,7 +256,7 @@ export default function ChatWidget() {
         </div>
       ) : (
         <button
-          onClick={() => setIsOpen(true)}
+          onClick={() => updateOpen(true)}
           aria-label="Open chat"
           style={{
             background: ROSE,

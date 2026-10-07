@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Instagram, Heart } from "lucide-react";
+import { Instagram } from "lucide-react";
 import Section from "../common/Section";
 import { instagram, brand } from "../../data/content";
 
@@ -10,7 +10,7 @@ export const InstagramFeed = () => (
         @gharelu.bake
       </p>
       <h2 className="font-heading text-4xl font-extrabold tracking-tight text-brand-dark sm:text-5xl lg:text-6xl">
-        Follow the crumbs
+        Follow Gharelu.Bake
       </h2>
       <a
         href={brand.socials[0].href}
@@ -23,24 +23,31 @@ export const InstagramFeed = () => (
       </a>
     </div>
 
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
+    <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-5">
       {instagram.map((post, i) => (
         <motion.a
           key={post.id}
-          href={brand.socials[0].href}
+          href={`https://www.instagram.com/p/${post.shortcode}/`}
           target="_blank"
           rel="noreferrer"
-          initial={{ opacity: 0, scale: 0.9 }}
+          aria-label="View this post on Instagram"
+          initial={{ opacity: 0, scale: 0.94 }}
           whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: i * 0.05 }}
-          className="group relative aspect-square overflow-hidden rounded-2xl"
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: (i % 3) * 0.08 }}
+          className="group relative aspect-square overflow-hidden rounded-2xl border border-brand-line shadow-[0_18px_45px_-28px_rgba(215,134,159,0.6)] sm:rounded-3xl"
           data-testid={`instagram-${post.id}`}
         >
-          <img src={post.image} alt="Instagram post" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
-          <div className="absolute inset-0 flex items-center justify-center bg-brand-accent/0 opacity-0 transition-all duration-400 group-hover:bg-brand-accent/70 group-hover:opacity-100">
-            <span className="flex items-center gap-2 font-semibold text-white">
-              <Heart size={18} fill="currentColor" /> {post.likes}
+          <img
+            src={`/images/instagram/${post.shortcode}.jpg`}
+            alt="Gharelu.Bake on Instagram"
+            loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+          />
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-brand-accent/0 opacity-0 transition-all duration-500 group-hover:bg-brand-accent/70 group-hover:opacity-100">
+            <Instagram size={28} className="text-white" />
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white">
+              View on Instagram
             </span>
           </div>
         </motion.a>

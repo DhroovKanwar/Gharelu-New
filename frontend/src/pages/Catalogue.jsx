@@ -471,7 +471,12 @@ const collectionOrder = useMemo(
             FloatingContactWidget.jsx. */}
       {grouped.length > 1 && (
         <div
-          className="fixed right-4 z-[860] lg:hidden"
+          className={cn(
+            "fixed right-4 lg:hidden",
+            // While open, the popup grows upward over the call/chat buttons
+            // (z-880 / z-1200), so it must sit above them.
+            mobileNavOpen ? "z-[1250]" : "z-[860]",
+          )}
           style={{ bottom: "1.5rem" }}
         >
           <button

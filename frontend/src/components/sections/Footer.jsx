@@ -150,6 +150,9 @@ export const Footer = () => {
         <div className="flex flex-col items-center justify-between gap-3 py-8 text-center md:flex-row md:text-left">
           <p className="text-xs text-brand-text/60">© {new Date().getFullYear()} GHARELU.BAKE. All rights reserved.</p>
           <p className="text-xs text-brand-text/60">Crafted with warmth · 100% Eggless</p>
+          <p className="text-xs text-brand-text/60">
+            Website by <span className="font-semibold text-brand-text/80">Dhruv Digital Solutions</span>
+          </p>
         </div>
       </div>
     </footer>

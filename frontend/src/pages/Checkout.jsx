@@ -12,6 +12,8 @@ import {
   Store,
   UtensilsCrossed,
   Package,
+  Loader2,
+  ShieldCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import MainLayout from "../layouts/MainLayout";
@@ -28,7 +30,8 @@ import {
 } from "../utils/validators";
 import {
   createPaymentOrder,
-  openRazorpayCheckout,
+  runPaymentInNewWindow,
+  verifyPayment,
 } from "../services/paymentService";
 
 const Field = ({ label, className, ...props }) => (
@@ -82,6 +85,10 @@ export default function Checkout() {
   const [pickupType, setPickupType] = useState("dine-in");
   const [payment, setPayment] = useState("online");
   const [loading, setLoading] = useState(false);
+  // True only while the popup payment window is open and we're waiting on
+  // its result — the full-page overlay this drives is what stops the form
+  // from being edited/resubmitted mid-payment.
+  const [paymentLocked, setPaymentLocked] = useState(false);
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -129,11 +136,28 @@ export default function Checkout() {
       return;
     }
 
+    // Open the payment popup synchronously, still inside the click's user
+    // gesture — opening it later (after an await) is what gets it killed by
+    // popup blockers. It sits with a "connecting…" placeholder (see
+    // PaymentWindow.jsx) until we have real order data to hand it.
+    let paymentWindow = null;
+    if (payment === "online") {
+      paymentWindow = window.open(
+        "/payment-window",
+        "gb_payment_window",
+        "width=460,height=700",
+      );
+      if (!paymentWindow) {
+        toast.error("Please allow popups for this site to pay online.");
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {
       // 1. FIRST create the real order in Laravel.
-      const orderResponse = await fetch("http://localhost:8000/api/v1/orders", {
+      const orderResponse = await fetch("http://localhost:8001/api/v1/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -239,9 +263,14 @@ export default function Checkout() {
       const razorpayOrder = await createPaymentOrder({
         orderId,
       });
-      console.log("PAYMENT ORDER FROM BACKEND:", razorpayOrder);
-      // 4. Open Razorpay with the REAL order_id.
-      await openRazorpayCheckout({
+
+      // 4. Hand the payment window everything it needs and lock this page
+      // until it reports back success / failure / cancellation — nothing
+      // here can be edited or resubmitted while paymentLocked is true (see
+      // the overlay in the JSX below).
+      setPaymentLocked(true);
+
+      const result = await runPaymentInNewWindow(paymentWindow, {
         name: "Gharelu Bake",
         description: `Order ${orderId} · ${count} item${count > 1 ? "s" : ""}`,
         customer: {
@@ -249,63 +278,74 @@ export default function Checkout() {
           email: form.email,
           contact: form.phone,
         },
-
         razorpayOrder,
-
-        onSuccess: (paymentResult) => {
-          const apiOrder = createdOrder.data;
-
-          const finalOrder = {
-            ...apiOrder,
-
-            // OrderSuccess frontend format
-            id: apiOrder.orderNumber,
-
-            items: (apiOrder.items || []).map((item, index) => ({
-              lineId: `${apiOrder.orderNumber}-${index}`,
-              name: item.productName,
-              image: item.productImage,
-              size: item.sizeLabel,
-              qty: item.quantity,
-              price: item.unitPrice,
-            })),
-
-            subtotal: apiOrder.subtotal,
-            delivery: apiOrder.deliveryFee,
-            total: apiOrder.total,
-
-            deliveryMode: apiOrder.deliveryMode,
-            pickupType: apiOrder.pickupType,
-            payment: apiOrder.paymentMethod,
-
-            customer: apiOrder.customer,
-
-            date: apiOrder.scheduledDate,
-            time: apiOrder.scheduledTime,
-
-            razorpay_payment_id: paymentResult.razorpay_payment_id,
-            razorpay_order_id: paymentResult.razorpay_order_id,
-            payment_status: "paid",
-          };
-
-          localStorage.setItem("gb_last_order", JSON.stringify(finalOrder));
-
-          clearCart();
-          setLoading(false);
-          navigate("/order-success");
-        },
-
-        onFailure: (reason) => {
-          toast.error(
-            reason || "Payment could not be completed. Please try again.",
-          );
-
-          setLoading(false);
-        },
       });
+
+      if (result.status === "success") {
+        const verification = await verifyPayment({
+          ...result.payload,
+          orderId,
+        });
+
+        if (!verification?.verified) {
+          throw new Error("We couldn't verify your payment. Please contact support.");
+        }
+
+        const apiOrder = createdOrder.data;
+
+        const finalOrder = {
+          ...apiOrder,
+
+          // OrderSuccess frontend format
+          id: apiOrder.orderNumber,
+
+          items: (apiOrder.items || []).map((item, index) => ({
+            lineId: `${apiOrder.orderNumber}-${index}`,
+            name: item.productName,
+            image: item.productImage,
+            size: item.sizeLabel,
+            qty: item.quantity,
+            price: item.unitPrice,
+          })),
+
+          subtotal: apiOrder.subtotal,
+          delivery: apiOrder.deliveryFee,
+          total: apiOrder.total,
+
+          deliveryMode: apiOrder.deliveryMode,
+          pickupType: apiOrder.pickupType,
+          payment: apiOrder.paymentMethod,
+
+          customer: apiOrder.customer,
+
+          date: apiOrder.scheduledDate,
+          time: apiOrder.scheduledTime,
+
+          razorpay_payment_id: result.payload.razorpay_payment_id,
+          razorpay_order_id: result.payload.razorpay_order_id,
+          payment_status: "paid",
+        };
+
+        localStorage.setItem("gb_last_order", JSON.stringify(finalOrder));
+
+        clearCart();
+        setLoading(false);
+        setPaymentLocked(false);
+        navigate("/order-success");
+      } else if (result.status === "cancelled") {
+        toast.error("Payment was cancelled.");
+        setLoading(false);
+        setPaymentLocked(false);
+      } else {
+        toast.error(result.reason || "Payment could not be completed. Please try again.");
+        setLoading(false);
+        setPaymentLocked(false);
+      }
     } catch (err) {
       console.error("Checkout error:", err);
 
+      paymentWindow?.close();
+      setPaymentLocked(false);
       toast.error(err?.message || "Something went wrong. Please try again.");
 
       setLoading(false);
@@ -580,12 +620,34 @@ export default function Checkout() {
                 icon={<ArrowRight size={18} />}
                 data-testid="place-order"
               >
-                {loading ? "Placing order…" : `Place Order · ₹${total}`}
+                {paymentLocked
+                  ? "Waiting for payment…"
+                  : loading
+                    ? "Placing order…"
+                    : `Place Order · ₹${total}`}
               </Button>
             </motion.div>
           </div>
         </form>
       </Section>
+
+      {paymentLocked && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 z-[2000] flex flex-col items-center justify-center gap-4 bg-brand-bg/90 px-6 text-center backdrop-blur-sm"
+          data-testid="payment-lock-overlay"
+        >
+          <Loader2 size={40} className="animate-spin text-brand-accent" />
+          <p className="font-heading text-lg font-bold text-brand-dark">
+            Waiting for your payment…
+          </p>
+          <p className="flex max-w-sm items-center justify-center gap-2 text-sm text-brand-text">
+            <ShieldCheck size={16} className="shrink-0 text-brand-accent" />
+            Complete it in the new payment window. This page is locked until we hear back — please don't close or refresh it.
+          </p>
+        </motion.div>
+      )}
     </MainLayout>
   );
 }

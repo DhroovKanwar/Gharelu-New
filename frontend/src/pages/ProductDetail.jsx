@@ -133,7 +133,7 @@ if (!product) return <NotFound />;
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-accent">{product.collection}</p>
             <h1 className="mt-2 font-heading text-4xl font-extrabold tracking-tight text-brand-dark sm:text-5xl">{product.name}</h1>
             <div className="mt-3 flex items-center gap-4">
-              <Rating value={product.rating} count={product.reviews} size={16} />
+              {product.reviews > 0 && <Rating value={product.rating} count={product.reviews} size={16} />}
               {product.bestseller && <span className="rounded-full bg-brand-primary/50 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-brand-accent">Bestseller</span>}
             </div>
 

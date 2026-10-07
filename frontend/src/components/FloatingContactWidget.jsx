@@ -80,20 +80,31 @@ const buildActions = () => {
   return actions;
 };
 
-export const FloatingContactWidget = () => {
+export const FloatingContactWidget = ({ forceClose = false, onOpenChange } = {}) => {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef(null);
   const actions = buildActions();
+
+  const updateOpen = (value) => {
+    setOpen(value);
+    onOpenChange?.(value);
+  };
+
+  // Let the parent close this (e.g. the chat widget was opened instead) so
+  // the fanned-out contact buttons never overlap the chat bubble on mobile.
+  useEffect(() => {
+    if (forceClose) setOpen(false);
+  }, [forceClose]);
 
   // Close on outside click / Escape
   useEffect(() => {
     if (!open) return;
     const onDoc = (e) => {
       if (!wrapRef.current) return;
-      if (!wrapRef.current.contains(e.target)) setOpen(false);
+      if (!wrapRef.current.contains(e.target)) updateOpen(false);
     };
     const onKey = (e) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") updateOpen(false);
     };
     document.addEventListener("mousedown", onDoc);
     document.addEventListener("keydown", onKey);
@@ -101,12 +112,15 @@ export const FloatingContactWidget = () => {
       document.removeEventListener("mousedown", onDoc);
       document.removeEventListener("keydown", onKey);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   return (
     <div
       ref={wrapRef}
-      className="fixed right-4 z-[880] md:right-6"
+      className={`fixed right-4 z-[880] transition-opacity duration-150 md:right-6 md:opacity-100 md:pointer-events-auto ${
+        forceClose ? "pointer-events-none opacity-0" : "opacity-100"
+      }`}
       style={{ bottom: "6.5rem" }}
       data-testid="contact-widget"
     >
@@ -137,7 +151,7 @@ export const FloatingContactWidget = () => {
                   href={a.href}
                   target={a.target}
                   rel={a.rel}
-                  onClick={() => setOpen(false)}
+                  onClick={() => updateOpen(false)}
                   className="group flex items-center gap-3"
                   data-testid={a.testid}
                 >
@@ -159,7 +173,7 @@ export const FloatingContactWidget = () => {
       {/* Main trigger — phone icon */}
       <motion.button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => updateOpen(!open)}
         aria-label={open ? "Close contact options" : "Open contact options"}
         aria-expanded={open}
         whileTap={{ scale: 0.94 }}

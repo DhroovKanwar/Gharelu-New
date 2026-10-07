@@ -3,7 +3,7 @@
     "how_to_change_hero_image": "Set `active` to the id of any variant below to switch the hero. Add new variants for festivals or offers (Diwali, New Year, Valentine's Day, etc.) and toggle by changing `active`. When Laravel is wired up, this file's shape will be replaced by GET /api/hero-config returning the exact same structure.",
     "campaign_field": "If a variant has a non-null `campaign`, a small ribbon badge appears on the hero image with the given label + line and (optionally) a CTA link. Leave `campaign` as null for a clean hero."
   },
-  "active": "signature",
+  "active": "diwali",
   "variants": [
     {
       "id": "signature",
@@ -20,11 +20,11 @@
     },
     {
       "id": "diwali",
-      "image": "https://images.unsplash.com/photo-1607478900766-efe13248b125?auto=format&fit=crop&w=1200&q=80",
-      "alt": "Diwali festive cake",
+      "image": "/images/hero/fresh-fruit-cake.jpg",
+      "alt": "Elegant piped white cake topped with fresh fruit",
       "campaign": {
         "label": "Diwali Special",
-        "line": "Festive hampers · 20% off",
+        "line": "BUY DIWALI HAMPERS NOW",
         "cta_href": "/hampers",
         "cta_label": "Shop hampers"
       }

@@ -6,6 +6,7 @@ import Section from "../components/common/Section";
 import SectionHeading from "../components/common/SectionHeading";
 import Reveal from "../components/common/Reveal";
 import Button from "../components/common/Button";
+import HamperGallery from "../components/common/HamperGallery";
 import { corporateGifts, corporate } from "../data/content";
 
 const steps = [
@@ -27,27 +28,39 @@ export default function CorporateGiftingPage() {
       {/* Gift collections */}
       <Section>
         <SectionHeading eyebrow="Gift Collections" title="Curated to impress" intro="Thoughtfully assembled boxes for every budget and occasion." />
-        <div className="mt-14 grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid grid-cols-1 gap-5 lg:grid-cols-2">
           {corporateGifts.map((g, i) => (
             <motion.article
               key={g.id}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: i * 0.08 }}
-              className="group flex flex-col overflow-hidden rounded-[1.75rem] border border-brand-line bg-brand-bg"
+              viewport={{ once: true, amount: 0.15 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: (i % 2) * 0.08 }}
+              className="group flex flex-col overflow-hidden rounded-3xl border border-brand-line bg-brand-bg sm:flex-row"
               data-testid={`gift-${g.id}`}
             >
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <img src={g.image} alt={g.name} className="h-full w-full object-cover transition-transform [transition-duration:900ms] group-hover:scale-105" />
+              <div className="relative aspect-[16/10] shrink-0 overflow-hidden sm:aspect-auto sm:w-[38%] sm:min-h-[15rem]">
+                <HamperGallery images={g.images || [g.image]} alt={g.name} />
                 <span className="absolute left-4 top-4 rounded-full bg-white/85 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.15em] text-brand-accent backdrop-blur-sm">{g.tag}</span>
               </div>
-              <div className="flex flex-1 flex-col p-6">
-                <h3 className="font-heading text-lg font-bold tracking-tight text-brand-dark">{g.name}</h3>
-                <p className="mt-1.5 text-xs text-brand-accent">{g.items}</p>
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-brand-text">{g.description}</p>
-                <div className="mt-5 flex items-center justify-between">
-                  <span className="font-heading text-xl font-extrabold text-brand-dark">₹{g.price}</span>
+              <div className="flex flex-1 flex-col p-5">
+                <h3 className="font-heading text-xl font-bold tracking-tight text-brand-dark">{g.name}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-brand-text">{g.description}</p>
+
+                <div className="mt-4 rounded-xl bg-brand-secondary px-4 py-3">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-accent">What's inside</p>
+                  <ul className="mt-2 grid grid-flow-col grid-rows-3 gap-x-4 gap-y-1.5" data-testid={`gift-includes-${g.id}`}>
+                    {(g.includes || [g.items]).map((item) => (
+                      <li key={item} className="flex items-start gap-2 text-[13px] text-brand-dark">
+                        <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-brand-accent"><Check size={10} className="text-white" /></span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="mt-auto flex items-center justify-between pt-4">
+                  {g.price != null ? <span className="font-heading text-xl font-extrabold text-brand-dark">₹{g.price}</span> : <span className="text-sm font-semibold text-brand-accent">Price on request</span>}
                   <Button as="a" to="/contact" size="sm" variant="soft">Enquire</Button>
                 </div>
               </div>

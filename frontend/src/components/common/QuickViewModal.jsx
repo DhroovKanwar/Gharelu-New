@@ -31,7 +31,7 @@ export const QuickViewModal = ({ product, onClose }) => {
   return (
     <AnimatePresence>
       {product && (
-        <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[1250] flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -56,7 +56,7 @@ export const QuickViewModal = ({ product, onClose }) => {
             <div className="flex flex-col p-7 md:p-8">
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-accent">{product.collection}</p>
               <h3 className="mt-2 font-heading text-2xl font-extrabold tracking-tight text-brand-dark">{product.name}</h3>
-              <Rating value={product.rating} count={product.reviews} className="mt-2" />
+              {product.reviews > 0 && <Rating value={product.rating} count={product.reviews} className="mt-2" />}
               <p className="mt-4 text-sm leading-relaxed text-brand-text">{product.longDescription || product.description}</p>
 
               {product.sizes?.length > 0 && (

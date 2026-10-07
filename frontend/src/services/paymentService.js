@@ -1,11 +1,11 @@
 const RAZORPAY_SCRIPT_SRC =
   "https://checkout.razorpay.com/v1/checkout.js";
 
-const RAZORPAY_KEY_ID =
+export const RAZORPAY_KEY_ID =
   process.env.REACT_APP_RAZORPAY_KEY_ID;
 
 const API_BASE_URL =
-  process.env.REACT_APP_API_URL || "http://localhost:8000/api/v1";
+  process.env.REACT_APP_API_URL || "http://localhost:8001/api/v1";
 
 let scriptLoadPromise = null;
 
@@ -84,112 +84,78 @@ export const createPaymentOrder = async ({ orderId } = {}) => {
 };
 
 /**
- * Open Razorpay Checkout using the REAL Razorpay order
- * created by Laravel.
+ * Open a popup window (must already be open — see PaymentWindow.jsx / the
+ * note in Checkout.jsx about calling window.open() synchronously before any
+ * await, or popup blockers will kill it) and hand it everything it needs to
+ * run Razorpay Checkout itself. This keeps the payment UI in its own window
+ * — separate from the checkout form — while this function resolves only
+ * once the child window reports a final result (or is closed), so the
+ * caller can lock the checkout page for the whole in-between period.
+ *
+ * Protocol (all messages same-origin only):
+ *  child -> opener  "payment-window-ready"   (child mounted, waiting for data)
+ *  opener -> child  "payment-window-init"    (name/description/customer/order)
+ *  child -> opener  "razorpay-success"       { payload: <razorpay handler response> }
+ *  child -> opener  "razorpay-failed"        { reason }
+ *  child -> opener  "razorpay-cancelled"     (modal dismissed in the child)
  */
-export const openRazorpayCheckout = async ({
-  name = "Gharelu Bake",
-  description = "Order payment",
-  customer = {},
-  razorpayOrder,
-  onSuccess,
-  onFailure,
-}) => {
-  if (!RAZORPAY_KEY_ID) {
-    onFailure?.(
-      "Payment is not configured. Missing Razorpay Key ID."
-    );
-    return;
-  }
+export const runPaymentInNewWindow = (paymentWindow, { name, description, customer, razorpayOrder }) => {
+  return new Promise((resolve) => {
+    let settled = false;
 
-if (!razorpayOrder?.razorpayOrderId) {
-  onFailure?.("Invalid Razorpay order.");
-  return;
-}
+    const cleanup = () => {
+      window.removeEventListener("message", onMessage);
+      clearInterval(closedPoll);
+      clearTimeout(readyTimeout);
+    };
 
-  const sdkReady = await loadRazorpayScript();
+    const settle = (result) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      resolve(result);
+    };
 
-  if (!sdkReady) {
-    onFailure?.(
-      "Could not load the payment gateway. Please check your connection."
-    );
-    return;
-  }
+    const onMessage = (event) => {
+      if (event.origin !== window.location.origin) return;
+      if (event.source !== paymentWindow) return;
 
-  const options = {
-   key: razorpayOrder.razorpayKeyId || RAZORPAY_KEY_ID,
+      const { type, payload, reason } = event.data || {};
 
-amount: Math.round(Number(razorpayOrder.amount) * 100),
-
-currency: razorpayOrder.currency || "INR",
-
-order_id: razorpayOrder.razorpayOrderId,
-
-    name,
-    description,
-
-    prefill: {
-      name: customer.name || "",
-      email: customer.email || "",
-      contact: customer.contact || "",
-    },
-
-    notes: {
-    local_order_id: razorpayOrder.orderNumber || "",
-    },
-
-    theme: {
-      color: "#D7869F",
-    },
-
-    handler: async (response) => {
-      try {
-        console.log("RAZORPAY RESPONSE:", response);
-        const verification = await verifyPayment({
-          ...response,
-         orderId: razorpayOrder.orderNumber,
-        });
-
-        console.log("VERIFICATION RESPONSE:", verification);
-        console.log("VERIFIED VALUE:", verification?.verified);
-
-        if (verification?.verified) {
-          onSuccess?.({
-            ...response,
-            verification,
-          });
-        } else {
-          onFailure?.(
-            "We couldn't verify your payment. Please contact support."
-          );
-        }
-      } catch (error) {
-        console.error("Payment verification failed:", error);
-
-        onFailure?.(
-          "We couldn't verify your payment. Please contact support."
+      if (type === "payment-window-ready") {
+        paymentWindow.postMessage(
+          { type: "payment-window-init", payload: { name, description, customer, razorpayOrder } },
+          window.location.origin,
         );
+      } else if (type === "razorpay-success") {
+        settle({ status: "success", payload });
+      } else if (type === "razorpay-failed") {
+        settle({ status: "failed", reason: reason || "Payment could not be completed." });
+      } else if (type === "razorpay-cancelled") {
+        settle({ status: "cancelled" });
       }
-    },
+    };
 
-    modal: {
-      ondismiss: () => {
-        onFailure?.("Payment was cancelled.");
-      },
-    },
-  };
+    // The user can close the popup with the window chrome's own [x] instead
+    // of Razorpay's cancel button — that never sends us a message, so we
+    // have to notice it ourselves.
+    const closedPoll = setInterval(() => {
+      if (paymentWindow.closed) settle({ status: "cancelled" });
+    }, 700);
 
-  const razorpay = new window.Razorpay(options);
+    // The child failed to load / script blocked / etc. — don't lock the
+    // checkout page forever waiting for a "ready" that's never coming.
+    const readyTimeout = setTimeout(() => {
+      settle({ status: "failed", reason: "Payment window did not respond. Please try again." });
+      try {
+        paymentWindow.close();
+      } catch {
+        // ignore — window may already be gone
+      }
+    }, 20000);
 
-  razorpay.on("payment.failed", (response) => {
-    const reason =
-      response?.error?.description ||
-      "Payment failed. Please try again.";
-
-    onFailure?.(reason);
+    window.addEventListener("message", onMessage);
   });
-
-  razorpay.open();
 };
 
 /**

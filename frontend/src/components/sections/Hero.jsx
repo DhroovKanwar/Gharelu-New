@@ -1,11 +1,40 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowDownRight, Sparkles, Star } from "lucide-react";
+import { ArrowDownRight, ArrowRight, Star } from "lucide-react";
 import { MaskedLines } from "../common/Reveal";
 import Button from "../common/Button";
 import { IMG } from "../../data/content";
 import { getActiveHero } from "../../services/heroService";
+
+// Diwali diya (clay lamp with flame) — lucide has no equivalent icon.
+const DiyaIcon = ({ size = 24 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 32 32"
+    fill="none"
+    aria-hidden="true"
+  >
+    {/* flame */}
+    <path
+      d="M16 3c2.6 3 4 5.2 4 7.4a4 4 0 0 1-8 0C12 8.2 13.4 6 16 3Z"
+      fill="#FFD66B"
+      stroke="#fff"
+      strokeWidth="1.2"
+      strokeLinejoin="round"
+    />
+    <path d="M16 8.5c1 1.2 1.5 2 1.5 2.8a1.5 1.5 0 0 1-3 0c0-.8.5-1.6 1.5-2.8Z" fill="#F08A3C" />
+    {/* lamp bowl */}
+    <path
+      d="M3 17h26c0 6-5.2 11-13 11S3 23 3 17Z"
+      fill="#fff"
+    />
+    {/* rim detail */}
+    <path d="M7 21.5h18" stroke="#D7869F" strokeWidth="1.4" strokeLinecap="round" />
+    <path d="M11 25h10" stroke="#D7869F" strokeWidth="1.4" strokeLinecap="round" />
+  </svg>
+);
 
 export const Hero = () => {
   const ref = useRef(null);
@@ -97,13 +126,12 @@ export const Hero = () => {
               Explore Cakes
             </Button>
             <Button
-              as="a"
-              href="#corporate"
+              to="/hampers"
               size="lg"
               variant="outline"
               data-testid="hero-cta-corporate"
             >
-              Corporate Gifting
+             DIWALI HAMPERS
             </Button>
           </motion.div>
 
@@ -180,31 +208,45 @@ export const Hero = () => {
                     delay: 0.6,
                     ease: [0.16, 1, 0.3, 1],
                   }}
-                  className="absolute inset-x-4 bottom-4 rounded-2xl border border-brand-line bg-brand-bg/95 p-4 shadow-[0_18px_45px_-16px_rgba(215,134,159,0.55)] backdrop-blur-xl sm:inset-x-6 sm:bottom-6 sm:p-5"
+                  className="absolute inset-x-4 bottom-4 sm:inset-x-6 sm:bottom-6"
                   data-testid="hero-campaign-badge"
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-accent text-white">
-                      <Sparkles size={16} />
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-accent">
-                        {campaign.label}
-                      </p>
-                      <p className="mt-0.5 truncate font-heading text-sm font-extrabold text-brand-dark sm:text-base">
-                        {campaign.line}
-                      </p>
-                    </div>
-                    {campaign.cta_href && campaign.cta_label && (
+                  {(() => {
+                    const inner = (
+                      <>
+                        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-white/20 text-white">
+                          <DiyaIcon size={26} />
+                        </span>
+                        <span className="min-w-0 flex-1 text-left">
+                          <span className="block text-[10px] font-semibold uppercase tracking-[0.22em] text-white/85">
+                            {campaign.label}
+                          </span>
+                          <span className="mt-0.5 block font-heading text-base font-extrabold uppercase leading-tight text-white sm:text-xl">
+                            {campaign.line}
+                          </span>
+                        </span>
+                        {campaign.cta_href && (
+                          <ArrowRight
+                            size={22}
+                            className="shrink-0 text-white transition-transform group-hover:translate-x-1"
+                          />
+                        )}
+                      </>
+                    );
+                    const cls =
+                      "group flex w-full items-center gap-4 rounded-2xl bg-brand-accent px-5 py-4 shadow-[0_18px_45px_-12px_rgba(215,134,159,0.8)] transition-colors sm:px-6 sm:py-5";
+                    return campaign.cta_href ? (
                       <Link
                         to={campaign.cta_href}
-                        className="shrink-0 rounded-full bg-brand-dark px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-brand-accent"
+                        className={`${cls} hover:bg-brand-dark`}
                         data-testid="hero-campaign-cta"
                       >
-                        {campaign.cta_label}
+                        {inner}
                       </Link>
-                    )}
-                  </div>
+                    ) : (
+                      <div className={cls}>{inner}</div>
+                    );
+                  })()}
                 </motion.div>
               )}
             </motion.div>
@@ -212,7 +254,11 @@ export const Hero = () => {
             {/* floating macaron badge */}
             <motion.div
               style={{ y: yMacaron }}
-              className="absolute -left-6 bottom-16 hidden h-40 w-40 overflow-hidden rounded-3xl border-4 border-brand-bg shadow-xl sm:block"
+              // With a campaign ribbon along the bottom of the hero image, sit
+              // above it (bottom-36) instead of overlapping its top-left corner.
+              className={`absolute -left-6 ${
+                campaign ? "bottom-36" : "bottom-16"
+              } hidden h-40 w-40 overflow-hidden rounded-3xl border-4 border-brand-bg shadow-xl sm:block`}
             >
               <img
                 src="/images/owner.jpg"
