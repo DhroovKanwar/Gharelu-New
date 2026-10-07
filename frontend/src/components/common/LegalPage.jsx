@@ -31,7 +31,7 @@ export const LegalPage = ({ policy, breadcrumb }) => (
         ))}
         <p className="text-sm text-brand-text">
           Questions about this policy? Write to us at{" "}
-          <a href="mailto:hello@gharelu.bake" className="font-semibold text-brand-accent">hello@gharelu.bake</a>.
+          <a href="mailto:hello@gharelubake.in" className="font-semibold text-brand-accent">hello@gharelubake.in</a>.
         </p>
       </div>
     </Section>

@@ -50,7 +50,7 @@ export const brand = {
   name: "GHARELU.BAKE",
   tagline: "Pure • Premium • Eggless",
   phone: "07973 714215",
-  email: "hello@gharelu.bake",
+  email: "hello@gharelubake.in",
   address: "Unit 38, Ground Floor, Orbit Signature Walk, VIP Road, Zirakpur, Punjab 140603",
   hours: "Daily · 11:00 AM – 10:00 PM",
   socials: [
