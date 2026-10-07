@@ -1,0 +1,11 @@
+{
+  // Cloudflare Workers static-assets deploy for the React (CRA) build.
+  // Build command: npm run build    Deploy command: npx wrangler deploy
+  "name": "gharelu-bake-frontend",
+  "compatibility_date": "2025-01-01",
+  "assets": {
+    "directory": "./build",
+    // Serve index.html for client-side routes (/hampers, /catalogue, ...)
+    "not_found_handling": "single-page-application"
+  }
+}
