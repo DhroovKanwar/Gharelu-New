@@ -26,12 +26,12 @@ export default function Hampers() {
       <PageHeader
         eyebrow="Curated Collections"
         title={["Gift Hampers", "for every celebration"]}
-        subtitle="Beautiful festive hampers and curated gift collections — thoughtfully assembled and dressed in signature GHARELU.BAKE packaging."
+        subtitle="Beautiful festive hampers with Premium, Fresh and 100% Eggless Bakes — thoughtfully assembled and dressed in signature GHARELU.BAKE packaging."
         breadcrumb={[{ label: "Home", to: "/" }, { label: "Start Your Order", to: "/order" }, { label: "Gift Hampers" }]}
       />
 
       <Section>
-        <SectionHeading eyebrow="The Hamper Edit" title="Ready to gift, beautifully boxed" intro="Each hamper arrives with ribbons, a handwritten card and our finest small-batch bakes." />
+        <SectionHeading eyebrow="Diwali Hampers" title="Ready to gift, beautifully boxed" intro="Each hamper arrives with ribbons, a handwritten card and our finest small-batch bakes." />
 
         <div className="mt-12 grid grid-cols-1 gap-5 lg:grid-cols-2">
           {corporateGifts.map((h, i) => (
@@ -52,11 +52,18 @@ export default function Hampers() {
                 <h3 className="font-heading text-xl font-bold tracking-tight text-brand-dark">{h.name}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-brand-text">{h.description}</p>
 
+                {(h.weight || h.cookies) && (
+                  <div className="mt-3 flex flex-wrap gap-2" data-testid={`hamper-specs-${h.id}`}>
+                    {h.weight && <span className="rounded-full border border-brand-line px-3 py-1 text-xs font-semibold text-brand-dark">Net wt. {h.weight}</span>}
+                    {h.cookies && <span className="rounded-full border border-brand-line px-3 py-1 text-xs font-semibold text-brand-dark">{h.cookies} pieces</span>}
+                  </div>
+                )}
+
                 <div className="mt-4 rounded-xl bg-brand-secondary px-4 py-3">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-accent">What's inside</p>
-                  <ul className="mt-2 grid grid-flow-col grid-rows-3 gap-x-4 gap-y-1.5" data-testid={`hamper-includes-${h.id}`}>
+                  <ul className="mt-2 grid grid-cols-2 gap-x-6 gap-y-2.5" data-testid={`hamper-includes-${h.id}`}>
                     {(h.includes || [h.items]).map((item) => (
-                      <li key={item} className="flex items-start gap-2 text-[13px] text-brand-dark">
+                      <li key={item} className="flex items-start gap-2 text-sm font-medium leading-snug text-brand-dark">
                         <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-brand-accent"><Check size={10} className="text-white" /></span>
                         <span>{item}</span>
                       </li>
@@ -72,7 +79,7 @@ export default function Hampers() {
                       className="inline-flex items-center gap-1.5 rounded-full bg-brand-dark px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-accent"
                       data-testid={`hamper-add-${h.id}`}
                     >
-                      <Plus size={15} /> Add to box
+                      <Plus size={15} /> Add to cart
                     </button>
                   ) : (
                     <Button as="a" to="/contact" size="sm" variant="dark" data-testid={`hamper-enquire-${h.id}`}>Enquire</Button>

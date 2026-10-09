@@ -3,17 +3,19 @@
     "id": "classic-hamper",
     "name": "Classic Hamper",
     "price": 799,
+    "weight": "1000 g",
+    "cookies": "42-45",
     "image": "https://images.pexels.com/photos/31266998/pexels-photo-31266998.jpeg?auto=compress&cs=tinysrgb&w=1600",
     "includes": [
-      "Almond Cookies",
-      "Butter Cookies",
-      "Fudgy Brownie",
-      "Chocolate Bar",
-      "Blueberry Muffin",
-      "Banana Walnut Cake"
+      "Coconut Cookies",
+      "Red Velvet Cookies",
+      "Masala Cracker",
+      "Kesar Pista Cookies",
+      "Almond & Pista Biscotti",
+      "Double Choco Dotted Cookies"
     ],
-    "tag": "Classic",
-    "description": "A box of six handpicked eggless bakes — the perfect everyday gift.",
+    "tag": "Budget Friendly",
+    "description": "A box of six handpicked eggless bakes — the perfect Diwali Gift.",
     "images": [
       "https://images.pexels.com/photos/31266998/pexels-photo-31266998.jpeg?auto=compress&cs=tinysrgb&w=1600",
       "https://images.pexels.com/photos/29051739/pexels-photo-29051739.jpeg?auto=compress&cs=tinysrgb&w=1200",
@@ -21,20 +23,23 @@
     ]
   },
   {
-    "id": "classic-hamper-max",
-    "name": "Classic Hamper Max",
+    "id": "classic-hamper-pro",
+    "name": "Classic Hamper Pro",
     "price": 1199,
+    "weight": "1000 g",
+    "cookies": "42-45",
     "image": "https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=1200&q=80",
     "includes": [
-      "Nan Khatai Cookies",
+      "Almond Rocks",
+      "Red Velvet Cookies",
       "Coconut Cookies",
-      "Fudgy Brownie",
-      "Brookie",
-      "Chocolava",
-      "Honey Almond Cake"
+      "Assorted Chocolates",
+      "Kesar Pista Cookies",
+      "Double Choco Dotted Cookies"
     ],
-    "tag": "Bigger Box",
-    "description": "The Classic selection in a bigger, more generous box.",
+    "tag": "Extra Sweet",
+    "description": "A box of six handpicked eggless bakes — the perfect Diwali Gift.",
+
     "images": [
       "https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=1200&q=80",
       "https://images.pexels.com/photos/587741/pexels-photo-587741.jpeg?auto=compress&cs=tinysrgb&w=1200",
@@ -45,14 +50,14 @@
     "id": "signature-hamper",
     "name": "Signature Hamper",
     "price": 1499,
+    "weight": "500 g",
+    "cookies": 32,
     "image": "https://images.pexels.com/photos/29051739/pexels-photo-29051739.jpeg?auto=compress&cs=tinysrgb&w=1200",
     "includes": [
-      "Red Velvet Cookies",
-      "Double Chocolate Cookies",
-      "Snicker Stuffed Dates",
-      "Gharelu Special Chocolate",
-      "Carrot Cake",
-      "Chocochip Muffin"
+      "Almond Loaded Cookies",
+      "Kesar Pista Cookies",
+      "Coffee Walnut Cookies",
+      "Double Choco Dotted Cookies"
     ],
     "tag": "Most Popular",
     "description": "Our signature bakes, beautifully boxed and ready to gift.",
@@ -63,19 +68,19 @@
     ]
   },
   {
-    "id": "signature-hamper-max",
-    "name": "Signature Hamper Max",
+    "id": "signature-hamper-pro",
+    "name": "Signature Hamper Pro",
     "price": 1999,
+    "weight": "500 g",
+    "cookies": 32,
     "image": "https://images.pexels.com/photos/587741/pexels-photo-587741.jpeg?auto=compress&cs=tinysrgb&w=1200",
     "includes": [
-      "Coffee Walnut Cookies",
-      "Centre Filled Dark Chocolate Cookies",
-      "Almond Rocks",
-      "Lemon Tea Cake",
-      "Brookie",
-      "Chocolava"
+      "Kesar Pista Cookies",
+      "Double Choco Dotted Cookies",
+      "Masala Dry Fruit Mix",
+      "Assorted Chocolates"
     ],
-    "tag": "Bigger Box",
+    "tag": "Diwali Favourite",
     "description": "The Signature selection, bigger — made for sharing.",
     "images": [
       "https://images.pexels.com/photos/587741/pexels-photo-587741.jpeg?auto=compress&cs=tinysrgb&w=1200",
@@ -87,14 +92,14 @@
     "id": "luxe-hamper",
     "name": "Luxe Hamper",
     "price": 2499,
+    "weight": "650 g",
+    "cookies": 16,
     "image": "https://images.pexels.com/photos/1721932/pexels-photo-1721932.jpeg?auto=compress&cs=tinysrgb&w=1200",
     "includes": [
-      "Belgian Chocolate Cupcake",
-      "Red Velvet Cupcake",
-      "Lotus Biscoff Pastry",
-      "NY Cheesecake Slice",
-      "Almond Rocks",
-      "Snicker Stuffed Dates"
+      "Kesar Pista Cookies",
+      "Double Choco Dotted Cookies",
+      "Centre Filled Dark Chocolate Cookies",
+      "Coffee Walnut Cookies"
     ],
     "tag": "Premium",
     "description": "A premium box of our finest eggless treats for special moments.",
@@ -105,19 +110,19 @@
     ]
   },
   {
-    "id": "luxe-hamper-max",
-    "name": "Luxe Hamper Max",
+    "id": "luxe-hamper-pro",
+    "name": "Luxe Hamper Pro",
     "price": 3299,
+    "weight": "900 g",
+    "cookies": 24,
     "image": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=80",
     "includes": [
-      "Belgian Chocolate Pastry",
-      "Tiramisu Pastry",
-      "Opera Pastry",
-      "Blueberry Cheesecake",
-      "Lotus Biscoff Pastry",
-      "Gharelu Special Chocolate"
+      "Kesar Pista Cookies",
+      "Double Choco Dotted Cookies",
+      "Masala Dry Fruit Mix",
+      "Assorted Chocolates"
     ],
-    "tag": "Premium · Bigger",
+    "tag": "Premium · Sweeter",
     "description": "Our most indulgent hamper — the Luxe selection, bigger.",
     "images": [
       "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=80",
@@ -125,4 +130,4 @@
       "https://images.unsplash.com/photo-1486427944299-d1955d23e34d?auto=format&fit=crop&w=1200&q=80"
     ]
   }
-]
+]

@@ -47,11 +47,17 @@ export default function CorporateGiftingPage() {
                 <h3 className="font-heading text-xl font-bold tracking-tight text-brand-dark">{g.name}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-brand-text">{g.description}</p>
 
+                {(g.weight || g.cookies) && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {g.weight && <span className="rounded-full border border-brand-line px-3 py-1 text-xs font-semibold text-brand-dark">Net wt. {g.weight}</span>}
+                    {g.cookies && <span className="rounded-full border border-brand-line px-3 py-1 text-xs font-semibold text-brand-dark">{g.cookies} pieces</span>}
+                  </div>
+                )}
                 <div className="mt-4 rounded-xl bg-brand-secondary px-4 py-3">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-accent">What's inside</p>
-                  <ul className="mt-2 grid grid-flow-col grid-rows-3 gap-x-4 gap-y-1.5" data-testid={`gift-includes-${g.id}`}>
+                  <ul className="mt-2 grid grid-cols-2 gap-x-6 gap-y-2.5" data-testid={`gift-includes-${g.id}`}>
                     {(g.includes || [g.items]).map((item) => (
-                      <li key={item} className="flex items-start gap-2 text-[13px] text-brand-dark">
+                      <li key={item} className="flex items-start gap-2 text-sm font-medium leading-snug text-brand-dark">
                         <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-brand-accent"><Check size={10} className="text-white" /></span>
                         <span>{item}</span>
                       </li>
