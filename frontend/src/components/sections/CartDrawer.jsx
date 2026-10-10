@@ -7,8 +7,6 @@ import Button from "../common/Button";
 
 export const CartDrawer = () => {
   const { items, isOpen, closeCart, removeItem, updateQty, addItem, subtotal, count } = useCart();
-  const freeShipThreshold = 1500;
-  const remaining = Math.max(0, freeShipThreshold - subtotal);
 
   // A few quick "add more" suggestions — items not already in the box,
   // leaning towards smaller add-on categories like Cookies/Pastries so they
@@ -63,13 +61,6 @@ export const CartDrawer = () => {
               </div>
             ) : (
               <>
-                <div className="border-b border-brand-line bg-brand-secondary px-6 py-3 text-center text-sm text-brand-dark">
-                  {remaining > 0 ? (
-                    <>Add <span className="font-semibold">₹{remaining}</span> more for <span className="font-semibold">free delivery</span></>
-                  ) : (
-                    <span className="font-semibold text-brand-accent">You've unlocked free delivery! 🎉</span>
-                  )}
-                </div>
                 <div className="flex-1 overflow-y-auto px-6 py-5" data-lenis-prevent>
                   <ul className="space-y-5">
                     {items.map((i) => (

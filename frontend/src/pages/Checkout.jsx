@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -69,6 +69,8 @@ const PICKUP_TYPES = [
   { id: "parcel", label: "Parcel", icon: Package },
 ];
 
+const API_BASE = process.env.REACT_APP_BACKEND_URL || "http://localhost:8001";
+
 const todayISO = () => new Date().toISOString().split("T")[0];
 const currentTimeHHMM = () => new Date().toTimeString().slice(0, 5);
 
@@ -104,8 +106,57 @@ export default function Checkout() {
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
-  const delivery = subtotal >= 1500 || subtotal === 0 ? 0 : 99;
-  const total = subtotal + delivery;
+  // Delivery fee comes from the backend (Shiprocket rate for the pincode).
+  // Until a valid pincode is entered / the quote arrives, fall back to the
+  // old flat rule so the summary never shows a blank.
+  const [quote, setQuote] = useState(null);
+  const [quoting, setQuoting] = useState(false);
+
+  useEffect(() => {
+    setQuote(null);
+    if (deliveryMode !== "delivery" || !isValidPincode(form.pincode) || items.length === 0) {
+      setQuoting(false);
+      return undefined;
+    }
+    const controller = new AbortController();
+    setQuoting(true);
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`${API_BASE}/api/v1/cart/validate`, {
+          method: "POST",
+          signal: controller.signal,
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({
+            delivery_mode: "delivery",
+            pincode: form.pincode.trim(),
+            items: items.map((item) => ({
+              product_slug: item.slug || item.productSlug || item.id,
+              size_label: item.size || null,
+              quantity: item.qty || item.quantity,
+            })),
+          }),
+        });
+        const json = await res.json();
+        if (res.ok) setQuote(json.data.deliveryFee);
+      } catch (err) {
+        /* aborted or offline: keep the fallback fee */
+      } finally {
+        if (!controller.signal.aborted) setQuoting(false);
+      }
+    }, 400);
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [deliveryMode, form.pincode, items]);
+
+  const delivery =
+    deliveryMode !== "delivery" || subtotal === 0
+      ? 0
+      : quote !== null
+        ? quote
+        : 99;
+  const total = Math.round((subtotal + delivery) * 100) / 100;
 
   const placeOrder = async (e) => {
     e.preventDefault();
@@ -599,7 +650,7 @@ export default function Checkout() {
                 <div className="flex justify-between text-brand-text">
                   <span>Delivery</span>
                   <span className="text-brand-dark">
-                    {delivery === 0 ? "Free" : `₹${delivery}`}
+                    {quoting ? "Calculating…" : delivery === 0 ? "Free" : `₹${delivery}`}
                   </span>
                 </div>
                 <div className="flex justify-between pt-3 text-base font-bold">

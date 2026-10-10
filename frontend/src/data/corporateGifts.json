@@ -38,7 +38,7 @@
       "Double Choco Dotted Cookies"
     ],
     "tag": "Extra Sweet",
-    "description": "A box of six handpicked eggless bakes — the perfect Diwali Gift.",
+    "description": "A delightful assortment of 6 handcrafted eggless bakes, from rich chocolate indulgences to delicate, flavourful cookies — perfect for gifting or sharing.",
 
     "images": [
       "https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=1200&q=80",
@@ -60,7 +60,7 @@
       "Double Choco Dotted Cookies"
     ],
     "tag": "Most Popular",
-    "description": "Our signature bakes, beautifully boxed and ready to gift.",
+    "description": "A premium collection of four jar-packed, handcrafted eggless bakes, bringing together indulgent flavours, timeless elegance, and the joy of gifting.",
     "images": [
       "https://images.pexels.com/photos/29051739/pexels-photo-29051739.jpeg?auto=compress&cs=tinysrgb&w=1200",
       "https://images.pexels.com/photos/1721932/pexels-photo-1721932.jpeg?auto=compress&cs=tinysrgb&w=1200",
@@ -81,7 +81,7 @@
       "Assorted Chocolates"
     ],
     "tag": "Diwali Favourite",
-    "description": "The Signature selection, bigger — made for sharing.",
+    "description": "A refined selection of premium bakes, fine chocolates, and indulgent dry fruits. Perfect for gifting or sharing with loved ones.",
     "images": [
       "https://images.pexels.com/photos/587741/pexels-photo-587741.jpeg?auto=compress&cs=tinysrgb&w=1200",
       "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=80",
@@ -92,8 +92,8 @@
     "id": "luxe-hamper",
     "name": "Luxe Hamper",
     "price": 2499,
-    "weight": "650 g",
-    "cookies": 16,
+    "weight": "950 g",
+    "cookies": 50,
     "image": "https://images.pexels.com/photos/1721932/pexels-photo-1721932.jpeg?auto=compress&cs=tinysrgb&w=1200",
     "includes": [
       "Kesar Pista Cookies",
@@ -102,7 +102,7 @@
       "Coffee Walnut Cookies"
     ],
     "tag": "Premium",
-    "description": "A premium box of our finest eggless treats for special moments.",
+    "description": "An exquisite collection of generously sized jars filled with our finest eggless bakes, crafted for the ultimate gifting experience.",
     "images": [
       "https://images.pexels.com/photos/1721932/pexels-photo-1721932.jpeg?auto=compress&cs=tinysrgb&w=1200",
       "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1200&q=80",
@@ -113,8 +113,8 @@
     "id": "luxe-hamper-pro",
     "name": "Luxe Hamper Pro",
     "price": 3299,
-    "weight": "900 g",
-    "cookies": 24,
+    "weight": "950 g",
+    "cookies": 50,
     "image": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=80",
     "includes": [
       "Kesar Pista Cookies",
@@ -123,7 +123,7 @@
       "Assorted Chocolates"
     ],
     "tag": "Premium · Sweeter",
-    "description": "Our most indulgent hamper — the Luxe selection, bigger.",
+    "description": "A grand gifting collection of gourmet eggless bakes, spiced dry fruits, and fine chocolates. Perfect for making a lasting impression this festive season.",
     "images": [
       "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=80",
       "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1200&q=80",
