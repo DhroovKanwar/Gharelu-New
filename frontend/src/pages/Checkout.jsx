@@ -86,6 +86,8 @@ export default function Checkout() {
   );
   const [pickupType, setPickupType] = useState("dine-in");
   const [payment, setPayment] = useState("online");
+  // Cash on Delivery is only offered for pickup orders.
+  const availablePayments = PAYMENTS.filter((p) => p.id !== "cod" || deliveryMode === "pickup");
   const [loading, setLoading] = useState(false);
   // True only while the popup payment window is open and we're waiting on
   // its result — the full-page overlay this drives is what stops the form
@@ -104,16 +106,22 @@ export default function Checkout() {
     time: currentTimeHHMM(),
   });
 
+  useEffect(() => {
+    if (deliveryMode === "delivery" && payment === "cod") setPayment("online");
+  }, [deliveryMode, payment]);
+
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
   // Delivery fee comes from the backend (Shiprocket rate for the pincode).
-  // Until a valid pincode is entered / the quote arrives, fall back to the
-  // old flat rule so the summary never shows a blank.
+  // There is no fallback fee: until a valid pincode is entered and the quote
+  // arrives, delivery shows a prompt/error and ordering is disabled.
   const [quote, setQuote] = useState(null);
+  const [quoteError, setQuoteError] = useState("");
   const [quoting, setQuoting] = useState(false);
 
   useEffect(() => {
     setQuote(null);
+    setQuoteError("");
     if (deliveryMode !== "delivery" || !isValidPincode(form.pincode) || items.length === 0) {
       setQuoting(false);
       return undefined;
@@ -137,9 +145,13 @@ export default function Checkout() {
           }),
         });
         const json = await res.json();
-        if (res.ok) setQuote(json.data.deliveryFee);
+        if (res.ok) {
+          setQuote(json.data.deliveryFee);
+        } else {
+          setQuoteError(json?.errors?.pincode?.[0] || json?.message || "Couldn't calculate delivery for this pincode.");
+        }
       } catch (err) {
-        /* aborted or offline: keep the fallback fee */
+        if (!controller.signal.aborted) setQuoteError("Couldn't calculate delivery. Please try again.");
       } finally {
         if (!controller.signal.aborted) setQuoting(false);
       }
@@ -150,12 +162,9 @@ export default function Checkout() {
     };
   }, [deliveryMode, form.pincode, items]);
 
-  const delivery =
-    deliveryMode !== "delivery" || subtotal === 0
-      ? 0
-      : quote !== null
-        ? quote
-        : 99;
+  const needsQuote = deliveryMode === "delivery" && subtotal > 0;
+  const delivery = needsQuote ? (quote ?? 0) : 0;
+  const deliveryReady = !needsQuote || quote !== null;
   const total = Math.round((subtotal + delivery) * 100) / 100;
 
   const placeOrder = async (e) => {
@@ -557,9 +566,12 @@ export default function Checkout() {
                 />
                 <Field
                   label="Pincode"
-                  placeholder="Pincode"
+                  placeholder="6-digit pincode"
                   value={form.pincode}
-                  onChange={set("pincode")}
+                  inputMode="numeric"
+                  maxLength={6}
+                  pattern="[1-9][0-9]{5}"
+                  onChange={(e) => setForm((f) => ({ ...f, pincode: e.target.value.replace(/D/g, "").slice(0, 6) }))}
                   data-testid="checkout-pincode"
                 />
                 <Field
@@ -584,7 +596,7 @@ export default function Checkout() {
                 Payment
               </h2>
               <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                {PAYMENTS.map((p) => (
+                {availablePayments.map((p) => (
                   <button
                     key={p.id}
                     type="button"
@@ -650,7 +662,15 @@ export default function Checkout() {
                 <div className="flex justify-between text-brand-text">
                   <span>Delivery</span>
                   <span className="text-brand-dark">
-                    {quoting ? "Calculating…" : delivery === 0 ? "Free" : `₹${delivery}`}
+                    {!needsQuote
+                      ? "₹0"
+                      : quoting
+                        ? "Calculating…"
+                        : quote !== null
+                          ? `₹${quote}`
+                          : quoteError
+                            ? "Unavailable"
+                            : "Enter pincode"}
                   </span>
                 </div>
                 <div className="flex justify-between pt-3 text-base font-bold">
@@ -665,7 +685,7 @@ export default function Checkout() {
               </div>
               <Button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !deliveryReady}
                 size="lg"
                 className="mt-6 w-full"
                 icon={<ArrowRight size={18} />}
@@ -675,8 +695,11 @@ export default function Checkout() {
                   ? "Waiting for payment…"
                   : loading
                     ? "Placing order…"
-                    : `Place Order · ₹${total}`}
+                    : !deliveryReady
+                      ? "Enter pincode for delivery fee"
+                      : `Place Order · ₹${total}`}
               </Button>
+              {quoteError && needsQuote && <p className="mt-3 text-center text-xs text-red-600">{quoteError}</p>}
             </motion.div>
           </div>
         </form>

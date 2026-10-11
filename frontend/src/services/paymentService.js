@@ -184,8 +184,6 @@ export const verifyPayment = async ({
   );
 
   const data = await response.json();
-console.log("VERIFY API STATUS:", response.status);
-console.log("VERIFY API RESPONSE:", data);
   if (!response.ok) {
     throw new Error(
       data?.message || "Payment verification failed."
