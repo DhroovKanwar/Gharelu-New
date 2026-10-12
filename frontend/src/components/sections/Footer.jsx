@@ -151,7 +151,15 @@ export const Footer = () => {
           <p className="text-xs text-brand-text/60">© {new Date().getFullYear()} GHARELU.BAKE. All rights reserved.</p>
           <p className="text-xs text-brand-text/60">Crafted with warmth · 100% Eggless</p>
           <p className="text-xs text-brand-text/60">
-            Website by <span className="font-semibold text-brand-text/80">Dhruv Digital Solutions</span>
+            Website by{" "}
+            <a
+              href="https://www.dhruvdigitalsolutions.in/"
+              target="_blank"
+              rel="noreferrer"
+              className="font-semibold text-brand-text/80 transition-colors duration-300 hover:text-brand-dark"
+            >
+              Dhruv Digital Solutions
+            </a>
           </p>
         </div>
       </div>
