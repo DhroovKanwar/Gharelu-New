@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Truck, Store, Gift, ShoppingBasket, ArrowRight, Cake } from "lucide-react";
+import { ArrowLeft, Truck, Store, ShoppingBasket, ArrowRight, Cake } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
 import Container from "../components/common/Container";
 import Breadcrumb from "../components/common/Breadcrumb";
@@ -126,16 +126,9 @@ export default function StartOrder() {
           </div>
 
           {/* Secondary compact rows */}
-          <div className="mx-auto mt-3 grid max-w-5xl grid-cols-1 gap-3 sm:mt-5 sm:grid-cols-2 sm:gap-5 md:mt-6 md:gap-6">
+          <div className="mx-auto mt-3 grid max-w-5xl grid-cols-1 gap-3 sm:mt-5 sm:gap-5 md:mt-6 md:gap-6">
             <SecondaryRow
               index={0}
-              icon={Gift}
-              title="Corporate Gifting"
-              to="/corporate"
-              testid="option-corporate"
-            />
-            <SecondaryRow
-              index={1}
               icon={ShoppingBasket}
               title="Gift Hampers"
               to="/hampers"

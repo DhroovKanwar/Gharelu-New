@@ -20,8 +20,15 @@
     },
     {
       "id": "diwali",
-      "image": "/images/hero/fresh-fruit-cake.jpg",
-      "alt": "Elegant piped white cake topped with fresh fruit",
+      "image": "/images/hero/diwali-hero-1.jpg",
+      "images": [
+        "/images/hero/diwali-hero-1.jpg",
+        "/images/hero/diwali-hero-2.jpg",
+        "/images/hero/diwali-hero-3.jpg",
+        "/images/hero/diwali-hero-4.jpg",
+        "/images/hero/classic-hamper-start.jpg"
+      ],
+      "alt": "Gharelu Bake Diwali hamper",
       "campaign": {
         "label": "Diwali Special",
         "line": "BUY DIWALI HAMPERS NOW",

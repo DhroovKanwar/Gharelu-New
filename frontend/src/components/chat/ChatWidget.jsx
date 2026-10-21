@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
 // const API_URL = "/api/chat"; // Laravel backend route
-const API_URL = "http://localhost:8001/api/chat";
+const API_URL = `${process.env.REACT_APP_BACKEND_URL || ""}/api/chat`;
 // Brand colors — matched to the Gharelu.Bake site theme
 const ROSE = "#D68FA3";
 const ROSE_DARK = "#C17A8F";

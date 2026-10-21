@@ -5,7 +5,7 @@ export const RAZORPAY_KEY_ID =
   process.env.REACT_APP_RAZORPAY_KEY_ID;
 
 const API_BASE_URL =
-  process.env.REACT_APP_API_URL || "http://localhost:8001/api/v1";
+  `${process.env.REACT_APP_BACKEND_URL || ""}/api/v1`;
 
 let scriptLoadPromise = null;
 

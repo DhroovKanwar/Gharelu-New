@@ -15,7 +15,7 @@ export const GalleryPreview = () => (
   <Section id="gallery" className="bg-brand-secondary" data-testid="gallery-section">
     <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
       <SectionHeading eyebrow="From Our Kitchen" title="A feast for the eyes" />
-      <Button as="a" href="#instagram" variant="outline" className="shrink-0">
+      <Button to="/gallery" variant="outline" className="shrink-0">
         See the full gallery
       </Button>
     </div>

@@ -1,100 +1,11 @@
 [
   {
-    "id": "classic-hamper",
-    "name": "Classic Hamper",
-    "price": 799,
-    "weight": "1000 g",
-    "cookies": "42-45",
-    "image": "https://images.pexels.com/photos/31266998/pexels-photo-31266998.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    "includes": [
-      "Coconut Cookies",
-      "Red Velvet Cookies",
-      "Masala Cracker",
-      "Kesar Pista Cookies",
-      "Almond & Pista Biscotti",
-      "Double Choco Dotted Cookies"
-    ],
-    "tag": "Budget Friendly",
-    "description": "A box of six handpicked eggless bakes — the perfect Diwali Gift.",
-    "images": [
-      "https://images.pexels.com/photos/31266998/pexels-photo-31266998.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      "https://images.pexels.com/photos/29051739/pexels-photo-29051739.jpeg?auto=compress&cs=tinysrgb&w=1200",
-      "https://images.pexels.com/photos/1721932/pexels-photo-1721932.jpeg?auto=compress&cs=tinysrgb&w=1200"
-    ]
-  },
-  {
-    "id": "classic-hamper-pro",
-    "name": "Classic Hamper Pro",
-    "price": 1199,
-    "weight": "1000 g",
-    "cookies": "42-45",
-    "image": "https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=1200&q=80",
-    "includes": [
-      "Almond Rocks",
-      "Red Velvet Cookies",
-      "Coconut Cookies",
-      "Assorted Chocolates",
-      "Kesar Pista Cookies",
-      "Double Choco Dotted Cookies"
-    ],
-    "tag": "Extra Sweet",
-    "description": "A delightful assortment of 6 handcrafted eggless bakes, from rich chocolate indulgences to delicate, flavourful cookies — perfect for gifting or sharing.",
-
-    "images": [
-      "https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=1200&q=80",
-      "https://images.pexels.com/photos/587741/pexels-photo-587741.jpeg?auto=compress&cs=tinysrgb&w=1200",
-      "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=80"
-    ]
-  },
-  {
-    "id": "signature-hamper",
-    "name": "Signature Hamper",
-    "price": 1499,
-    "weight": "500 g",
-    "cookies": 32,
-    "image": "https://images.pexels.com/photos/29051739/pexels-photo-29051739.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    "includes": [
-      "Almond Loaded Cookies",
-      "Kesar Pista Cookies",
-      "Coffee Walnut Cookies",
-      "Double Choco Dotted Cookies"
-    ],
-    "tag": "Most Popular",
-    "description": "A premium collection of four jar-packed, handcrafted eggless bakes, bringing together indulgent flavours, timeless elegance, and the joy of gifting.",
-    "images": [
-      "https://images.pexels.com/photos/29051739/pexels-photo-29051739.jpeg?auto=compress&cs=tinysrgb&w=1200",
-      "https://images.pexels.com/photos/1721932/pexels-photo-1721932.jpeg?auto=compress&cs=tinysrgb&w=1200",
-      "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1200&q=80"
-    ]
-  },
-  {
-    "id": "signature-hamper-pro",
-    "name": "Signature Hamper Pro",
-    "price": 1999,
-    "weight": "500 g",
-    "cookies": 32,
-    "image": "https://images.pexels.com/photos/587741/pexels-photo-587741.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    "includes": [
-      "Kesar Pista Cookies",
-      "Double Choco Dotted Cookies",
-      "Masala Dry Fruit Mix",
-      "Assorted Chocolates"
-    ],
-    "tag": "Diwali Favourite",
-    "description": "A refined selection of premium bakes, fine chocolates, and indulgent dry fruits. Perfect for gifting or sharing with loved ones.",
-    "images": [
-      "https://images.pexels.com/photos/587741/pexels-photo-587741.jpeg?auto=compress&cs=tinysrgb&w=1200",
-      "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1200&q=80"
-    ]
-  },
-  {
     "id": "luxe-hamper",
-    "name": "Luxe Hamper",
-    "price": 2499,
-    "weight": "950 g",
-    "cookies": 50,
-    "image": "https://images.pexels.com/photos/1721932/pexels-photo-1721932.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "name": "Evergreen Hamper",
+    "price": 1390,
+    "weight": "500 g",
+    "cookies": 24,
+    "image": "/images/hampers/evergreen-1.jpg",
     "includes": [
       "Kesar Pista Cookies",
       "Double Choco Dotted Cookies",
@@ -104,18 +15,72 @@
     "tag": "Premium",
     "description": "An exquisite collection of generously sized jars filled with our finest eggless bakes, crafted for the ultimate gifting experience.",
     "images": [
-      "https://images.pexels.com/photos/1721932/pexels-photo-1721932.jpeg?auto=compress&cs=tinysrgb&w=1200",
-      "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1535141192574-5d4897c12636?auto=format&fit=crop&w=1200&q=80"
+      "/images/hampers/evergreen-1.jpg",
+      "/images/hampers/evergreen-2.jpg",
+      "/images/hampers/evergreen-3.jpg",
+      "/images/hampers/evergreen-4.jpg",
+      "/images/hampers/evergreen-5.jpg",
+      "/images/hampers/evergreen-6.jpg"
+    ]
+  },
+  {
+    "id": "classic-hamper-pro",
+    "name": "Classic Hamper",
+    "price": 1290,
+    "weight": "750 g",
+    "cookies": "30-35",
+    "image": "/images/hampers/classic-1.jpg",
+    "includes": [
+      "Almond & Pistachio Biscotti",
+      "Red Velvet Cookies",
+      "Coconut Cookies",
+      "Assorted Chocolates",
+      "Kesar Pista Cookies",
+      "Double Choco Dotted Cookies"
+    ],
+    "tag": "Extra Sweet",
+    "description": "A delightful assortment of 6 handcrafted eggless bakes, from rich chocolate indulgences to delicate, flavourful cookies — perfect for gifting or sharing.",
+    "images": [
+      "/images/hampers/classic-1.jpg",
+      "/images/hampers/classic-2.jpg",
+      "/images/hampers/classic-3.jpg",
+      "/images/hampers/classic-4.jpg",
+      "/images/hampers/classic-5.jpg",
+      "/images/hampers/classic-6.jpg"
+    ]
+  },
+  {
+    "id": "signature-hamper-pro",
+    "name": "Signature Hamper",
+    "price": 1690,
+    "weight": "500 g",
+    "cookies": 32,
+    "image": "/images/hampers/signature-1.jpg",
+    "includes": [
+      "Kesar Pista Cookies",
+      "Double Choco Dotted Cookies",
+      "Coffee Walnut Cookies",
+      "Almond Rocks"
+    ],
+    "tag": "Diwali Favourite",
+    "description": "Made for small families, with four glass jars of festive favourites to make your Diwali a little sweeter, a little richer, and a whole lot more special.",
+    "images": [
+      "/images/hampers/signature-1.jpg",
+      "/images/hampers/signature-2.jpg",
+      "/images/hampers/signature-3.jpg",
+      "/images/hampers/signature-4.jpg",
+      "/images/hampers/signature-5.jpg",
+      "/images/hampers/signature-6.jpg",
+      "/images/hampers/signature-7.jpg"
     ]
   },
   {
     "id": "luxe-hamper-pro",
-    "name": "Luxe Hamper Pro",
-    "price": 3299,
+    "name": "Luxe Hamper",
+    "price": 2290,
     "weight": "950 g",
     "cookies": 50,
-    "image": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=80",
+    "image": "/images/hampers/luxe-1.jpg",
     "includes": [
       "Kesar Pista Cookies",
       "Double Choco Dotted Cookies",
@@ -125,9 +90,10 @@
     "tag": "Premium · Sweeter",
     "description": "A grand gifting collection of gourmet eggless bakes, spiced dry fruits, and fine chocolates. Perfect for making a lasting impression this festive season.",
     "images": [
-      "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1486427944299-d1955d23e34d?auto=format&fit=crop&w=1200&q=80"
+      "/images/hampers/luxe-1.jpg",
+      "/images/hampers/luxe-2.jpg",
+      "/images/hampers/luxe-3.jpg",
+      "/images/hampers/luxe-4.jpg"
     ]
   }
 ]

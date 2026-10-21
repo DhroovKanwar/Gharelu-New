@@ -74,14 +74,20 @@ export const navLinks = [
   { label: "Menu", href: "/catalogue" },
   { label: "Hampers", href: "/hampers" },
   { label: "About", href: "/about" },
-  { label: "Corporate", href: "/corporate" },
   { label: "Gallery", href: "/gallery" },
   { label: "Track Order", href: "/track-order" },
   { label: "Contact", href: "/contact" },
 ];
 
 export const products = productsData;
-export const featuredCakes = productsData.filter((p) => p.featured);
+// While most menu items still have stock placeholder photos, only items with a
+// real photo (a local /images/... path) are shown. Set to false to show the
+// whole menu again.
+export const HIDE_ITEMS_WITHOUT_PHOTOS = true;
+export const hasRealPhoto = (p) =>
+  !HIDE_ITEMS_WITHOUT_PHOTOS || (typeof p.image === "string" && p.image.startsWith("/"));
+
+export const featuredCakes = productsData.filter((p) => p.featured && hasRealPhoto(p));
 
 export const categories = categoriesData;
 
@@ -148,7 +154,7 @@ export const footerLinks = [
     heading: "Explore",
     links: [
       { label: "Cake Catalogue", href: "/catalogue" },
-      { label: "Corporate Gifting", href: "/corporate" },
+      { label: "Gift Hampers", href: "/hampers" },
       { label: "Events", href: "/events" },
       { label: "Wishlist", href: "/wishlist" },
       { label: "Track Order", href: "/track-order" },

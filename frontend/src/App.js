@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Toaster } from "sonner";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
@@ -10,7 +10,6 @@ import Home from "@/pages/Home";
 import About from "@/pages/About";
 import Catalogue from "@/pages/Catalogue";
 import ProductDetail from "@/pages/ProductDetail";
-import CorporateGiftingPage from "@/pages/CorporateGiftingPage";
 import EventsPage from "@/pages/EventsPage";
 import GalleryPage from "@/pages/GalleryPage";
 import ReviewsPage from "@/pages/ReviewsPage";
@@ -56,7 +55,7 @@ function App() {
                 <Route path="/customize-cake" element={<CustomizeCake />} />
                 <Route path="/catalogue" element={<Catalogue />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
-                <Route path="/corporate" element={<CorporateGiftingPage />} />
+                <Route path="/corporate" element={<Navigate to="/hampers" replace />} />
                 <Route path="/hampers" element={<Hampers />} />
                 <Route path="/events" element={<EventsPage />} />
                 <Route path="/gallery" element={<GalleryPage />} />

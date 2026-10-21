@@ -33,6 +33,18 @@ getProducts: async (params = {}) => {
   return response.data;
 },
 
+// The API is paginated (max 50 per page); the menu needs every product.
+getAllProducts: async () => {
+  const first = await catalogService.getProducts({ per_page: 50, page: 1 });
+  const lastPage = first.meta?.last_page ?? 1;
+  const items = [...(first.data || [])];
+  for (let page = 2; page <= lastPage; page += 1) {
+    const next = await catalogService.getProducts({ per_page: 50, page });
+    items.push(...(next.data || []));
+  }
+  return { ...first, data: items };
+},
+
 getFeaturedCakes: async () => {
   const response = await http.get("/v1/products/featured");
   return response.data;

@@ -16,8 +16,8 @@ export const FeaturedCakes = () => (
 "
       />
       <Reveal delay={0.2}>
-        <Button as="a" href="#categories" variant="ghost" icon={<ArrowRight size={18} />} className="shrink-0">
-          View all categories
+        <Button to="/catalogue" variant="ghost" icon={<ArrowRight size={18} />} className="shrink-0">
+          View full menu
         </Button>
       </Reveal>
     </div>

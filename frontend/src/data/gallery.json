@@ -1,44 +1,282 @@
 [
-  { "id": 1, "category": "Birthday Cakes", "caption": "Chocolate drip · 1 kg", "image": "https://images.unsplash.com/photo-1519733870-f96bef9bc85f?auto=format&fit=crop&w=1200&q=80", "w": "tall" },
-  { "id": 2, "category": "Birthday Cakes", "caption": "Confetti sprinkle party", "image": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=80", "w": "" },
-  { "id": 3, "category": "Birthday Cakes", "caption": "Vanilla candle classic", "image": "https://images.unsplash.com/photo-1557925923-cd4648e211a0?auto=format&fit=crop&w=1200&q=80", "w": "wide" },
-  { "id": 4, "category": "Birthday Cakes", "caption": "Rainbow layered slice", "image": "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=1200&q=80", "w": "" },
-  { "id": 5, "category": "Birthday Cakes", "caption": "Belgian dark truffle", "image": "https://images.unsplash.com/photo-1587668178277-295251f900ce?auto=format&fit=crop&w=1200&q=80", "w": "" },
-
-  { "id": 10, "category": "Anniversary Cakes", "caption": "Rose bouquet · 2-tier", "image": "https://images.unsplash.com/photo-1535254973040-607b474cb50d?auto=format&fit=crop&w=1200&q=80", "w": "wide" },
-  { "id": 11, "category": "Anniversary Cakes", "caption": "Pastel stripes with sprinkles", "image": "https://images.unsplash.com/photo-1562440499-64c9a111f713?auto=format&fit=crop&w=1200&q=80", "w": "" },
-  { "id": 12, "category": "Anniversary Cakes", "caption": "Champagne buttercream", "image": "https://images.unsplash.com/photo-1541599540903-216a46ca1dc0?auto=format&fit=crop&w=1200&q=80", "w": "tall" },
-  { "id": 13, "category": "Anniversary Cakes", "caption": "Berry drip celebration", "image": "https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=1200&q=80", "w": "" },
-
-  { "id": 20, "category": "Wedding Cakes", "caption": "White fondant · 3-tier", "image": "https://images.unsplash.com/photo-1535920527002-b35e96722eb9?auto=format&fit=crop&w=1200&q=80", "w": "tall" },
-  { "id": 21, "category": "Wedding Cakes", "caption": "Floral cascade design", "image": "https://images.unsplash.com/photo-1622896784083-cc051313dbab?auto=format&fit=crop&w=1200&q=80", "w": "" },
-  { "id": 22, "category": "Wedding Cakes", "caption": "Gold-leaf minimalist", "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1200&q=80", "w": "" },
-  { "id": 23, "category": "Wedding Cakes", "caption": "Ivory rose garland", "image": "https://images.unsplash.com/photo-1519669417670-68775a50919c?auto=format&fit=crop&w=1200&q=80", "w": "wide" },
-  { "id": 24, "category": "Wedding Cakes", "caption": "Classic naked cake", "image": "https://images.unsplash.com/photo-1622021142947-da7dedc7c39a?auto=format&fit=crop&w=1200&q=80", "w": "" },
-
-  { "id": 30, "category": "Baby Shower Cakes", "caption": "Blue cloud & rattle", "image": "https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?auto=format&fit=crop&w=1200&q=80", "w": "" },
-  { "id": 31, "category": "Baby Shower Cakes", "caption": "Pink stork custom topper", "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1200&q=80", "w": "tall" },
-  { "id": 32, "category": "Baby Shower Cakes", "caption": "Gender reveal buttercream", "image": "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?auto=format&fit=crop&w=1200&q=80", "w": "" },
-  { "id": 33, "category": "Baby Shower Cakes", "caption": "Mint pastel welcome baby", "image": "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?auto=format&fit=crop&w=1200&q=80", "w": "wide" },
-
-  { "id": 40, "category": "Corporate Cakes", "caption": "Logo-printed launch cake", "image": "https://images.unsplash.com/photo-1607478900766-efe13248b125?auto=format&fit=crop&w=1200&q=80", "w": "wide" },
-  { "id": 41, "category": "Corporate Cakes", "caption": "Custom brand celebration", "image": "https://images.unsplash.com/photo-1621293954908-907159247fc8?auto=format&fit=crop&w=1200&q=80", "w": "" },
-  { "id": 42, "category": "Corporate Cakes", "caption": "Milestone anniversary bake", "image": "https://images.unsplash.com/photo-1602351447937-745cb720612f?auto=format&fit=crop&w=1200&q=80", "w": "" },
-  { "id": 43, "category": "Corporate Cakes", "caption": "Team farewell showpiece", "image": "https://images.unsplash.com/photo-1486427944299-d1955d23e34d?auto=format&fit=crop&w=1200&q=80", "w": "tall" },
-
-  { "id": 50, "category": "Cupcakes", "caption": "Vanilla sprinkle trio", "image": "https://images.unsplash.com/photo-1519869325930-281384150729?auto=format&fit=crop&w=1200&q=80", "w": "" },
-  { "id": 51, "category": "Cupcakes", "caption": "Chocolate mint minis", "image": "https://images.unsplash.com/photo-1587668178277-295251f900ce?auto=format&fit=crop&w=1200&q=80", "w": "tall" },
-  { "id": 52, "category": "Cupcakes", "caption": "Rose swirl buttercream", "image": "https://images.unsplash.com/photo-1607478900766-efe13248b125?auto=format&fit=crop&w=1200&q=80", "w": "" },
-  { "id": 53, "category": "Cupcakes", "caption": "Unicorn pastel box of 12", "image": "https://images.unsplash.com/photo-1518013431117-eb1465fa5752?auto=format&fit=crop&w=1200&q=80", "w": "wide" },
-  { "id": 54, "category": "Cupcakes", "caption": "Salted caramel drizzle", "image": "https://images.unsplash.com/photo-1626803775151-61d756612f97?auto=format&fit=crop&w=1200&q=80", "w": "" },
-
-  { "id": 60, "category": "Pastries", "caption": "Almond croissant · butter-flaked", "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1200&q=80", "w": "" },
-  { "id": 61, "category": "Pastries", "caption": "Strawberry tart · fresh cream", "image": "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1200&q=80", "w": "tall" },
-  { "id": 62, "category": "Pastries", "caption": "Danish assortment platter", "image": "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=1200&q=80", "w": "wide" },
-  { "id": 63, "category": "Pastries", "caption": "Éclair · Belgian chocolate", "image": "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?auto=format&fit=crop&w=1200&q=80", "w": "" },
-
-  { "id": 70, "category": "Events", "caption": "Wedding dessert spread", "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1200&q=80", "w": "wide" },
-  { "id": 71, "category": "Events", "caption": "Cocktail evening setup", "image": "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80", "w": "" },
-  { "id": 72, "category": "Events", "caption": "Guest celebration tables", "image": "https://images.unsplash.com/photo-1478146059778-26028b07395a?auto=format&fit=crop&w=1200&q=80", "w": "tall" },
-  { "id": 73, "category": "Events", "caption": "Live cake styling station", "image": "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=1200&q=80", "w": "" }
+  {
+    "id": 1,
+    "category": "Hampers",
+    "caption": "Evergreen Hamper",
+    "image": "/images/hampers/evergreen-1.jpg",
+    "w": "tall"
+  },
+  {
+    "id": 2,
+    "category": "Hampers",
+    "caption": "Classic Hamper",
+    "image": "/images/hampers/classic-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 3,
+    "category": "Hampers",
+    "caption": "Signature Hamper",
+    "image": "/images/hampers/signature-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 4,
+    "category": "Hampers",
+    "caption": "Luxe Hamper",
+    "image": "/images/hampers/luxe-1.jpg",
+    "w": "tall"
+  },
+  {
+    "id": 5,
+    "category": "Hampers",
+    "caption": "Evergreen Hamper",
+    "image": "/images/hampers/evergreen-2.jpg",
+    "w": ""
+  },
+  {
+    "id": 6,
+    "category": "Hampers",
+    "caption": "Classic Hamper",
+    "image": "/images/hampers/classic-2.jpg",
+    "w": ""
+  },
+  {
+    "id": 7,
+    "category": "Hampers",
+    "caption": "Signature Hamper",
+    "image": "/images/hampers/signature-2.jpg",
+    "w": "tall"
+  },
+  {
+    "id": 8,
+    "category": "Hampers",
+    "caption": "Luxe Hamper",
+    "image": "/images/hampers/luxe-2.jpg",
+    "w": ""
+  },
+  {
+    "id": 9,
+    "category": "Hampers",
+    "caption": "Evergreen Hamper",
+    "image": "/images/hampers/evergreen-3.jpg",
+    "w": ""
+  },
+  {
+    "id": 10,
+    "category": "Hampers",
+    "caption": "Classic Hamper",
+    "image": "/images/hampers/classic-3.jpg",
+    "w": "tall"
+  },
+  {
+    "id": 11,
+    "category": "Hampers",
+    "caption": "Signature Hamper",
+    "image": "/images/hampers/signature-3.jpg",
+    "w": ""
+  },
+  {
+    "id": 12,
+    "category": "Hampers",
+    "caption": "Luxe Hamper",
+    "image": "/images/hampers/luxe-3.jpg",
+    "w": ""
+  },
+  {
+    "id": 13,
+    "category": "Hampers",
+    "caption": "Evergreen Hamper",
+    "image": "/images/hampers/evergreen-4.jpg",
+    "w": "tall"
+  },
+  {
+    "id": 14,
+    "category": "Hampers",
+    "caption": "Classic Hamper",
+    "image": "/images/hampers/classic-4.jpg",
+    "w": ""
+  },
+  {
+    "id": 15,
+    "category": "Hampers",
+    "caption": "Signature Hamper",
+    "image": "/images/hampers/signature-4.jpg",
+    "w": ""
+  },
+  {
+    "id": 16,
+    "category": "Hampers",
+    "caption": "Luxe Hamper",
+    "image": "/images/hampers/luxe-4.jpg",
+    "w": "tall"
+  },
+  {
+    "id": 17,
+    "category": "Cakes",
+    "caption": "Pineapple · Cakes",
+    "image": "/images/products/cake-pineapple-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 18,
+    "category": "Cakes",
+    "caption": "Fresh Fruit · Cakes",
+    "image": "/images/products/cake-fresh-fruit-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 19,
+    "category": "Cakes",
+    "caption": "Black Forest · Cakes",
+    "image": "/images/products/cake-black-forest-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 20,
+    "category": "Cakes",
+    "caption": "Tiramisu · Cakes",
+    "image": "/images/products/cake-tiramisu-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 21,
+    "category": "Cakes",
+    "caption": "Red Velvet · Cakes",
+    "image": "/images/products/cake-red-velvet-1.jpg",
+    "w": "wide"
+  },
+  {
+    "id": 22,
+    "category": "Cakes",
+    "caption": "2 in 1 Cake · Cakes",
+    "image": "/images/products/cake-2-in-1-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 23,
+    "category": "Pastries",
+    "caption": "Pineapple · Pastries",
+    "image": "/images/products/pastries-pineapple-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 24,
+    "category": "Pastries",
+    "caption": "NY Cheesecake · Pastries",
+    "image": "/images/products/pastries-ny-cheesecake-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 25,
+    "category": "Pastries",
+    "caption": "Lotus Biscoff · Pastries",
+    "image": "/images/products/pastries-lotus-biscoff-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 26,
+    "category": "Pastries",
+    "caption": "Tiramisu · Pastries",
+    "image": "/images/products/pastries-tiramisu-1.jpg",
+    "w": "wide"
+  },
+  {
+    "id": 27,
+    "category": "Pastries",
+    "caption": "Blueberry Cheesecake · Pastries",
+    "image": "/images/products/pastries-blueberry-cheesecake-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 28,
+    "category": "Dry Cakes",
+    "caption": "Banana Walnut · Dry Cakes",
+    "image": "/images/products/dry-cakes-banana-walnut-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 29,
+    "category": "Dry Cakes",
+    "caption": "Honey Almond · Dry Cakes",
+    "image": "/images/products/dry-cakes-honey-almond-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 30,
+    "category": "Dry Cakes",
+    "caption": "Fudgy Brownie · Dry Cakes",
+    "image": "/images/products/dry-cakes-fudgy-brownie-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 31,
+    "category": "Dry Cakes",
+    "caption": "Blueberry Muffin · Dry Cakes",
+    "image": "/images/products/dry-cakes-blueberry-muffin-1.jpg",
+    "w": "wide"
+  },
+  {
+    "id": 32,
+    "category": "Cookies",
+    "caption": "Red Velvet Cookies · Cookies",
+    "image": "/images/products/cookies-red-velvet-cookies-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 33,
+    "category": "Cookies",
+    "caption": "Coffee Walnut Cookies · Cookies",
+    "image": "/images/products/cookies-coffee-walnut-cookies-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 34,
+    "category": "Cookies",
+    "caption": "Oatmeal Cookies · Cookies",
+    "image": "/images/products/cookies-oatmeal-cookies-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 35,
+    "category": "Cookies",
+    "caption": "Ajwain Cookies - SF · Cookies",
+    "image": "/images/products/cookies-ajwain-cookies-sf-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 36,
+    "category": "Jars",
+    "caption": "Fruit Custard · Jars",
+    "image": "/images/products/jars-fruit-custard-1.jpg",
+    "w": "wide"
+  },
+  {
+    "id": 37,
+    "category": "Jars",
+    "caption": "Tiramisu · Jars",
+    "image": "/images/products/jars-tiramisu-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 38,
+    "category": "Jars",
+    "caption": "Red Velvet · Jars",
+    "image": "/images/products/jars-red-velvet-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 39,
+    "category": "Savoury",
+    "caption": "Gharelu Special Sandwich · Savoury",
+    "image": "/images/products/savoury-gharelu-special-sandwich-1.jpg",
+    "w": ""
+  },
+  {
+    "id": 40,
+    "category": "Savoury",
+    "caption": "Avocado Toast · Savoury",
+    "image": "/images/products/savoury-avocado-toast-1.jpg",
+    "w": ""
+  }
 ]

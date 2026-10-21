@@ -1,5 +1,5 @@
 const API_BASE_URL =
-  process.env.REACT_APP_API_URL || "http://localhost:8001/api/v1";
+  `${process.env.REACT_APP_BACKEND_URL || ""}/api/v1`;
 
 /**
  * Look up guest orders by phone number — matches whatever number was

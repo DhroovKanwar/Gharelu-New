@@ -1,6 +1,6 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
 import { ArrowDownRight, ArrowRight, Star } from "lucide-react";
 import { MaskedLines } from "../common/Reveal";
 import Button from "../common/Button";
@@ -42,6 +42,14 @@ export const Hero = () => {
   const heroImage = hero.image || IMG.layerCake;
   const heroAlt = hero.alt || "Signature eggless cake";
   const campaign = hero.campaign;
+  const slides = hero.images?.length > 1 ? hero.images : null;
+  const [slide, setSlide] = useState(0);
+
+  useEffect(() => {
+    if (!slides) return undefined;
+    const id = setInterval(() => setSlide((i) => (i + 1) % slides.length), 4500);
+    return () => clearInterval(id);
+  }, [slides]);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
@@ -191,12 +199,30 @@ export const Hero = () => {
               style={{ y: yImg }}
               className="relative overflow-hidden rounded-[2rem] rounded-t-[14rem] border border-brand-line shadow-[0_40px_80px_-30px_rgba(215,134,159,0.5)]"
             >
-              <motion.img
-                style={{ scale: scaleImg }}
-                src={heroImage}
-                alt={heroAlt}
-                className="aspect-[4/5] w-full object-cover"
-              />
+              {slides ? (
+                <div className="relative aspect-[4/5] w-full">
+                  <AnimatePresence initial={false}>
+                    <motion.img
+                      key={slides[slide]}
+                      style={{ scale: scaleImg }}
+                      src={slides[slide]}
+                      alt={heroAlt}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.9 }}
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                  </AnimatePresence>
+                </div>
+              ) : (
+                <motion.img
+                  style={{ scale: scaleImg }}
+                  src={heroImage}
+                  alt={heroAlt}
+                  className="aspect-[4/5] w-full object-cover"
+                />
+              )}
 
               {/* Campaign ribbon — festival / offer badge (data-driven) */}
               {campaign && (
@@ -258,12 +284,12 @@ export const Hero = () => {
               // above it (bottom-36) instead of overlapping its top-left corner.
               className={`absolute -left-6 ${
                 campaign ? "bottom-36" : "bottom-16"
-              } hidden h-40 w-40 overflow-hidden rounded-3xl border-4 border-brand-bg shadow-xl sm:block`}
+              } hidden aspect-square w-44 overflow-hidden rounded-3xl border-4 border-brand-bg shadow-xl sm:block`}
             >
               <img
-                src="/images/owner.jpg"
-                alt="Gharelu Bake owner"
-                className="h-full w-full object-cover"
+                src="/images/hero/small-hero.jpg"
+                alt="Gharelu Bake Diwali hamper"
+                className="h-full w-full object-cover object-bottom"
               />
             </motion.div>
 

@@ -19,6 +19,7 @@ import heroData from "../data/hero.json";
  *  {
  *    id: string,
  *    image: string,
+ *    images?: string[], // optional slideshow; first entry should equal `image`
  *    alt: string,
  *    campaign: null | {
  *      label: string,     // short pill title, e.g. "Diwali Special"
@@ -39,6 +40,7 @@ export const getActiveHero = () => {
   return {
     id: chosen.id,
     image: chosen.image,
+    images: Array.isArray(chosen.images) ? chosen.images : null,
     alt: chosen.alt || "",
     campaign: chosen.campaign || null,
   };

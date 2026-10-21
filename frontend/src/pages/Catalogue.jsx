@@ -14,7 +14,7 @@ import PageHeader from "../components/common/PageHeader";
 import Section from "../components/common/Section";
 import CategorySection from "../components/common/CategorySection";
 import StickyCategoryTitle from "../components/common/StickyCategoryTitle";
-import { products as mockProducts } from "../data/content";
+import { products as mockProducts, hasRealPhoto } from "../data/content";
 import { catalogService } from "../services/api";
 import { useOrder } from "../context/OrderContext";
 import { cn } from "../utils/cn";
@@ -47,27 +47,30 @@ export default function Catalogue() {
   const { mode, setMode } = useOrder();
 useEffect(() => {
   catalogService
-    .getProducts()
+    .getAllProducts()
     .then((response) => {
       const apiProducts = response.data || [];
 
       if (apiProducts.length > 0) {
-        setProducts(apiProducts);
+        setProducts(apiProducts.filter(hasRealPhoto));
       } else {
         console.warn("API returned no products. Using mock products.");
-        setProducts(mockProducts);
+        setProducts(mockProducts.filter(hasRealPhoto));
       }
     })
     .catch((error) => {
       console.warn("API unavailable. Using mock products.", error);
-      setProducts(mockProducts);
+      setProducts(mockProducts.filter(hasRealPhoto));
     });
 }, []);
   // All collections in a stable order
-const collectionOrder = useMemo(
-  () => Array.from(new Set(products.map((p) => p.collection))),
-  [products],
-);
+// Menu order follows the local catalogue (Cakes, Cupcakes, ...); the API
+// returns products alphabetically, which would scramble the sections.
+const collectionOrder = useMemo(() => {
+  const preferred = mockProducts.map((p) => p.collection);
+  const present = new Set(products.map((p) => p.collection));
+  return Array.from(new Set([...preferred, ...present])).filter((c) => present.has(c));
+}, [products]);
 
   // Filter + sort products (search filters across sections)
   const filteredProducts = useMemo(() => {

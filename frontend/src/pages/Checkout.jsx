@@ -14,6 +14,7 @@ import {
   Package,
   Loader2,
   ShieldCheck,
+  Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
 import MainLayout from "../layouts/MainLayout";
@@ -69,20 +70,26 @@ const PICKUP_TYPES = [
   { id: "parcel", label: "Parcel", icon: Package },
 ];
 
-const API_BASE = process.env.REACT_APP_BACKEND_URL || "http://localhost:8001";
+const API_BASE = process.env.REACT_APP_BACKEND_URL || "";
 
 const todayISO = () => new Date().toISOString().split("T")[0];
 const currentTimeHHMM = () => new Date().toTimeString().slice(0, 5);
 
 export default function Checkout() {
-  const { items, subtotal, count, clearCart } = useCart();
+  const { items, subtotal, count, clearCart, removeItem } = useCart();
   const navigate = useNavigate();
   const { mode: startOrderMode } = useOrder();
+  // Delivery is for hampers only; every other menu item is pickup only, and
+  // the two can't share one order (the backend enforces the same rules).
+  const isHamperItem = (i) => /hamper/i.test(String(i.slug || i.productSlug || i.id || ""));
+  const hamperCount = items.filter(isHamperItem).length;
+  const mixedCart = hamperCount > 0 && hamperCount < items.length;
+  const pickupOnly = items.length > 0 && hamperCount === 0;
   // Carries over the Delivery/Pickup choice made on the "Start an Order" page.
   // Falls back to "delivery" so something is always selected even if that
   // page was skipped or the choice didn't come through.
   const [deliveryMode, setDeliveryMode] = useState(
-    startOrderMode === "pickup" ? "pickup" : "delivery",
+    pickupOnly || startOrderMode === "pickup" ? "pickup" : "delivery",
   );
   const [pickupType, setPickupType] = useState("dine-in");
   const [payment, setPayment] = useState("online");
@@ -109,6 +116,10 @@ export default function Checkout() {
   useEffect(() => {
     if (deliveryMode === "delivery" && payment === "cod") setPayment("online");
   }, [deliveryMode, payment]);
+
+  useEffect(() => {
+    if (pickupOnly && deliveryMode !== "pickup") setDeliveryMode("pickup");
+  }, [pickupOnly, deliveryMode]);
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
@@ -170,6 +181,11 @@ export default function Checkout() {
   const placeOrder = async (e) => {
     e.preventDefault();
 
+    if (mixedCart) {
+      toast.error("Please order hampers and other menu items separately.");
+      return;
+    }
+
     const required = ["firstName", "lastName", "email", "phone"];
 
     if (deliveryMode === "delivery") {
@@ -217,7 +233,7 @@ export default function Checkout() {
 
     try {
       // 1. FIRST create the real order in Laravel.
-      const orderResponse = await fetch("http://localhost:8001/api/v1/orders", {
+      const orderResponse = await fetch(`${API_BASE}/api/v1/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -500,8 +516,19 @@ export default function Checkout() {
                 Delivery
               </h2>
 
-              <div className="mt-5 grid grid-cols-2 gap-3">
-                {DELIVERY_MODES.map((m) => (
+              {mixedCart && (
+                <p className="mt-4 rounded-2xl bg-brand-secondary px-4 py-3 text-sm text-brand-dark" data-testid="mixed-cart-note">
+                  Hampers can be delivered, while other menu items are pickup only. Please place them as separate orders — remove one kind from your box to continue.
+                </p>
+              )}
+              {pickupOnly && (
+                <p className="mt-4 rounded-2xl bg-brand-secondary px-4 py-3 text-sm text-brand-dark" data-testid="pickup-only-note">
+                  Menu items are available for pickup only. Delivery is offered for hampers.
+                </p>
+              )}
+
+              <div className={cn("mt-5 grid gap-3", pickupOnly ? "grid-cols-1" : "grid-cols-2")}>
+                {DELIVERY_MODES.filter((m) => !pickupOnly || m.id === "pickup").map((m) => (
                   <button
                     key={m.id}
                     type="button"
@@ -542,6 +569,8 @@ export default function Checkout() {
               )}
 
               <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+                {deliveryMode === "delivery" && (
+                  <>
                 <Field
                   label="Address"
                   placeholder="House / street"
@@ -574,6 +603,8 @@ export default function Checkout() {
                   onChange={(e) => setForm((f) => ({ ...f, pincode: e.target.value.replace(/D/g, "").slice(0, 6) }))}
                   data-testid="checkout-pincode"
                 />
+                  </>
+                )}
                 <Field
                   label="Preferred Date"
                   type="date"
@@ -651,6 +682,17 @@ export default function Checkout() {
                     <span className="font-heading font-bold text-brand-dark">
                       ₹{i.price * i.qty}
                     </span>
+                    {mixedCart && !isHamperItem(i) && (
+                      <button
+                        type="button"
+                        onClick={() => removeItem(i.lineId)}
+                        className="inline-flex shrink-0 items-center gap-1 rounded-full border border-brand-line px-2.5 py-1 text-xs font-semibold text-brand-dark transition-colors hover:border-brand-accent hover:text-brand-accent"
+                        aria-label={`Remove ${i.name}`}
+                        data-testid={`checkout-remove-${i.lineId}`}
+                      >
+                        <Trash2 size={13} /> Remove
+                      </button>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -685,7 +727,7 @@ export default function Checkout() {
               </div>
               <Button
                 type="submit"
-                disabled={loading || !deliveryReady}
+                disabled={loading || !deliveryReady || mixedCart}
                 size="lg"
                 className="mt-6 w-full"
                 icon={<ArrowRight size={18} />}

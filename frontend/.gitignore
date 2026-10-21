@@ -25,3 +25,8 @@ yarn-error.log*
 # raw image staging (working copies live in public/images)
 /gharelu pics/
 frontend.zip
+
+# Large source photos and generated files (not part of the build)
+/hampers/
+/Edit For website/
+__pycache__/

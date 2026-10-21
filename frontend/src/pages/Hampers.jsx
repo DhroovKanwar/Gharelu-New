@@ -1,14 +1,21 @@
 import { motion } from "framer-motion";
-import { Plus, ArrowRight, Check, Gift } from "lucide-react";
+import { Plus, ArrowRight, Check, Gift, Headphones, Truck, Download } from "lucide-react";
 import { toast } from "sonner";
 import MainLayout from "../layouts/MainLayout";
 import PageHeader from "../components/common/PageHeader";
 import Section from "../components/common/Section";
 import SectionHeading from "../components/common/SectionHeading";
+import Reveal from "../components/common/Reveal";
 import Button from "../components/common/Button";
 import HamperGallery from "../components/common/HamperGallery";
-import { corporateGifts } from "../data/content";
+import { corporateGifts, corporate } from "../data/content";
 import { useCart } from "../context/CartContext";
+
+const steps = [
+  { icon: Gift, label: "Thoughtfully Made", title: "Premium Quality, Eggless Always", body: "Every hamper is thoughtfully curated with premium,100% eggless treats, beautiful packaging and a little extra love — because your family deserves nothing less." },
+  { icon: Headphones, label: "We're Here for You", title: "Your Personal Gifting Partner", body: "Away from home? We're here to help. Our support team is available daily from 10 AM to 12 midnight to help you choose, personalise and arrange your hampers with ease." },
+  { icon: Truck, label: "Delivered with Love", title: "Across India, From Your Heart", body: "From your home abroad to your loved ones' doorstep in India, we make festive gifting effortless with Pan-India delivery." },
+];
 
 export default function Hampers() {
   const { addItem } = useCart();
@@ -32,6 +39,9 @@ export default function Hampers() {
 
       <Section>
         <SectionHeading eyebrow="Diwali Hampers" title="Ready to gift, beautifully boxed" intro="Each hamper arrives with ribbons, a handwritten card and our finest small-batch bakes." />
+        <Button as="a" href="/downloads/gharelu-diwali-hampers.pdf" download="Gharelu-Bake-Diwali-Hampers.pdf" variant="outline" className="mt-6" icon={<Download size={18} />} data-testid="hampers-catalogue-download">
+          Download hamper catalogue (PDF)
+        </Button>
 
         <div className="mt-12 grid grid-cols-1 gap-5 lg:grid-cols-2">
           {corporateGifts.map((h, i) => (
@@ -91,13 +101,46 @@ export default function Hampers() {
         </div>
       </Section>
 
-      <section className="relative overflow-hidden bg-brand-dark py-20 md:py-24">
-        <div className="pointer-events-none absolute -right-32 top-0 h-96 w-96 rounded-full bg-brand-accent/25 blur-[120px]" />
-        <div className="mx-auto max-w-3xl px-6 text-center">
-          <Gift className="mx-auto text-brand-primary" size={34} />
-          <h2 className="mt-5 font-heading text-3xl font-extrabold tracking-tight text-white md:text-4xl">Need a bespoke or bulk hamper?</h2>
-          <p className="mx-auto mt-4 max-w-lg text-white/70">For custom curation, branding and volume orders, our gifting concierge is here to help.</p>
-          <Button as="a" to="/corporate" variant="light" className="mt-7" icon={<ArrowRight size={18} />}>Corporate & bulk gifting</Button>
+      {/* How it works */}
+      <Section className="bg-brand-secondary">
+        <SectionHeading eyebrow="How It Works" title="Effortless, end to end" align="center" className="mx-auto" />
+        <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3">
+          {steps.map((s, i) => (
+            <Reveal key={s.title} delay={i * 0.1}>
+              <div className="h-full rounded-[1.75rem] border border-brand-line bg-brand-bg p-8">
+                <div className="flex items-center gap-4">
+                  <span className="grid h-12 w-12 place-items-center rounded-full bg-brand-primary text-brand-dark"><s.icon size={20} /></span>
+                  <span className="text-stroke font-heading text-3xl font-extrabold leading-none">{String(i + 1).padStart(2, "0")}</span>
+                </div>
+                <p className="mt-5 text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-accent">{s.label}</p>
+                <h3 className="mt-2 font-heading text-xl font-bold tracking-tight text-brand-dark">{s.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-brand-text">{s.body}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </Section>
+
+      {/* CTA banner */}
+      <section className="relative overflow-hidden bg-brand-dark py-24 md:py-28">
+        <div className="pointer-events-none absolute -right-40 top-0 h-[30rem] w-[30rem] rounded-full bg-brand-accent/25 blur-[130px]" />
+        <div className="mx-auto grid max-w-[1440px] grid-cols-1 items-center gap-12 px-6 md:px-12 lg:grid-cols-2 lg:px-20">
+          <div>
+            <Gift className="text-brand-primary" size={34} />
+            <h2 className="mt-5 font-heading text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl">Let's craft your perfect gift</h2>
+            <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+              {corporate.points.map((p) => (
+                <li key={p} className="flex items-start gap-3 text-white/85">
+                  <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-brand-accent"><Check size={13} className="text-white" /></span>
+                  <span className="text-sm">{p}</span>
+                </li>
+              ))}
+            </ul>
+            <Button as="a" to="/contact" variant="light" size="lg" className="mt-9" icon={<ArrowRight size={18} />}>Request a quote</Button>
+          </div>
+          <div className="overflow-hidden rounded-[2rem] rounded-bl-[8rem] border border-white/10">
+            <img src={corporate.image} alt="Diwali gift hampers" className="aspect-[4/3] w-full object-cover" />
+          </div>
         </div>
       </section>
     </MainLayout>

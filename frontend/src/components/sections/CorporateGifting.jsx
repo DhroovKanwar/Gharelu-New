@@ -34,7 +34,7 @@ export const CorporateGifting = () => (
           ))}
         </ul>
 
-        <Button as="a" href="#location" variant="light" size="lg" className="mt-10" icon={<ArrowRight size={18} />} data-testid="corporate-cta">
+        <Button to="/contact" variant="light" size="lg" className="mt-10" icon={<ArrowRight size={18} />} data-testid="corporate-cta">
           Request a quote
         </Button>
       </motion.div>
