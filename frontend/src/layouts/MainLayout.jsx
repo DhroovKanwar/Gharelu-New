@@ -6,7 +6,6 @@ import Footer from "../components/sections/Footer";
 import CartDrawer from "../components/sections/CartDrawer";
 import FloatingOrderCTA from "../components/FloatingOrderCTA";
 import FloatingContactWidget from "../components/FloatingContactWidget";
-import ChatWidget from '../components/chat/ChatWidget'
 
 /**
  * Global chrome: smooth scroll + announcement + navbar + cart drawer + footer.
@@ -28,10 +27,6 @@ export const MainLayout = ({ children }) => {
       <FloatingContactWidget
         forceClose={openWidget === "chat"}
         onOpenChange={(isOpen) => setOpenWidget(isOpen ? "contact" : null)}
-      />
-      <ChatWidget
-        forceClose={openWidget === "contact"}
-        onOpenChange={(isOpen) => setOpenWidget(isOpen ? "chat" : null)}
       />
     </div>
   );
