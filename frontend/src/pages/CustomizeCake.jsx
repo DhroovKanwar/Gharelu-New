@@ -45,7 +45,7 @@ const STEP_META = [
   { id: 2, title: "Occasion", desc: "What's the celebration about?" },
   { id: 3, title: "Celebration Details", desc: "When would you like it ready?" },
   { id: 4, title: "Guest Count", desc: "How big should the cake be?" },
-  { id: 5, title: "Delivery Details", desc: "How should we get it to you?" },
+  { id: 5, title: "Pickup Details", desc: "Collect it fresh from our bakery." },
   { id: 6, title: "Cake Preferences", desc: "Design, flavour and message." },
   { id: 7, title: "Budget & Notes", desc: "Anything else we should know?" },
 ];
@@ -60,7 +60,17 @@ const openWhatsapp = (state) => {
 export default function CustomizeCake() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1); // 1..7, 8 = summary, 9 = done
-  const [state, setState] = useState(() => draftService.load() || initialCustomCakeState);
+  const [state, setState] = useState(() => {
+    const draft = draftService.load();
+    if (!draft) return initialCustomCakeState;
+    // Drafts saved before the menu update may hold options that no longer exist.
+    return {
+      ...draft,
+      deliveryType: "Pickup",
+      eggless: true,
+      flavour: FLAVOURS.includes(draft.flavour) ? draft.flavour : "",
+    };
+  });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [submittedId, setSubmittedId] = useState(null);
@@ -366,7 +376,7 @@ const Step5 = ({ state, set, errors }) => (
   <div className="grid grid-cols-1 gap-5">
     <OptionGrid
       id="deliveryType"
-      label="Delivery Method"
+      label="Order Type"
       required
       options={DELIVERY_TYPES}
       value={state.deliveryType}
@@ -374,6 +384,9 @@ const Step5 = ({ state, set, errors }) => (
       cols={2}
       error={errors.deliveryType}
     />
+    <p className="rounded-2xl bg-brand-secondary px-4 py-3 text-sm text-brand-dark">
+      Our cakes are available for pickup only (delivery is offered for hampers). We'll confirm your pickup time on WhatsApp.
+    </p>
 
     {state.deliveryType === "Delivery" && (
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -469,18 +482,10 @@ const Step6 = ({ state, set }) => (
       value={state.referenceImage}
       onChange={(v) => set({ referenceImage: v })}
     />
-    <label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-brand-line bg-brand-bg px-4 py-3" data-testid="eggless-toggle">
-      <input
-        type="checkbox"
-        className="h-4 w-4 accent-[#D7869F]"
-        checked={state.eggless}
-        onChange={(e) => set({ eggless: e.target.checked })}
-      />
-      <div>
-        <p className="text-sm font-bold text-brand-dark">Eggless</p>
-        <p className="text-xs text-brand-text">Uncheck if you want the cake baked with eggs.</p>
-      </div>
-    </label>
+    <div className="rounded-2xl border border-brand-line bg-brand-bg px-4 py-3" data-testid="eggless-note">
+      <p className="text-sm font-bold text-brand-dark">100% Eggless</p>
+      <p className="text-xs text-brand-text">Every cake we bake is eggless.</p>
+    </div>
   </div>
 );
 

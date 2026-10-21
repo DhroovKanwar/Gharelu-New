@@ -46,37 +46,31 @@ export const PREFERRED_TIMES = ["Morning", "Afternoon", "Evening", "Custom Time"
 
 export const GUEST_BUCKETS = ["2–5", "5–10", "10–20", "20–30", "30–50", "50–100", "100+"];
 
-export const DELIVERY_TYPES = ["Delivery", "Pickup"];
+// Delivery is for hampers only; cakes are pickup only, so no address is collected.
+export const DELIVERY_TYPES = ["Pickup"];
 
+// Our cake menu (Cakes collection). "Other" is for anything not listed.
 export const FLAVOURS = [
-  "Chocolate",
-  "Belgian Chocolate",
-  "Black Forest",
-  "Butterscotch",
-  "Vanilla",
   "Pineapple",
   "Fresh Fruit",
-  "Strawberry",
-  "Blueberry",
+  "Black Forest",
+  "Tiramisu",
+  "Belgian Chocolate",
   "Red Velvet",
   "Rainbow",
-  "German Truffle",
-  "Lotus Biscoff",
-  "Nutella",
-  "Coffee",
-  "Tiramisu",
   "Coconut",
-  "Mango (Seasonal)",
-  "Mixed Fruit",
+  "German Truffle",
+  "2 in 1 (Vanilla & Chocolate)",
   "Other",
 ];
 
 export const SHAPES = ["Round", "Heart", "Square", "Rectangle", "Custom Shape"];
 
+// Our cakes start at ₹900 for 500 gm.
 export const BUDGETS = [
-  "₹500 – ₹1,000",
-  "₹1,000 – ₹2,000",
-  "₹2,000 – ₹5,000",
+  "₹900 – ₹1,500",
+  "₹1,500 – ₹3,000",
+  "₹3,000 – ₹5,000",
   "₹5,000+",
 ];
 
@@ -100,7 +94,7 @@ export const initialCustomCakeState = {
   // Step 4 — Guest count
   peopleCount: "",
   // Step 5 — Delivery / pickup
-  deliveryType: "",
+  deliveryType: "Pickup",
   addressLine1: "",
   addressLine2: "",
   city: "",
