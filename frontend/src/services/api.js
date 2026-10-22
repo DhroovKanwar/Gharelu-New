@@ -67,14 +67,20 @@ getCategories: async () => {
 };
 
 export const leadService = {
-  // Newsletter signup — API-ready
+  // Newsletter signup (saved in the admin panel's Newsletter list)
   subscribe: async (email) => {
-    // return http.post("/newsletter/subscribe", { email });
-    return mock({ ok: true, email });
+    const response = await http.post("/v1/newsletter/subscribe", { email });
+    return response.data;
   },
-  // Contact / order enquiry — API-ready
-  sendEnquiry: async (payload) => {
-    // return http.post("/enquiries", payload);
-    return mock({ ok: true, ...payload });
+  // Contact form (saved in the admin panel's Enquiries list)
+  sendEnquiry: async ({ firstName, lastName, email, phone, message }) => {
+    const response = await http.post("/v1/enquiries", {
+      name: `${firstName} ${lastName}`.trim(),
+      email: email.trim(),
+      phone: phone?.trim() || null,
+      message: message.trim(),
+      source_page: "contact",
+    });
+    return response.data;
   },
 };
