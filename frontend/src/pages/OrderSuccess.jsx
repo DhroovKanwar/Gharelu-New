@@ -65,7 +65,7 @@ export default function OrderSuccess() {
                 <span className="font-heading text-xl font-extrabold text-brand-dark">₹{order.total}</span>
               </div>
               <p className="mt-5 flex items-center gap-2 text-sm text-brand-text">
-                <Mail size={15} className="text-brand-accent" /> A confirmation has been sent to {order.customer?.email}.
+                <Mail size={15} className="text-brand-accent" /> We will contact you on {order.customer?.phone} to confirm your order.
               </p>
             </div>
           )}

@@ -186,7 +186,7 @@ export default function Checkout() {
       return;
     }
 
-    const required = ["firstName", "lastName", "email", "phone"];
+    const required = ["firstName", "lastName", "phone"];
 
     if (deliveryMode === "delivery") {
       required.push("address", "city", "state", "pincode");
@@ -197,7 +197,7 @@ export default function Checkout() {
       return;
     }
 
-    if (!isValidEmail(form.email)) {
+    if (form.email.trim() && !isValidEmail(form.email)) {
       toast.error("Please enter a valid email address.");
       return;
     }
@@ -242,7 +242,7 @@ export default function Checkout() {
         body: JSON.stringify({
           first_name: form.firstName,
           last_name: form.lastName,
-          email: form.email,
+          email: form.email.trim() || null,
           phone: form.phone,
 
           delivery_mode: deliveryMode,
@@ -351,7 +351,7 @@ export default function Checkout() {
         description: `Order ${orderId} · ${count} item${count > 1 ? "s" : ""}`,
         customer: {
           name: `${form.firstName} ${form.lastName}`.trim(),
-          email: form.email,
+          email: form.email.trim(),
           contact: form.phone,
         },
         razorpayOrder,
@@ -480,6 +480,7 @@ export default function Checkout() {
                 <Field
                   label="First Name"
                   placeholder="First name"
+                  maxLength={50}
                   value={form.firstName}
                   onChange={set("firstName")}
                   data-testid="checkout-first-name"
@@ -487,21 +488,29 @@ export default function Checkout() {
                 <Field
                   label="Last Name"
                   placeholder="Last name"
+                  maxLength={50}
                   value={form.lastName}
                   onChange={set("lastName")}
                   data-testid="checkout-last-name"
                 />
                 <Field
                   label="Phone"
-                  placeholder="Mobile number"
+                  placeholder="10-digit mobile number"
                   className="sm:col-span-2"
+                  type="tel"
+                  inputMode="numeric"
+                  autoComplete="tel-national"
+                  maxLength={10}
                   value={form.phone}
-                  onChange={set("phone")}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, phone: e.target.value.replace(/\D/g, "").slice(0, 10) }))
+                  }
                   data-testid="checkout-phone"
                 />
                 <Field
-                  label="Email"
+                  label="Email (optional)"
                   type="email"
+                  maxLength={255}
                   placeholder="you@email.com"
                   className="sm:col-span-2"
                   value={form.email}
