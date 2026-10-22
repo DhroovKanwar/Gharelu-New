@@ -123,6 +123,9 @@ export const runPaymentInNewWindow = (paymentWindow, { name, description, custom
       const { type, payload, reason } = event.data || {};
 
       if (type === "payment-window-ready") {
+        // The child is alive: the load-failure timeout has done its job. Leaving it
+        // running would kill the window while the customer is still paying.
+        clearTimeout(readyTimeout);
         paymentWindow.postMessage(
           { type: "payment-window-init", payload: { name, description, customer, razorpayOrder } },
           window.location.origin,
