@@ -86,6 +86,7 @@ if (!product) return <NotFound />;
     toast.success(`${product.name} added to your box.`);
   };
   const handleBuyNow = () => {
+    if (product.inStock === false) return;
     addItem(product, { size, qty });
     openCart();
   };
@@ -185,7 +186,7 @@ if (!product) return <NotFound />;
                 <Heart size={20} fill={inWishlist ? "currentColor" : "none"} />
               </button>
             </div>
-            <Button onClick={handleBuyNow} variant="dark" size="lg" className="mt-3 w-full" data-testid="product-buy-now">Buy it now</Button>
+            <Button onClick={handleBuyNow} disabled={product.inStock === false} variant="dark" size="lg" className="mt-3 w-full" data-testid="product-buy-now">Buy it now</Button>
 
             {/* Perks */}
             <div className="mt-8 grid grid-cols-3 gap-3 border-t border-brand-line pt-6">
