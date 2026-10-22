@@ -39,7 +39,7 @@ export default function PaymentWindow() {
         return;
       }
 
-      if (!RAZORPAY_KEY_ID || !razorpayOrder?.razorpayOrderId) {
+      if (!(razorpayOrder?.razorpayKeyId || RAZORPAY_KEY_ID) || !razorpayOrder?.razorpayOrderId) {
         setStatus("error");
         setErrorMessage("Payment is not configured correctly.");
         notifyOpener({ type: "razorpay-failed", reason: "Invalid Razorpay order." });
