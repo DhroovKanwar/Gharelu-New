@@ -89,7 +89,7 @@ export const QuickViewModal = ({ product, onClose }) => {
                   </div>
                 </div>
                 <div className="flex gap-3">
-                  <Button onClick={handleAdd} className="flex-1" data-testid="quick-view-add">Add to Box</Button>
+                  <Button onClick={handleAdd} disabled={product.inStock === false} className="flex-1" data-testid="quick-view-add">{product.inStock === false ? "Out of stock" : "Add to Box"}</Button>
                   <Button as="a" to={`/product/${product.id}`} variant="outline" onClick={onClose} icon={<ArrowRight size={16} />}>Details</Button>
                 </div>
               </div>

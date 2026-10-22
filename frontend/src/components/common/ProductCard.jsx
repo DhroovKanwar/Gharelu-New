@@ -40,7 +40,12 @@ export const ProductCard = ({ product, index = 0, showWishlist = false, onQuickV
       data-testid={`product-card-${product.id}`}
     >
       <Link to={`/product/${product.id}`} className="relative block overflow-hidden rounded-[1.75rem] rounded-t-[6rem] bg-brand-secondary">
-        {tag && (
+        {product.inStock === false && (
+          <span className="absolute left-4 top-4 z-10 rounded-full bg-brand-dark px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.15em] text-white">
+            Out of stock
+          </span>
+        )}
+        {tag && product.inStock !== false && (
           <span className="absolute left-4 top-4 z-10 rounded-full bg-white/85 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.15em] text-brand-accent backdrop-blur-sm">
             {tag}
           </span>
@@ -75,10 +80,11 @@ export const ProductCard = ({ product, index = 0, showWishlist = false, onQuickV
         <div className="pointer-events-none absolute inset-x-4 bottom-4 flex translate-y-[130%] gap-2 opacity-0 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100">
           <button
             onClick={handleAdd}
-            className="pointer-events-auto flex flex-1 items-center justify-center gap-2 rounded-full bg-brand-dark py-3.5 text-sm font-semibold text-white transition-colors hover:bg-brand-accent"
+            disabled={product.inStock === false}
+            className="pointer-events-auto flex flex-1 items-center justify-center gap-2 rounded-full bg-brand-dark py-3.5 text-sm font-semibold text-white transition-colors hover:bg-brand-accent disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-brand-dark"
             data-testid={`add-to-cart-${product.id}`}
           >
-            <Plus size={16} /> Add · ₹{price}
+            {product.inStock === false ? "Out of stock" : <><Plus size={16} /> Add · ₹{price}</>}
           </button>
           {onQuickView && (
             <button

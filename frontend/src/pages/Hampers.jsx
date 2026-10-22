@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Plus, ArrowRight, Check, Gift, Headphones, Truck, Download } from "lucide-react";
 import { toast } from "sonner";
@@ -10,6 +11,7 @@ import Button from "../components/common/Button";
 import HamperGallery from "../components/common/HamperGallery";
 import { corporateGifts, corporate } from "../data/content";
 import { useCart } from "../context/CartContext";
+import { catalogService } from "../services/api";
 
 const steps = [
   { icon: Gift, label: "Thoughtfully Made", title: "Premium Quality, Eggless Always", body: "Every hamper is thoughtfully curated with premium,100% eggless treats, beautiful packaging and a little extra love — because your family deserves nothing less." },
@@ -19,10 +21,20 @@ const steps = [
 
 export default function Hampers() {
   const { addItem } = useCart();
+  // The hamper cards are static content; stock comes from the catalogue so the admin's
+  // "Out of stock" setting shows up here too.
+  const [stock, setStock] = useState({});
+  useEffect(() => {
+    catalogService
+      .getAllProducts()
+      .then((res) => setStock(Object.fromEntries((res.data || []).map((p) => [p.id, p.inStock]))))
+      .catch(() => {});
+  }, []);
+  const gifts = corporateGifts.map((h) => ({ ...h, inStock: stock[h.id] }));
 
   const addHamper = (h) => {
     addItem(
-      { id: h.id, slug: h.id, name: h.name, image: h.images?.[0] || h.image, collection: "Gift Hampers", price: h.price, sizes: [] },
+      { id: h.id, slug: h.id, name: h.name, image: h.images?.[0] || h.image, collection: "Gift Hampers", price: h.price, sizes: [], inStock: h.inStock },
       { qty: 1 },
     );
     toast.success(`${h.name} added to your box.`);
@@ -44,7 +56,7 @@ export default function Hampers() {
         </Button>
 
         <div className="mt-12 grid grid-cols-1 gap-5 lg:grid-cols-2">
-          {corporateGifts.map((h, i) => (
+          {gifts.map((h, i) => (
             <motion.article
               key={h.id}
               initial={{ opacity: 0, y: 40 }}
@@ -86,10 +98,11 @@ export default function Hampers() {
                   {h.price != null ? (
                     <button
                       onClick={() => addHamper(h)}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-brand-dark px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-accent"
+                      disabled={h.inStock === false}
+                      className="inline-flex items-center gap-1.5 rounded-full bg-brand-dark px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-accent disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-brand-dark"
                       data-testid={`hamper-add-${h.id}`}
                     >
-                      <Plus size={15} /> Add to cart
+                      {h.inStock === false ? "Out of stock" : <><Plus size={15} /> Add to cart</>}
                     </button>
                   ) : (
                     <Button as="a" to="/contact" size="sm" variant="dark" data-testid={`hamper-enquire-${h.id}`}>Enquire</Button>

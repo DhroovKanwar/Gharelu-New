@@ -173,8 +173,8 @@ if (!product) return <NotFound />;
                 <span className="w-6 text-center font-semibold text-brand-dark" data-testid="product-qty">{qty}</span>
                 <button onClick={() => setQty((q) => q + 1)} aria-label="Increase" className="text-brand-dark hover:text-brand-accent"><Plus size={16} /></button>
               </div>
-              <Button onClick={handleAdd} size="lg" icon={<ShoppingBag size={18} />} className="flex-1 min-w-[12rem]" data-testid="product-add-to-cart">
-                Add to Box · ₹{price * qty}
+              <Button onClick={handleAdd} disabled={product.inStock === false} size="lg" icon={<ShoppingBag size={18} />} className="flex-1 min-w-[12rem]" data-testid="product-add-to-cart">
+                {product.inStock === false ? "Out of stock" : `Add to Box · ₹${price * qty}`}
               </Button>
               <button
                 onClick={() => { wishlist.toggle(product.id); toast(inWishlist ? "Removed from wishlist" : "Saved to wishlist"); }}

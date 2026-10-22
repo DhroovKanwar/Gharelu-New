@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { createContext, useContext, useEffect, useMemo, useReducer, useState, useCallback } from "react";
 
 const CartContext = createContext(null);
@@ -58,6 +59,10 @@ export const CartProvider = ({ children }) => {
   }, [items]);
 
   const addItem = useCallback((product, { size = null, qty = 1 } = {}) => {
+    if (product.inStock === false) {
+      toast.error(`${product.name} is out of stock right now.`);
+      return;
+    }
     dispatch({ type: "ADD", product, size, qty });
     setIsOpen(true);
   }, []);
