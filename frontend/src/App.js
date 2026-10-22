@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { OrderProvider } from "@/context/OrderContext";
+import { startClickTracking, trackPageview } from "@/utils/analytics";
 
 import Home from "@/pages/Home";
 import About from "@/pages/About";
@@ -40,6 +41,17 @@ function ScrollToTop() {
   return null;
 }
 
+function Analytics() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    startClickTracking();
+  }, []);
+  useEffect(() => {
+    trackPageview(pathname);
+  }, [pathname]);
+  return null;
+}
+
 function App() {
   return (
     <div className="App">
@@ -48,6 +60,7 @@ function App() {
           <OrderProvider>
             <BrowserRouter>
               <ScrollToTop />
+              <Analytics />
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
