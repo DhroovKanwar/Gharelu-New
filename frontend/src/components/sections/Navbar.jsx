@@ -115,7 +115,7 @@ export const Navbar = () => {
                   {l.label}
                 </Link>
               ))}
-              <p className="mt-4 px-4 text-sm text-brand-text">{brand.phone}</p>
+              {brand.phone && <p className="mt-4 px-4 text-sm text-brand-text">{brand.phone}</p>}
             </div>
           </motion.div>
         )}

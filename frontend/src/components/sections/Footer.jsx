@@ -130,12 +130,14 @@ export const Footer = () => {
                 <MapPin size={16} className="mt-0.5 shrink-0 text-brand-accent" />
                 <span>{brand.address}</span>
               </li>
-              <li>
-                <a href={`tel:${brand.phone.replace(/\s/g, "")}`} className="group inline-flex items-center gap-3 transition-colors duration-300 hover:text-brand-dark">
-                  <Phone size={16} className="shrink-0 text-brand-accent" />
-                  <span className="transition-transform duration-300 group-hover:translate-x-1">{brand.phone}</span>
-                </a>
-              </li>
+              {brand.phone && (
+                <li>
+                  <a href={`tel:${brand.phone.replace(/\s/g, "")}`} className="group inline-flex items-center gap-3 transition-colors duration-300 hover:text-brand-dark">
+                    <Phone size={16} className="shrink-0 text-brand-accent" />
+                    <span className="transition-transform duration-300 group-hover:translate-x-1">{brand.phone}</span>
+                  </a>
+                </li>
+              )}
               <li>
                 <a href={`mailto:${brand.email}`} className="group inline-flex items-center gap-3 transition-colors duration-300 hover:text-brand-dark">
                   <Mail size={16} className="shrink-0 text-brand-accent" />

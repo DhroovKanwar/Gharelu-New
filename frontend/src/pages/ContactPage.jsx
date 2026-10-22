@@ -27,7 +27,7 @@ const info = (brand) => [
   { icon: Clock, label: "Hours", value: brand.hours },
   { icon: Phone, label: "Call", value: brand.phone },
   { icon: Mail, label: "Email", value: brand.email },
-];
+].filter((item) => item.value);
 
 export default function ContactPage() {
   const [form, setForm] = useState({

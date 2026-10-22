@@ -24,7 +24,7 @@ export const Location = () => (
         <div className="mt-10">
           <InfoRow icon={MapPin} label="Studio" value={brand.address} />
           <InfoRow icon={Clock} label="Hours" value={brand.hours} />
-          <InfoRow icon={Phone} label="Call" value={brand.phone} />
+          {brand.phone && <InfoRow icon={Phone} label="Call" value={brand.phone} />}
           <InfoRow icon={Mail} label="Email" value={brand.email} />
         </div>
       </div>

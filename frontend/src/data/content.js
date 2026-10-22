@@ -49,7 +49,8 @@ export const IMG = {
 export const brand = {
   name: "GHARELU.BAKE",
   tagline: "Pure • Premium • Eggless",
-  phone: "07973 714215",
+  // Call number is hidden for now (every place that shows it skips an empty phone). Previous number: "07973 714215".
+  phone: "",
   // WhatsApp number (country code + number, digits only) used for wa.me links
   whatsapp: "917303091448",
   email: "hello@gharelubake.in",
