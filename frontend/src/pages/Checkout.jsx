@@ -115,6 +115,7 @@ export default function Checkout() {
     pincode: "",
     date: todayISO(),
     time: currentTimeHHMM(),
+    notes: "",
   });
 
   useEffect(() => {
@@ -346,7 +347,7 @@ export default function Checkout() {
 
           payment_method: payment,
 
-          notes: null,
+          notes: form.notes.trim() || null,
 
           idempotency_key: crypto.randomUUID(),
 
@@ -603,25 +604,40 @@ export default function Checkout() {
                   inputMode="numeric"
                   maxLength={6}
                   pattern="[1-9][0-9]{5}"
-                  onChange={(e) => setForm((f) => ({ ...f, pincode: e.target.value.replace(/D/g, "").slice(0, 6) }))}
+                  onChange={(e) => setForm((f) => ({ ...f, pincode: e.target.value.replace(/\D/g, "").slice(0, 6) }))}
                   data-testid="checkout-pincode"
                 />
                   </>
                 )}
                 <Field
-                  label="Preferred Date"
+                  label={deliveryMode === "delivery" ? "Preferred Delivery Date" : "Preferred Pickup Date"}
                   type="date"
+                  min={todayISO()}
                   value={form.date}
                   onChange={set("date")}
                   data-testid="checkout-date"
                 />
                 <Field
-                  label="Preferred Time"
+                  label={deliveryMode === "delivery" ? "Preferred Delivery Time" : "Preferred Pickup Time"}
                   type="time"
                   value={form.time}
                   onChange={set("time")}
                   data-testid="checkout-time"
                 />
+                <label className="block sm:col-span-2">
+                  <span className="mb-2 block text-xs font-semibold uppercase tracking-widest text-brand-dark">
+                    Remarks (optional)
+                  </span>
+                  <textarea
+                    rows={3}
+                    maxLength={500}
+                    value={form.notes}
+                    onChange={set("notes")}
+                    placeholder="Message on the cake, delivery instructions, allergies…"
+                    className="w-full rounded-2xl border border-brand-line bg-brand-bg px-5 py-3.5 text-brand-dark outline-none transition-shadow placeholder:text-brand-text/50 focus:ring-2 focus:ring-brand-accent"
+                    data-testid="checkout-notes"
+                  />
+                </label>
               </div>
             </div>
 
