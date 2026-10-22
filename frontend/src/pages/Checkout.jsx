@@ -14,6 +14,7 @@ import {
   Package,
   Loader2,
   ShieldCheck,
+  AlertTriangle,
   Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -31,7 +32,7 @@ import {
 } from "../utils/validators";
 import {
   createPaymentOrder,
-  runPaymentInNewWindow,
+  runRazorpayCheckout,
   verifyPayment,
 } from "../services/paymentService";
 
@@ -96,10 +97,13 @@ export default function Checkout() {
   // Cash on Delivery is only offered for pickup orders.
   const availablePayments = PAYMENTS.filter((p) => p.id !== "cod" || deliveryMode === "pickup");
   const [loading, setLoading] = useState(false);
-  // True only while the popup payment window is open and we're waiting on
-  // its result — the full-page overlay this drives is what stops the form
-  // from being edited/resubmitted mid-payment.
+  // True only while the Razorpay window is open and we're waiting on its
+  // result — the full-page overlay this drives is what stops the form from
+  // being edited/resubmitted mid-payment.
   const [paymentLocked, setPaymentLocked] = useState(false);
+  // Set when an online payment did not go through: the order already exists
+  // (payment pending), so the customer can retry it without re-entering anything.
+  const [payFailure, setPayFailure] = useState(null);
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -178,6 +182,94 @@ export default function Checkout() {
   const deliveryReady = !needsQuote || quote !== null;
   const total = Math.round((subtotal + delivery) * 100) / 100;
 
+  // Takes an order that already exists in Laravel through Razorpay. Also used by the
+  // "Try again" button, so a failed payment never creates a second order.
+  const payOnline = async (apiOrder) => {
+    const orderId = apiOrder.orderNumber;
+    setLoading(true);
+    setPayFailure(null);
+
+    try {
+      // Laravel creates (or reuses) the real Razorpay order; the amount comes from the database.
+      const razorpayOrder = await createPaymentOrder({ orderId });
+
+      setPaymentLocked(true);
+
+      const result = await runRazorpayCheckout({
+        name: "Gharelu Bake",
+        description: `Order ${orderId} · ${count} item${count > 1 ? "s" : ""}`,
+        customer: {
+          name: `${form.firstName} ${form.lastName}`.trim(),
+          email: form.email.trim(),
+          contact: form.phone,
+        },
+        razorpayOrder,
+      });
+
+      setPaymentLocked(false);
+
+      if (result.status !== "success") {
+        setPayFailure({
+          order: apiOrder,
+          reason: result.status === "failed" ? result.reason : null,
+        });
+        return;
+      }
+
+      const verification = await verifyPayment({ ...result.payload, orderId });
+
+      if (!verification?.verified) {
+        throw new Error(
+          `We couldn't confirm your payment for order ${orderId}. If money was deducted, please call us and quote this order number.`,
+        );
+      }
+
+      const finalOrder = {
+        ...apiOrder,
+
+        // OrderSuccess frontend format
+        id: apiOrder.orderNumber,
+
+        items: (apiOrder.items || []).map((item, index) => ({
+          lineId: `${apiOrder.orderNumber}-${index}`,
+          name: item.productName,
+          image: item.productImage,
+          size: item.sizeLabel,
+          qty: item.quantity,
+          price: item.unitPrice,
+        })),
+
+        subtotal: apiOrder.subtotal,
+        delivery: apiOrder.deliveryFee,
+        total: apiOrder.total,
+
+        deliveryMode: apiOrder.deliveryMode,
+        pickupType: apiOrder.pickupType,
+        payment: apiOrder.paymentMethod,
+
+        customer: apiOrder.customer,
+
+        date: apiOrder.scheduledDate,
+        time: apiOrder.scheduledTime,
+
+        razorpay_payment_id: result.payload.razorpay_payment_id,
+        razorpay_order_id: result.payload.razorpay_order_id,
+        payment_status: "paid",
+      };
+
+      localStorage.setItem("gb_last_order", JSON.stringify(finalOrder));
+
+      clearCart();
+      navigate("/order-success");
+    } catch (err) {
+      console.error("Payment error:", err);
+      setPaymentLocked(false);
+      setPayFailure({ order: apiOrder, reason: err?.message || "Something went wrong with the payment." });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const placeOrder = async (e) => {
     e.preventDefault();
 
@@ -210,23 +302,6 @@ export default function Checkout() {
     if (deliveryMode === "delivery" && !isValidPincode(form.pincode)) {
       toast.error("Please enter a valid 6-digit pincode.");
       return;
-    }
-
-    // Open the payment popup synchronously, still inside the click's user
-    // gesture — opening it later (after an await) is what gets it killed by
-    // popup blockers. It sits with a "connecting…" placeholder (see
-    // PaymentWindow.jsx) until we have real order data to hand it.
-    let paymentWindow = null;
-    if (payment === "online") {
-      paymentWindow = window.open(
-        "/payment-window",
-        "gb_payment_window",
-        "width=460,height=700",
-      );
-      if (!paymentWindow) {
-        toast.error("Please allow popups for this site to pay online.");
-        return;
-      }
     }
 
     setLoading(true);
@@ -335,98 +410,17 @@ export default function Checkout() {
         return;
       }
 
-      // 3. Ask Laravel to create the REAL Razorpay order.
-      const razorpayOrder = await createPaymentOrder({
-        orderId,
-      });
-
-      // 4. Hand the payment window everything it needs and lock this page
-      // until it reports back success / failure / cancellation — nothing
-      // here can be edited or resubmitted while paymentLocked is true (see
-      // the overlay in the JSX below).
-      setPaymentLocked(true);
-
-      const result = await runPaymentInNewWindow(paymentWindow, {
-        name: "Gharelu Bake",
-        description: `Order ${orderId} · ${count} item${count > 1 ? "s" : ""}`,
-        customer: {
-          name: `${form.firstName} ${form.lastName}`.trim(),
-          email: form.email.trim(),
-          contact: form.phone,
-        },
-        razorpayOrder,
-      });
-
-      if (result.status === "success") {
-        const verification = await verifyPayment({
-          ...result.payload,
-          orderId,
-        });
-
-        if (!verification?.verified) {
-          throw new Error("We couldn't verify your payment. Please contact support.");
-        }
-
-        const apiOrder = createdOrder.data;
-
-        const finalOrder = {
-          ...apiOrder,
-
-          // OrderSuccess frontend format
-          id: apiOrder.orderNumber,
-
-          items: (apiOrder.items || []).map((item, index) => ({
-            lineId: `${apiOrder.orderNumber}-${index}`,
-            name: item.productName,
-            image: item.productImage,
-            size: item.sizeLabel,
-            qty: item.quantity,
-            price: item.unitPrice,
-          })),
-
-          subtotal: apiOrder.subtotal,
-          delivery: apiOrder.deliveryFee,
-          total: apiOrder.total,
-
-          deliveryMode: apiOrder.deliveryMode,
-          pickupType: apiOrder.pickupType,
-          payment: apiOrder.paymentMethod,
-
-          customer: apiOrder.customer,
-
-          date: apiOrder.scheduledDate,
-          time: apiOrder.scheduledTime,
-
-          razorpay_payment_id: result.payload.razorpay_payment_id,
-          razorpay_order_id: result.payload.razorpay_order_id,
-          payment_status: "paid",
-        };
-
-        localStorage.setItem("gb_last_order", JSON.stringify(finalOrder));
-
-        clearCart();
-        setLoading(false);
-        setPaymentLocked(false);
-        navigate("/order-success");
-      } else if (result.status === "cancelled") {
-        toast.error("Payment was cancelled.");
-        setLoading(false);
-        setPaymentLocked(false);
-      } else {
-        toast.error(result.reason || "Payment could not be completed. Please try again.");
-        setLoading(false);
-        setPaymentLocked(false);
-      }
+      // 3. Online: open Razorpay for the order that was just created.
+      await payOnline(createdOrder.data);
     } catch (err) {
       console.error("Checkout error:", err);
 
-      paymentWindow?.close();
-      setPaymentLocked(false);
       toast.error(err?.message || "Something went wrong. Please try again.");
 
       setLoading(false);
     }
   };
+
   if (count === 0) {
     return (
       <MainLayout>
@@ -756,6 +750,42 @@ export default function Checkout() {
         </form>
       </Section>
 
+      {payFailure && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 z-[1900] flex items-center justify-center bg-brand-dark/50 px-4 backdrop-blur-sm"
+          data-testid="payment-failed-panel"
+          role="alertdialog"
+          aria-labelledby="pay-failed-title"
+        >
+          <div className="w-full max-w-md rounded-3xl bg-white p-7 text-center shadow-2xl">
+            <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-red-50 text-red-500">
+              <AlertTriangle size={28} />
+            </div>
+            <h2 id="pay-failed-title" className="mt-4 font-heading text-xl font-extrabold text-brand-dark">
+              {payFailure.reason ? "Your payment didn't go through" : "Payment not completed"}
+            </h2>
+            <p className="mt-2 text-sm text-brand-text">
+              {payFailure.reason ||
+                "You closed the payment window before paying. Your order is saved, so you can pay now without filling anything again."}
+            </p>
+            <p className="mt-3 rounded-xl bg-brand-secondary px-4 py-3 text-xs text-brand-text">
+              Order <span className="font-semibold text-brand-dark">{payFailure.order.orderNumber}</span> is saved and waiting
+              for payment. If any money was deducted, it goes back to your account automatically in 5–7 working days.
+            </p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+              <Button type="button" onClick={() => payOnline(payFailure.order)} disabled={loading}>
+                {loading ? "Opening…" : `Try payment again · ₹${payFailure.order.total}`}
+              </Button>
+              <Button type="button" variant="outline" onClick={() => setPayFailure(null)}>
+                Close
+              </Button>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
       {paymentLocked && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -769,7 +799,7 @@ export default function Checkout() {
           </p>
           <p className="flex max-w-sm items-center justify-center gap-2 text-sm text-brand-text">
             <ShieldCheck size={16} className="shrink-0 text-brand-accent" />
-            Complete it in the new payment window. This page is locked until we hear back — please don't close or refresh it.
+            Complete it in the secure payment window. Please don't close or refresh this page until it finishes.
           </p>
         </motion.div>
       )}

@@ -23,7 +23,6 @@ import Wishlist from "@/pages/Wishlist";
 import Checkout from "@/pages/Checkout";
 import OrderSuccess from "@/pages/OrderSuccess";
 import TrackOrder from "@/pages/TrackOrder";
-import PaymentWindow from "@/pages/PaymentWindow";
 import StartOrder from "@/pages/StartOrder";
 import Hampers from "@/pages/Hampers";
 import CustomizeCake from "@/pages/CustomizeCake";
@@ -82,7 +81,6 @@ function App() {
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/order-success" element={<OrderSuccess />} />
                 <Route path="/track-order" element={<TrackOrder />} />
-                <Route path="/payment-window" element={<PaymentWindow />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

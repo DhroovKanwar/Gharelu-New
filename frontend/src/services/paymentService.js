@@ -84,80 +84,68 @@ export const createPaymentOrder = async ({ orderId } = {}) => {
 };
 
 /**
- * Open a popup window (must already be open — see PaymentWindow.jsx / the
- * note in Checkout.jsx about calling window.open() synchronously before any
- * await, or popup blockers will kill it) and hand it everything it needs to
- * run Razorpay Checkout itself. This keeps the payment UI in its own window
- * — separate from the checkout form — while this function resolves only
- * once the child window reports a final result (or is closed), so the
- * caller can lock the checkout page for the whole in-between period.
+ * Open Razorpay Checkout on top of the current page (full-screen on phones, a centred
+ * modal over a dimmed page on desktop) and resolve once the customer is done.
  *
- * Protocol (all messages same-origin only):
- *  child -> opener  "payment-window-ready"   (child mounted, waiting for data)
- *  opener -> child  "payment-window-init"    (name/description/customer/order)
- *  child -> opener  "razorpay-success"       { payload: <razorpay handler response> }
- *  child -> opener  "razorpay-failed"        { reason }
- *  child -> opener  "razorpay-cancelled"     (modal dismissed in the child)
+ * Resolves with:
+ *  { status: "success", payload }   the payment went through (verify it with the backend)
+ *  { status: "failed", reason }     the gateway rejected it and the customer gave up
+ *  { status: "cancelled" }          the customer closed the window without paying
+ *
+ * A failed attempt does NOT end the flow by itself: Razorpay shows its own "Retry" screen,
+ * so the customer can try another card/UPI inside the same window. We only remember the
+ * last failure reason, in case they then close it.
  */
-export const runPaymentInNewWindow = (paymentWindow, { name, description, customer, razorpayOrder }) => {
+export const runRazorpayCheckout = async ({ name, description, customer, razorpayOrder }) => {
+  const sdkReady = await loadRazorpayScript();
+  if (!sdkReady) {
+    return { status: "failed", reason: "We couldn't load the payment gateway. Please check your internet connection and try again." };
+  }
+
+  const key = razorpayOrder?.razorpayKeyId || RAZORPAY_KEY_ID;
+  if (!key || !razorpayOrder?.razorpayOrderId) {
+    return { status: "failed", reason: "Online payment isn't available right now. Please contact us to place your order." };
+  }
+
   return new Promise((resolve) => {
     let settled = false;
-
-    const cleanup = () => {
-      window.removeEventListener("message", onMessage);
-      clearInterval(closedPoll);
-      clearTimeout(readyTimeout);
-    };
+    let lastFailure = null;
 
     const settle = (result) => {
       if (settled) return;
       settled = true;
-      cleanup();
       resolve(result);
     };
 
-    const onMessage = (event) => {
-      if (event.origin !== window.location.origin) return;
-      if (event.source !== paymentWindow) return;
+    const razorpay = new window.Razorpay({
+      key,
+      amount: Math.round(Number(razorpayOrder.amount) * 100),
+      currency: razorpayOrder.currency || "INR",
+      order_id: razorpayOrder.razorpayOrderId,
+      name,
+      description,
+      prefill: {
+        name: customer?.name || "",
+        email: customer?.email || "",
+        contact: customer?.contact || "",
+      },
+      notes: { local_order_id: razorpayOrder.orderNumber || "" },
+      theme: { color: "#D7869F" },
+      retry: { enabled: true },
+      handler: (response) => settle({ status: "success", payload: response }),
+      modal: {
+        // Asks "are you sure?" before the window closes, so a stray tap doesn't lose the payment.
+        confirm_close: true,
+        escape: false,
+        ondismiss: () => settle(lastFailure ? { status: "failed", reason: lastFailure } : { status: "cancelled" }),
+      },
+    });
 
-      const { type, payload, reason } = event.data || {};
+    razorpay.on("payment.failed", (response) => {
+      lastFailure = response?.error?.description || "The payment could not be completed.";
+    });
 
-      if (type === "payment-window-ready") {
-        // The child is alive: the load-failure timeout has done its job. Leaving it
-        // running would kill the window while the customer is still paying.
-        clearTimeout(readyTimeout);
-        paymentWindow.postMessage(
-          { type: "payment-window-init", payload: { name, description, customer, razorpayOrder } },
-          window.location.origin,
-        );
-      } else if (type === "razorpay-success") {
-        settle({ status: "success", payload });
-      } else if (type === "razorpay-failed") {
-        settle({ status: "failed", reason: reason || "Payment could not be completed." });
-      } else if (type === "razorpay-cancelled") {
-        settle({ status: "cancelled" });
-      }
-    };
-
-    // The user can close the popup with the window chrome's own [x] instead
-    // of Razorpay's cancel button — that never sends us a message, so we
-    // have to notice it ourselves.
-    const closedPoll = setInterval(() => {
-      if (paymentWindow.closed) settle({ status: "cancelled" });
-    }, 700);
-
-    // The child failed to load / script blocked / etc. — don't lock the
-    // checkout page forever waiting for a "ready" that's never coming.
-    const readyTimeout = setTimeout(() => {
-      settle({ status: "failed", reason: "Payment window did not respond. Please try again." });
-      try {
-        paymentWindow.close();
-      } catch {
-        // ignore — window may already be gone
-      }
-    }, 20000);
-
-    window.addEventListener("message", onMessage);
+    razorpay.open();
   });
 };
 
