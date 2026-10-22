@@ -48,6 +48,32 @@ const Field = ({ label, className, ...props }) => (
   </label>
 );
 
+const SelectField = ({ label, className, children, ...props }) => (
+  <label className={cn("block", className)}>
+    <span className="mb-2 block text-xs font-semibold uppercase tracking-widest text-brand-dark">
+      {label}
+    </span>
+    <select
+      className="w-full rounded-2xl border border-brand-line bg-brand-bg px-5 py-3.5 text-brand-dark outline-none transition-shadow focus:ring-2 focus:ring-brand-accent"
+      {...props}
+    >
+      {children}
+    </select>
+  </label>
+);
+
+const INDIAN_STATES = [
+  "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chandigarh",
+  "Chhattisgarh", "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Goa", "Gujarat", "Haryana",
+  "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand", "Karnataka", "Kerala", "Ladakh", "Lakshadweep",
+  "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Puducherry",
+  "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand",
+  "West Bengal",
+];
+
+const formatETA = (iso) =>
+  new Date(`${iso}T00:00:00`).toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" });
+
 const PAYMENTS = [
   {
     id: "online",
@@ -134,9 +160,39 @@ export default function Checkout() {
   const [quote, setQuote] = useState(null);
   const [quoteError, setQuoteError] = useState("");
   const [quoting, setQuoting] = useState(false);
+  const [eta, setEta] = useState(null);
+
+  // Cities offered in the City dropdown, looked up from the pincode (India Post).
+  // Empty when the lookup fails, in which case City falls back to a text box.
+  const [cityOptions, setCityOptions] = useState([]);
+
+  useEffect(() => {
+    setCityOptions([]);
+    if (deliveryMode !== "delivery" || !isValidPincode(form.pincode)) return undefined;
+    const controller = new AbortController();
+    (async () => {
+      try {
+        const res = await fetch(`https://api.postalpincode.in/pincode/${form.pincode}`, { signal: controller.signal });
+        const offices = (await res.json())?.[0]?.PostOffice;
+        if (!Array.isArray(offices) || offices.length === 0) return;
+        const cities = [...new Set(offices.flatMap((o) => [o.District, o.Name]).filter(Boolean))];
+        const state = INDIAN_STATES.find((st) => st.toLowerCase() === String(offices[0].State).toLowerCase());
+        setCityOptions(cities);
+        setForm((f) => ({
+          ...f,
+          state: state || f.state,
+          city: cities.includes(f.city) ? f.city : offices[0].District || cities[0],
+        }));
+      } catch {
+        /* lookup is a convenience; City stays a text box */
+      }
+    })();
+    return () => controller.abort();
+  }, [deliveryMode, form.pincode]);
 
   useEffect(() => {
     setQuote(null);
+    setEta(null);
     setQuoteError("");
     if (deliveryMode !== "delivery" || !isValidPincode(form.pincode) || items.length === 0) {
       setQuoting(false);
@@ -163,6 +219,7 @@ export default function Checkout() {
         const json = await res.json();
         if (res.ok) {
           setQuote(json.data.deliveryFee);
+          setEta(json.data.estimatedDelivery || null);
         } else {
           setQuoteError(json?.errors?.pincode?.[0] || json?.message || "Couldn't calculate delivery for this pincode.");
         }
@@ -177,6 +234,12 @@ export default function Checkout() {
       controller.abort();
     };
   }, [deliveryMode, form.pincode, items]);
+
+  // Can't pick a delivery date earlier than the courier can reach the pincode.
+  const minDate = eta && eta > todayISO() ? eta : todayISO();
+  useEffect(() => {
+    setForm((f) => (f.date < minDate ? { ...f, date: minDate } : f));
+  }, [minDate]);
 
   const needsQuote = deliveryMode === "delivery" && subtotal > 0;
   const delivery = needsQuote ? (quote ?? 0) : 0;
@@ -279,7 +342,7 @@ export default function Checkout() {
       return;
     }
 
-    const required = ["firstName", "lastName", "phone"];
+    const required = ["firstName", "phone"];
 
     if (deliveryMode === "delivery") {
       required.push("address", "city", "state", "pincode");
@@ -343,7 +406,7 @@ export default function Checkout() {
           landmark: null,
 
           scheduled_date: form.date,
-          scheduled_time: form.time,
+          scheduled_time: deliveryMode === "pickup" ? form.time : null,
 
           payment_method: payment,
 
@@ -481,7 +544,7 @@ export default function Checkout() {
                   data-testid="checkout-first-name"
                 />
                 <Field
-                  label="Last Name"
+                  label="Last Name (optional)"
                   placeholder="Last name"
                   maxLength={50}
                   value={form.lastName}
@@ -584,20 +647,6 @@ export default function Checkout() {
                   data-testid="checkout-address"
                 />
                 <Field
-                  label="City"
-                  placeholder="City"
-                  value={form.city}
-                  onChange={set("city")}
-                  data-testid="checkout-city"
-                />
-                <Field
-                  label="State"
-                  placeholder="State"
-                  value={form.state}
-                  onChange={set("state")}
-                  data-testid="checkout-state"
-                />
-                <Field
                   label="Pincode"
                   placeholder="6-digit pincode"
                   value={form.pincode}
@@ -607,23 +656,58 @@ export default function Checkout() {
                   onChange={(e) => setForm((f) => ({ ...f, pincode: e.target.value.replace(/\D/g, "").slice(0, 6) }))}
                   data-testid="checkout-pincode"
                 />
+                <SelectField
+                  label="State"
+                  value={form.state}
+                  onChange={set("state")}
+                  data-testid="checkout-state"
+                >
+                  <option value="">Select state</option>
+                  {INDIAN_STATES.map((st) => (
+                    <option key={st} value={st}>{st}</option>
+                  ))}
+                </SelectField>
+                {cityOptions.length > 0 ? (
+                  <SelectField
+                    label="City"
+                    className="sm:col-span-2"
+                    value={form.city}
+                    onChange={set("city")}
+                    data-testid="checkout-city"
+                  >
+                    {cityOptions.map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </SelectField>
+                ) : (
+                  <Field
+                    label="City"
+                    placeholder="City"
+                    className="sm:col-span-2"
+                    value={form.city}
+                    onChange={set("city")}
+                    data-testid="checkout-city"
+                  />
+                )}
                   </>
                 )}
                 <Field
                   label={deliveryMode === "delivery" ? "Preferred Delivery Date" : "Preferred Pickup Date"}
                   type="date"
-                  min={todayISO()}
+                  min={minDate}
                   value={form.date}
                   onChange={set("date")}
                   data-testid="checkout-date"
                 />
-                <Field
-                  label={deliveryMode === "delivery" ? "Preferred Delivery Time" : "Preferred Pickup Time"}
-                  type="time"
-                  value={form.time}
-                  onChange={set("time")}
-                  data-testid="checkout-time"
-                />
+                {deliveryMode === "pickup" && (
+                  <Field
+                    label="Preferred Pickup Time"
+                    type="time"
+                    value={form.time}
+                    onChange={set("time")}
+                    data-testid="checkout-time"
+                  />
+                )}
                 <label className="block sm:col-span-2">
                   <span className="mb-2 block text-xs font-semibold uppercase tracking-widest text-brand-dark">
                     Remarks (optional)
@@ -734,6 +818,14 @@ export default function Checkout() {
                             : "Enter pincode"}
                   </span>
                 </div>
+                {needsQuote && eta && (
+                  <div className="flex justify-between text-brand-text" data-testid="checkout-eta">
+                    <span>{form.date > eta ? "Delivery on" : "Estimated delivery"}</span>
+                    <span className="text-brand-dark">
+                      {form.date > eta ? formatETA(form.date) : `by ${formatETA(eta)}`}
+                    </span>
+                  </div>
+                )}
                 <div className="flex justify-between pt-3 text-base font-bold">
                   <span className="text-brand-dark">Total</span>
                   <span
