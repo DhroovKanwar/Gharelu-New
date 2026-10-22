@@ -52,7 +52,7 @@ const STEP_META = [
 
 const openWhatsapp = (state) => {
   const msg = buildWhatsappMessage(state);
-  const num = toWhatsappNumber(brand.phone);
+  const num = toWhatsappNumber(brand.whatsapp);
   const url = `https://wa.me/${num}?text=${encodeURIComponent(msg)}`;
   window.open(url, "_blank", "noopener,noreferrer");
 };
@@ -577,7 +577,7 @@ const SuccessStep = ({ state, submittedId, onStartFresh, onBack }) => (
       <button
         type="button"
         onClick={() => {
-          const num = toWhatsappNumber(brand.phone);
+          const num = toWhatsappNumber(brand.whatsapp);
           const msg = buildWhatsappMessage(state);
           window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, "_blank", "noopener,noreferrer");
         }}

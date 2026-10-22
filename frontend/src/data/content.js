@@ -50,6 +50,8 @@ export const brand = {
   name: "GHARELU.BAKE",
   tagline: "Pure • Premium • Eggless",
   phone: "07973 714215",
+  // WhatsApp number (country code + number, digits only) used for wa.me links
+  whatsapp: "917303091448",
   email: "hello@gharelubake.in",
   address: "Unit 38, Ground Floor, Orbit Signature Walk, VIP Road, Zirakpur, Punjab 140603",
   hours: "Daily · 11:00 AM – 10:00 PM",
@@ -57,7 +59,7 @@ export const brand = {
     { label: "Instagram", href: "https://instagram.com/gharelu.bake", icon: "instagram" },
     // { label: "Facebook", href: "https://facebook.com", icon: "facebook" },
     // { label: "Pinterest", href: "https://pinterest.com", icon: "pinterest" },
-    { label: "WhatsApp", href: "https://wa.me/917973714215", icon: "whatsapp" },
+    { label: "WhatsApp", href: "https://wa.me/917303091448", icon: "whatsapp" },
   ],
 };
 
