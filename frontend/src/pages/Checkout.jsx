@@ -645,8 +645,8 @@ export default function Checkout() {
                 ))}
               </div>
               <p className="mt-3 flex items-center gap-2 text-xs text-brand-text">
-                <Lock size={13} /> This is a demo checkout — no real payment is
-                processed.
+                <Lock size={13} /> Online payments are processed securely by
+                Razorpay.
               </p>
             </div>
           </div>
