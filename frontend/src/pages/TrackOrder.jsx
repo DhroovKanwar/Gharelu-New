@@ -2,10 +2,12 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Package, Search, AlertCircle } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
+import Seo from "../components/common/Seo";
 import PageHeader from "../components/common/PageHeader";
 import Section from "../components/common/Section";
 import Button from "../components/common/Button";
 import { cn } from "../utils/cn";
+import { friendlyError } from "../utils/friendlyError";
 import { lookupOrdersByPhone } from "../services/orderService";
 
 const STATUS_LABELS = {
@@ -100,7 +102,7 @@ export default function TrackOrder() {
       const results = await lookupOrdersByPhone(phone);
       setOrders(results);
     } catch (err) {
-      setError(err.message || "Something went wrong. Please try again.");
+      setError(friendlyError(err));
     } finally {
       setLoading(false);
     }
@@ -108,6 +110,7 @@ export default function TrackOrder() {
 
   return (
     <MainLayout>
+      <Seo title="Track Your Order" description="Track your GHARELU.BAKE order with your phone number." noindex />
       <PageHeader
         eyebrow="Track / Order History"
         title={["Find your", "orders"]}

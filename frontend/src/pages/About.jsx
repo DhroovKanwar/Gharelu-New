@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
+import Seo from "../components/common/Seo";
 import PageHeader from "../components/common/PageHeader";
 import Section from "../components/common/Section";
 import SectionHeading from "../components/common/SectionHeading";
@@ -19,6 +20,7 @@ const stats = [
 export default function About() {
   return (
     <MainLayout>
+      <Seo title="About Us — Eggless Bakery in Zirakpur" description="The story of GHARELU.BAKE: a small home kitchen turned premium eggless patisserie in Zirakpur, baking cakes, cookies and gift hampers with home-baked soul." />
       <PageHeader
         eyebrow="Our Story"
         title={["Baked with the", "warmth of home"]}

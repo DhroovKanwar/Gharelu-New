@@ -10,6 +10,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
+import Seo from "../components/common/Seo";
 import PageHeader from "../components/common/PageHeader";
 import Section from "../components/common/Section";
 import CategorySection from "../components/common/CategorySection";
@@ -248,6 +249,7 @@ const collectionOrder = useMemo(() => {
 
   return (
     <MainLayout>
+      <Seo title="Menu — Eggless Cakes, Pastries & Cookies" description="Browse the GHARELU.BAKE menu: 100% eggless cakes, cupcakes, pastries, cookies and dry cakes, made fresh in small batches in Zirakpur. Order for pickup." />
       <PageHeader
         // eyebrow="The Collection"
         title="Menu"

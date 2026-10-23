@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Quote } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
+import Seo from "../components/common/Seo";
 import PageHeader from "../components/common/PageHeader";
 import Section from "../components/common/Section";
 import Rating from "../components/common/Rating";
@@ -16,6 +17,7 @@ export default function ReviewsPage() {
 
   return (
     <MainLayout>
+      <Seo title="Customer Reviews" description="Real words from real celebrations. See what customers say about GHARELU.BAKE eggless cakes, cookies and gift hampers." />
       <PageHeader
         eyebrow="Kind Words"
         title="Customer Reviews"

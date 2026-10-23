@@ -1,4 +1,5 @@
 import MainLayout from "../layouts/MainLayout";
+import Seo from "../components/common/Seo";
 import Hero from "../components/sections/Hero";
 import HampersShowcase from "../components/sections/HampersShowcase";
 import FeaturedCakes from "../components/sections/FeaturedCakes";
@@ -14,6 +15,7 @@ import Newsletter from "../components/sections/Newsletter";
 export default function Home() {
   return (
     <MainLayout>
+      <Seo />
       <Hero />
       <HampersShowcase />
       <FeaturedCakes />

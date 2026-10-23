@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight, Check, MessageCircle, Send } from "lucide-react"
 import { toast } from "sonner";
 
 import MainLayout from "../layouts/MainLayout";
+import Seo from "../components/common/Seo";
 import Container from "../components/common/Container";
 import Section from "../components/common/Section";
 import Breadcrumb from "../components/common/Breadcrumb";
@@ -133,6 +134,7 @@ export default function CustomizeCake() {
   // ─── UI ────────────────────────────────────────────────────────────────
   return (
     <MainLayout>
+      <Seo title="Custom Cakes — Design Your Eggless Cake" description="Design a custom eggless cake for birthdays, weddings and celebrations. Share flavour, size, theme and date and GHARELU.BAKE will get back to you." />
       {/* Header */}
       <section className="relative overflow-hidden bg-brand-secondary pt-14 pb-14 md:pt-20 md:pb-20" data-testid="customize-cake-header">
         <div className="pointer-events-none absolute inset-0 -z-10">

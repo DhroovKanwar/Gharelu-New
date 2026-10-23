@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Truck, Store, ShoppingBasket, ArrowRight, Cake } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
+import Seo from "../components/common/Seo";
 import Container from "../components/common/Container";
 import Breadcrumb from "../components/common/Breadcrumb";
 import { useOrder } from "../context/OrderContext";
@@ -72,6 +73,7 @@ export default function StartOrder() {
 
   return (
     <MainLayout>
+      <Seo title="Start Your Order — Delivery or Pickup" description="Order eggless cakes and gift hampers from GHARELU.BAKE: choose pickup for the menu, or delivery for festive gift hampers." />
       {/* Compact local page header — page-scoped so global PageHeader is untouched */}
       <section className="relative overflow-hidden bg-brand-secondary pt-6 pb-4 md:pt-10 md:pb-6" data-testid="page-header">
         <div className="pointer-events-none absolute inset-0 -z-10">

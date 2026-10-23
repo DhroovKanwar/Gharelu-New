@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight, CalendarDays } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
+import Seo from "../components/common/Seo";
 import PageHeader from "../components/common/PageHeader";
 import Section from "../components/common/Section";
 import Button from "../components/common/Button";
@@ -9,6 +10,7 @@ import { events } from "../data/content";
 export default function EventsPage() {
   return (
     <MainLayout>
+      <Seo title="Events & Workshops" description="Hands-on baking masterclasses and bespoke dessert experiences for your next celebration, from the GHARELU.BAKE kitchen in Zirakpur." />
       <PageHeader
         eyebrow="What's Baking"
         title="Events & Workshops"

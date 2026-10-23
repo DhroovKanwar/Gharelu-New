@@ -1,11 +1,13 @@
 import { motion } from "framer-motion";
 import MainLayout from "../layouts/MainLayout";
+import Seo from "../components/common/Seo";
 import Button from "../components/common/Button";
 import { ArrowLeft, Cake } from "lucide-react";
 
 export default function NotFound() {
   return (
     <MainLayout>
+      <Seo title="Page Not Found" description="This page could not be found." noindex />
       <section className="relative flex min-h-[70vh] items-center justify-center overflow-hidden px-6 py-24" data-testid="notfound-page">
         <div className="pointer-events-none absolute inset-0 -z-10">
           <div className="absolute left-1/2 top-1/2 h-[32rem] w-[32rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-primary/30 blur-[120px]" />

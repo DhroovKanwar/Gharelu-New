@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { MapPin, Clock, Phone, Mail, Send } from "lucide-react";
 import { toast } from "sonner";
 import MainLayout from "../layouts/MainLayout";
+import Seo from "../components/common/Seo";
 import PageHeader from "../components/common/PageHeader";
 import Section from "../components/common/Section";
 import Button from "../components/common/Button";
@@ -86,6 +87,7 @@ export default function ContactPage() {
 
   return (
     <MainLayout>
+      <Seo title="Contact Us" description="Get in touch with GHARELU.BAKE in Zirakpur for custom cakes, corporate gifting and orders. Message us on WhatsApp or send an enquiry." />
       <PageHeader
         eyebrow="Say Hello"
         title="Get in touch"

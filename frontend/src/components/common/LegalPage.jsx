@@ -1,4 +1,5 @@
 import MainLayout from "../../layouts/MainLayout";
+import Seo from "./Seo";
 import PageHeader from "./PageHeader";
 import Section from "./Section";
 import Reveal from "./Reveal";
@@ -8,6 +9,7 @@ import Reveal from "./Reveal";
  */
 export const LegalPage = ({ policy, breadcrumb }) => (
   <MainLayout>
+    <Seo title={policy.title} description={String(policy.intro || "").slice(0, 160)} />
     <PageHeader
       eyebrow={`Updated ${policy.updated}`}
       title={policy.title}

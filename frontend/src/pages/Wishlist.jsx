@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Heart, ArrowRight } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
+import Seo from "../components/common/Seo";
 import PageHeader from "../components/common/PageHeader";
 import Section from "../components/common/Section";
 import ProductCard from "../components/common/ProductCard";
@@ -14,6 +15,7 @@ export default function Wishlist() {
 
   return (
     <MainLayout>
+      <Seo title="Your Wishlist" description="Treats you saved at GHARELU.BAKE." noindex />
       <PageHeader
         eyebrow="Saved for later"
         title="Your Wishlist"

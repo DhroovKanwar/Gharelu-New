@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Check, Package, ArrowRight, Mail } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
+import Seo from "../components/common/Seo";
 import Section from "../components/common/Section";
 import Button from "../components/common/Button";
 
@@ -18,6 +19,7 @@ export default function OrderSuccess() {
 
   return (
     <MainLayout>
+      <Seo title="Order Confirmed" description="Your GHARELU.BAKE order is confirmed." noindex />
       <Section className="pt-20">
         <div className="mx-auto max-w-2xl text-center" data-testid="order-success">
           <motion.div

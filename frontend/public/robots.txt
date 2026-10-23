@@ -1,0 +1,11 @@
+# https://gharelubake.in/robots.txt
+User-agent: *
+Allow: /
+
+# Private or one-off pages: nothing to find in search
+Disallow: /checkout
+Disallow: /order-success
+Disallow: /track-order
+Disallow: /wishlist
+
+Sitemap: https://gharelubake.in/sitemap.xml

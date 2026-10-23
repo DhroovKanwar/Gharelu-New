@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Plus, ArrowRight, Check, Gift, Headphones, Truck, Download } from "lucide-react";
 import { toast } from "sonner";
 import MainLayout from "../layouts/MainLayout";
+import Seo from "../components/common/Seo";
 import PageHeader from "../components/common/PageHeader";
 import Section from "../components/common/Section";
 import SectionHeading from "../components/common/SectionHeading";
@@ -42,6 +43,7 @@ export default function Hampers() {
 
   return (
     <MainLayout>
+      <Seo title="Gift Hampers — Eggless Festive Hampers" description="Premium eggless gift hampers for Diwali and every celebration: Classic, Signature, Evergreen and Luxe boxes of cookies, jars and chocolates. Delivery across India." />
       <PageHeader
         eyebrow="Curated Collections"
         title={["Gift Hampers", "for every celebration"]}

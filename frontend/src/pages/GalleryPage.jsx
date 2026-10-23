@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, LayoutList, ChevronDown } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
+import Seo from "../components/common/Seo";
 import PageHeader from "../components/common/PageHeader";
 import Section from "../components/common/Section";
 import { gallery } from "../data/content";
@@ -121,6 +122,7 @@ export default function GalleryPage() {
 
   return (
     <MainLayout>
+      <Seo title="Gallery — Our Eggless Bakes" description="A closer look at the craft: GHARELU.BAKE cakes, cookies, hampers and the people behind our eggless kitchen in Zirakpur." />
       <PageHeader
         eyebrow="From Our Kitchen"
         title="The Gallery"

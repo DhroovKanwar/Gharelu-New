@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Plus, Minus, Heart, ShoppingBag, Check, Leaf, Truck, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import MainLayout from "../layouts/MainLayout";
+import Seo, { SITE_URL, SITE_NAME } from "../components/common/Seo";
 import Container from "../components/common/Container";
 import Section from "../components/common/Section";
 import Breadcrumb from "../components/common/Breadcrumb";
@@ -91,8 +92,40 @@ if (!product) return <NotFound />;
     openCart();
   };
 
+  // Search/share data for this product: title, description, picture and schema.org Product (price, stock).
+  const seoImages = [...new Set([product.image, ...(product.gallery || [])].filter(Boolean))];
+  const absoluteImage = (src) => (/^https?:\/\//i.test(src) ? src : `${SITE_URL}${src.startsWith("/") ? "" : "/"}${src}`);
+  const seoDescription = String(product.description || product.longDescription || `${product.name} from ${SITE_NAME}, freshly baked and 100% eggless.`)
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 160);
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: seoDescription,
+    image: seoImages.map(absoluteImage),
+    sku: String(product.id),
+    brand: { "@type": "Brand", name: SITE_NAME },
+    offers: {
+      "@type": "Offer",
+      url: `${SITE_URL}/product/${product.id}`,
+      priceCurrency: "INR",
+      price: Number(price),
+      itemCondition: "https://schema.org/NewCondition",
+      availability: product.inStock === false ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+    },
+  };
+
   return (
     <MainLayout>
+      <Seo
+        title={product.name}
+        description={seoDescription}
+        image={product.image}
+        type="product"
+        jsonLd={productJsonLd}
+      />
       <div className="bg-brand-secondary/60 py-6">
         <Container>
           <Breadcrumb items={[{ label: "Home", to: "/" }, { label: "Catalogue", to: "/catalogue" }, { label: product.name }]} />

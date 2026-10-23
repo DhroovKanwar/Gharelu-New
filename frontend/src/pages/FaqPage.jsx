@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
+import Seo from "../components/common/Seo";
 import PageHeader from "../components/common/PageHeader";
 import Section from "../components/common/Section";
 import Button from "../components/common/Button";
@@ -12,6 +13,7 @@ export default function FaqPage() {
   const [open, setOpen] = useState(0);
   return (
     <MainLayout>
+      <Seo title="FAQ — Ordering, Delivery & Eggless Bakes" description="Answers about GHARELU.BAKE bakes, ordering, delivery, pickup and payments. Everything you might want to know before you order." />
       <PageHeader
         eyebrow="Good to Know"
         title="Frequently asked questions"

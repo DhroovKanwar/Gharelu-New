@@ -19,12 +19,14 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import MainLayout from "../layouts/MainLayout";
+import Seo from "../components/common/Seo";
 import PageHeader from "../components/common/PageHeader";
 import Section from "../components/common/Section";
 import Button from "../components/common/Button";
 import { useCart } from "../context/CartContext";
 import { useOrder } from "../context/OrderContext";
 import { cn } from "../utils/cn";
+import { friendlyError } from "../utils/friendlyError";
 import {
   isValidEmail,
   isValidPhone,
@@ -328,7 +330,7 @@ export default function Checkout() {
     } catch (err) {
       console.error("Payment error:", err);
       setPaymentLocked(false);
-      setPayFailure({ order: apiOrder, reason: err?.message || "Something went wrong with the payment." });
+      setPayFailure({ order: apiOrder, reason: friendlyError(err, "Something went wrong with the payment.") });
     } finally {
       setLoading(false);
     }
@@ -479,7 +481,7 @@ export default function Checkout() {
     } catch (err) {
       console.error("Checkout error:", err);
 
-      toast.error(err?.message || "Something went wrong. Please try again.");
+      toast.error(friendlyError(err));
 
       setLoading(false);
     }
@@ -488,6 +490,7 @@ export default function Checkout() {
   if (count === 0) {
     return (
       <MainLayout>
+        <Seo title="Checkout" description="Complete your GHARELU.BAKE order." noindex />
         <PageHeader
           eyebrow="Checkout"
           title="Your box is empty"
@@ -512,6 +515,7 @@ export default function Checkout() {
 
   return (
     <MainLayout>
+      <Seo title="Checkout" description="Complete your GHARELU.BAKE order." noindex />
       <PageHeader
         eyebrow="Almost there"
         title="Checkout"
