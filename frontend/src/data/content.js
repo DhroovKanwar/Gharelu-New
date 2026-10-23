@@ -69,8 +69,8 @@ export const announcements = [
   "Same-Day Dispatch Before 12 PM",
   "Preservative-Free · Small Batch",
   "Custom Celebration Cakes on Order",
-  "Corprate Gifting · PAN India Delivery",
-  "Festival Gif Hampers · Bulk Orders Welcome",
+  "Corporate Gifting · PAN India Delivery",
+  "Festival Gift Hampers · Bulk Orders Welcome",
 ];
 
 export const navLinks = [
