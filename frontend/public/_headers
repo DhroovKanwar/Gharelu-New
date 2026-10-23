@@ -1,0 +1,13 @@
+# Security headers for the storefront (Cloudflare static assets reads this file).
+# No Content-Security-Policy yet on purpose: it has to be tuned for Razorpay, fonts, maps and
+# image hosts first, and a wrong one breaks checkout. Start it as Report-Only when added.
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+# Build files carry a hash in their name, so they can be cached for a year.
+/static/*
+  Cache-Control: public, max-age=31536000, immutable
