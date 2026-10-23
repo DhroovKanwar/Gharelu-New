@@ -67,8 +67,13 @@ export default function OrderSuccess() {
                 <span className="font-heading text-xl font-extrabold text-brand-dark">₹{order.total}</span>
               </div>
               <p className="mt-5 flex items-center gap-2 text-sm text-brand-text">
-                <Mail size={15} className="text-brand-accent" /> We will contact you on {order.customer?.phone} to confirm your order.
+                <Mail size={15} className="text-brand-accent" /> We will contact you on {order.customer?.phoneCountryCode} {order.customer?.phone} to confirm your order.
               </p>
+              {order.address?.recipient && (
+                <p className="mt-3 text-sm text-brand-text" data-testid="success-recipient">
+                  Delivering to <span className="font-semibold text-brand-dark">{order.address.recipient.name}</span> ({order.address.recipient.phoneCountryCode} {order.address.recipient.phone})
+                </p>
+              )}
             </div>
           )}
 

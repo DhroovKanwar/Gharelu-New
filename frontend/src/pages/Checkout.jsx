@@ -29,7 +29,7 @@ import { cn } from "../utils/cn";
 import { friendlyError } from "../utils/friendlyError";
 import {
   isValidEmail,
-  isValidPhone,
+  isValidPhoneWithCode,
   isValidPincode,
 } from "../utils/validators";
 import {
@@ -44,7 +44,7 @@ const Field = ({ label, className, ...props }) => (
       {label}
     </span>
     <input
-      className="w-full rounded-2xl border border-brand-line bg-brand-bg px-5 py-3.5 text-brand-dark outline-none transition-shadow placeholder:text-brand-text/50 focus:ring-2 focus:ring-brand-accent"
+      className="w-full rounded-2xl border border-brand-line bg-brand-bg px-5 py-3.5 text-brand-dark outline-none transition-shadow placeholder:text-brand-text/50 focus:ring-2 focus:ring-brand-accent disabled:cursor-not-allowed disabled:opacity-60"
       {...props}
     />
   </label>
@@ -75,6 +75,64 @@ const INDIAN_STATES = [
 
 const formatETA = (iso) =>
   new Date(`${iso}T00:00:00`).toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" });
+
+// Country codes offered next to a phone number. India first and the default.
+const COUNTRY_CODES = [
+  { code: "+91", label: "IN +91" },
+  { code: "+1", label: "US/CA +1" },
+  { code: "+44", label: "UK +44" },
+  { code: "+971", label: "UAE +971" },
+  { code: "+61", label: "AU +61" },
+  { code: "+65", label: "SG +65" },
+  { code: "+966", label: "SA +966" },
+  { code: "+974", label: "QA +974" },
+  { code: "+968", label: "OM +968" },
+  { code: "+965", label: "KW +965" },
+  { code: "+973", label: "BH +973" },
+  { code: "+60", label: "MY +60" },
+  { code: "+64", label: "NZ +64" },
+  { code: "+49", label: "DE +49" },
+  { code: "+33", label: "FR +33" },
+  { code: "+27", label: "ZA +27" },
+  { code: "+977", label: "NP +977" },
+  { code: "+94", label: "LK +94" },
+  { code: "+880", label: "BD +880" },
+];
+
+const PhoneField = ({ label, className, code, onCodeChange, value, onValueChange, testId, placeholder = "Mobile number", disabled = false }) => (
+  <div className={cn("block", className)}>
+    <span className="mb-2 block text-xs font-semibold uppercase tracking-widest text-brand-dark">{label}</span>
+    <div className="flex gap-2">
+      <select
+        aria-label={`${label} country code`}
+        value={code}
+        disabled={disabled}
+        onChange={(e) => onCodeChange(e.target.value)}
+        className="w-[7.75rem] shrink-0 rounded-2xl border border-brand-line bg-brand-bg px-3 py-3.5 text-brand-dark outline-none transition-shadow focus:ring-2 focus:ring-brand-accent disabled:cursor-not-allowed disabled:opacity-60"
+        data-testid={`${testId}-code`}
+      >
+        {COUNTRY_CODES.map((c) => (
+          <option key={c.code} value={c.code}>
+            {c.label}
+          </option>
+        ))}
+      </select>
+      <input
+        aria-label={label}
+        type="tel"
+        inputMode="numeric"
+        autoComplete="tel-national"
+        maxLength={code === "+91" ? 10 : 14}
+        placeholder={code === "+91" ? "10-digit mobile number" : placeholder}
+        disabled={disabled}
+        value={value}
+        onChange={(e) => onValueChange(e.target.value.replace(/\D/g, "").slice(0, code === "+91" ? 10 : 14))}
+        className="min-w-0 flex-1 rounded-2xl border border-brand-line bg-brand-bg px-5 py-3.5 text-brand-dark outline-none transition-shadow placeholder:text-brand-text/50 focus:ring-2 focus:ring-brand-accent disabled:cursor-not-allowed disabled:opacity-60"
+        data-testid={testId}
+      />
+    </div>
+  </div>
+);
 
 const PAYMENTS = [
   {
@@ -136,7 +194,12 @@ export default function Checkout() {
     firstName: "",
     lastName: "",
     email: "",
+    phoneCode: "+91",
     phone: "",
+    // Deliveries: who the parcel is for (the sender may be gifting)
+    recipientFirstName: "",
+    recipientLastName: "",
+    recipientPhone: "",
     address: "",
     city: "",
     state: "",
@@ -145,6 +208,27 @@ export default function Checkout() {
     time: currentTimeHHMM(),
     notes: "",
   });
+
+  // "Same as sender": the recipient name (and phone, when the sender's number is Indian) follow the sender
+  // until the box is unticked, which clears them again. A recipient phone is always an Indian number.
+  const [sameAsSender, setSameAsSender] = useState(false);
+  const recipientPhoneFollows = sameAsSender && form.phoneCode === "+91";
+  useEffect(() => {
+    if (!sameAsSender) return;
+    setForm((f) => ({
+      ...f,
+      recipientFirstName: f.firstName,
+      recipientLastName: f.lastName,
+      recipientPhone: f.phoneCode === "+91" ? f.phone : "",
+    }));
+  }, [sameAsSender, form.firstName, form.lastName, form.phoneCode, form.phone]);
+
+  const toggleSameAsSender = (checked) => {
+    setSameAsSender(checked);
+    if (!checked) {
+      setForm((f) => ({ ...f, recipientFirstName: "", recipientLastName: "", recipientPhone: "" }));
+    }
+  };
 
   useEffect(() => {
     if (deliveryMode === "delivery" && payment === "cod") setPayment("online");
@@ -267,7 +351,7 @@ export default function Checkout() {
         customer: {
           name: `${form.firstName} ${form.lastName}`.trim(),
           email: form.email.trim(),
-          contact: form.phone,
+          contact: `${form.phoneCode}${form.phone}`,
         },
         razorpayOrder,
       });
@@ -347,7 +431,7 @@ export default function Checkout() {
     const required = ["firstName", "phone"];
 
     if (deliveryMode === "delivery") {
-      required.push("address", "city", "state", "pincode");
+      required.push("recipientFirstName", "recipientPhone", "address", "city", "state", "pincode");
     }
 
     if (required.some((k) => !form[k].trim())) {
@@ -360,8 +444,13 @@ export default function Checkout() {
       return;
     }
 
-    if (!isValidPhone(form.phone)) {
-      toast.error("Please enter a valid 10-digit mobile number.");
+    if (!isValidPhoneWithCode(form.phoneCode, form.phone)) {
+      toast.error(form.phoneCode === "+91" ? "Please enter a valid 10-digit mobile number." : "Please enter a valid phone number.");
+      return;
+    }
+
+    if (deliveryMode === "delivery" && !isValidPhoneWithCode("+91", form.recipientPhone)) {
+      toast.error("Please enter a valid 10-digit mobile number for the recipient.");
       return;
     }
 
@@ -384,7 +473,13 @@ export default function Checkout() {
           first_name: form.firstName,
           last_name: form.lastName,
           email: form.email.trim() || null,
+          phone_country_code: form.phoneCode,
           phone: form.phone,
+
+          recipient_first_name: deliveryMode === "delivery" ? form.recipientFirstName.trim() : null,
+          recipient_last_name: deliveryMode === "delivery" ? form.recipientLastName.trim() || null : null,
+          recipient_phone_country_code: deliveryMode === "delivery" ? "+91" : null,
+          recipient_phone: deliveryMode === "delivery" ? form.recipientPhone : null,
 
           delivery_mode: deliveryMode,
 
@@ -536,7 +631,7 @@ export default function Checkout() {
           <div className="space-y-10 lg:col-span-7">
             <div>
               <h2 className="font-heading text-2xl font-extrabold tracking-tight text-brand-dark">
-                Contact
+                {deliveryMode === "delivery" ? "Sender Details" : "Contact"}
               </h2>
               <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <Field
@@ -555,19 +650,14 @@ export default function Checkout() {
                   onChange={set("lastName")}
                   data-testid="checkout-last-name"
                 />
-                <Field
+                <PhoneField
                   label="Phone"
-                  placeholder="10-digit mobile number"
                   className="sm:col-span-2"
-                  type="tel"
-                  inputMode="numeric"
-                  autoComplete="tel-national"
-                  maxLength={10}
+                  code={form.phoneCode}
+                  onCodeChange={(phoneCode) => setForm((f) => ({ ...f, phoneCode, phone: phoneCode === "+91" ? f.phone.slice(0, 10) : f.phone }))}
                   value={form.phone}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, phone: e.target.value.replace(/\D/g, "").slice(0, 10) }))
-                  }
-                  data-testid="checkout-phone"
+                  onValueChange={(phone) => setForm((f) => ({ ...f, phone }))}
+                  testId="checkout-phone"
                 />
                 <Field
                   label="Email (optional)"
@@ -642,6 +732,51 @@ export default function Checkout() {
               <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
                 {deliveryMode === "delivery" && (
                   <>
+                <div className="sm:col-span-2" data-testid="recipient-details">
+                  <h3 className="font-heading text-lg font-extrabold tracking-tight text-brand-dark">Recipient Details</h3>
+                  <p className="mt-1 text-sm text-brand-text">Who are we delivering this to?</p>
+                  <label className="mt-3 inline-flex cursor-pointer items-center gap-2.5 text-sm font-medium text-brand-dark">
+                    <input
+                      type="checkbox"
+                      checked={sameAsSender}
+                      onChange={(e) => toggleSameAsSender(e.target.checked)}
+                      className="h-4 w-4 accent-[#d9869a]"
+                      data-testid="same-as-sender"
+                    />
+                    Same as sender
+                  </label>
+                </div>
+                <Field
+                  label="Recipient First Name"
+                  placeholder="First name"
+                  maxLength={50}
+                  value={form.recipientFirstName}
+                  disabled={sameAsSender}
+                  onChange={set("recipientFirstName")}
+                  data-testid="checkout-recipient-first-name"
+                />
+                <Field
+                  label="Recipient Last Name (optional)"
+                  placeholder="Last name"
+                  maxLength={50}
+                  value={form.recipientLastName}
+                  disabled={sameAsSender}
+                  onChange={set("recipientLastName")}
+                  data-testid="checkout-recipient-last-name"
+                />
+                <Field
+                  label="Recipient Phone"
+                  placeholder="10-digit mobile number"
+                  className="sm:col-span-2"
+                  type="tel"
+                  inputMode="numeric"
+                  autoComplete="tel-national"
+                  maxLength={10}
+                  value={form.recipientPhone}
+                  disabled={recipientPhoneFollows}
+                  onChange={(e) => setForm((f) => ({ ...f, recipientPhone: e.target.value.replace(/\D/g, "").slice(0, 10) }))}
+                  data-testid="checkout-recipient-phone"
+                />
                 <Field
                   label="Address"
                   placeholder="House / street"

@@ -35,6 +35,15 @@ export const isValidPhone = (value) => {
   return digits.length >= 10 && INDIAN_MOBILE_RE.test(last10);
 };
 
+/**
+ * A phone typed without its country code: India is exactly 10 digits starting 6-9, other countries 6-14 digits.
+ * Mirrors the Laravel rule in StoreOrderRequest.
+ */
+export const isValidPhoneWithCode = (countryCode, value) => {
+  const digits = String(value || "").replace(/\D/g, "");
+  return countryCode === "+91" ? INDIAN_MOBILE_RE.test(digits) : /^[0-9]{6,14}$/.test(digits);
+};
+
 export const isValidPincode = (value) => INDIAN_PINCODE_RE.test(String(value || "").trim());
 
 export const isBlank = (value) => !value || !String(value).trim();
