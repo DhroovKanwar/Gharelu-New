@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Plus, ArrowRight, Check, Gift, Headphones, Truck, Download } from "lucide-react";
 import { toast } from "sonner";
@@ -12,7 +11,7 @@ import Button from "../components/common/Button";
 import HamperGallery from "../components/common/HamperGallery";
 import { corporateGifts, corporate } from "../data/content";
 import { useCart } from "../context/CartContext";
-import { catalogService } from "../services/api";
+import useLiveCatalogue from "../hooks/useLiveCatalogue";
 
 const steps = [
   { icon: Gift, label: "Thoughtfully Made", title: "Premium Quality, Eggless Always", body: "Every hamper is thoughtfully curated with premium,100% eggless treats, beautiful packaging and a little extra love — because your family deserves nothing less." },
@@ -22,16 +21,10 @@ const steps = [
 
 export default function Hampers() {
   const { addItem } = useCart();
-  // The hamper cards are static content; stock comes from the catalogue so the admin's
-  // "Out of stock" setting shows up here too.
-  const [stock, setStock] = useState({});
-  useEffect(() => {
-    catalogService
-      .getAllProducts()
-      .then((res) => setStock(Object.fromEntries((res.data || []).map((p) => [p.id, p.inStock]))))
-      .catch(() => {});
-  }, []);
-  const gifts = corporateGifts.map((h) => ({ ...h, inStock: stock[h.id] }));
+  // The card text/photos are static content; price and stock come from the catalogue so
+  // whatever the admin sets in the panel (price, "Out of stock") shows up here.
+  const live = useLiveCatalogue();
+  const gifts = corporateGifts.map((h) => ({ ...h, price: live[h.id]?.price ?? h.price, inStock: live[h.id]?.inStock }));
 
   const addHamper = (h) => {
     addItem(

@@ -1,5 +1,6 @@
 import { toast } from "sonner";
 import { createContext, useContext, useEffect, useMemo, useReducer, useState, useCallback } from "react";
+import { fetchLiveCatalogue } from "../hooks/useLiveCatalogue";
 
 const CartContext = createContext(null);
 const STORAGE_KEY = "gb_cart";
@@ -45,6 +46,20 @@ function reducer(state, action) {
         .filter((i) => i.qty > 0);
     case "CLEAR":
       return [];
+    case "SYNC_PRICES": {
+      // Prices saved in the cart can be stale (admin changed them, or the item was added
+      // before a change). Re-price every line from the live catalogue.
+      let changed = false;
+      const next = state.map((i) => {
+        const p = action.products[i.id];
+        if (!p) return i;
+        const price = i.size ? p.sizes?.find((s) => s.label === i.size)?.price : p.price;
+        if (typeof price !== "number" || price === i.price) return i;
+        changed = true;
+        return { ...i, price };
+      });
+      return changed ? next : state;
+    }
     default:
       return state;
   }
@@ -57,6 +72,16 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   }, [items]);
+
+  useEffect(() => {
+    let alive = true;
+    fetchLiveCatalogue()
+      .then((products) => alive && dispatch({ type: "SYNC_PRICES", products }))
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const addItem = useCallback((product, { size = null, qty = 1 } = {}) => {
     if (product.inStock === false) {

@@ -5,8 +5,12 @@ import SectionHeading from "../common/SectionHeading";
 import Button from "../common/Button";
 import Reveal from "../common/Reveal";
 import { corporateGifts } from "../../data/content";
+import useLiveCatalogue from "../../hooks/useLiveCatalogue";
 
-export const HampersShowcase = () => (
+export const HampersShowcase = () => {
+  const live = useLiveCatalogue();
+  const gifts = corporateGifts.map((h) => ({ ...h, price: live[h.id]?.price ?? h.price }));
+  return (
   <Section id="hampers" data-testid="hampers-section">
     <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
       <SectionHeading
@@ -22,7 +26,7 @@ export const HampersShowcase = () => (
     </div>
 
     <div className="mt-16 grid grid-cols-1 gap-x-7 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-      {corporateGifts.map((h) => (
+      {gifts.map((h) => (
         <Link key={h.id} to="/hampers" className="group block" data-testid={`home-hamper-${h.id}`}>
           <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-brand-line">
             <img
@@ -47,6 +51,7 @@ export const HampersShowcase = () => (
       ))}
     </div>
   </Section>
-);
+  );
+};
 
 export default HampersShowcase;
